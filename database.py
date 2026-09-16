@@ -1,22 +1,20 @@
 import psycopg2 as db
 
+
+# vars
+local_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a.oregon-postgres.render.com/footlel_db"
+deployed_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a/footlel_db"
+current_db_url = local_db_url
+
+
 # Connect to the footlet database
 
-def show_players(jugadores):
-    conn = db.connect("postgresql://neondb_owner:npg_nh35ETOQdHJL@ep-quiet-night-b4won4nr-pooler.c-6.us-east-2.aws.neon.tech/FootLel_db?sslmode=require&channel_binding=require")
+def get_user_password_with_user_name(user_name: str):
+    """Get user password with: user_name: str"""
+    conn = db.connect(current_db_url)
     run = conn.cursor()
     
-    run.execute("SELECT * FROM players WHERE premier_league ILIKE '%Manchester United%'")
-    players = run.fetchall()
-    print(players)
-    
-#show_players()
-
-def login(user_name: str):
-    conn = db.connect("postgresql://neondb_owner:npg_nh35ETOQdHJL@ep-quiet-night-b4won4nr-pooler.c-6.us-east-2.aws.neon.tech/FootLel_db?sslmode=require&channel_binding=require")
-    run = conn.cursor()
-    
-    run.execute("SELECT password_user FROM users WHERE username = (%s)", (user_name,))
+    run.execute("SELECT password_user FROM users WHERE user_name = (%s)", (user_name,))
     players = run.fetchall()
     
     conn.commit()
@@ -24,13 +22,14 @@ def login(user_name: str):
         conn.rollback()
     return players
 
-def register(user_name: str, email: str, password_user: str):
-    conn = db.connect("postgresql://neondb_owner:npg_nh35ETOQdHJL@ep-quiet-night-b4won4nr-pooler.c-6.us-east-2.aws.neon.tech/FootLel_db?sslmode=require&channel_binding=require")
+def register_new_user(user_name: str, email: str, password_user: str):
+    """Sets new user with: user_name: str, email: str, password_user: str"""
+    conn = db.connect(current_db_url)
     run = conn.cursor()
        
     try:
         
-        run.execute("INSERT INTO users (username, email, password_user) VALUES (%s,%s,%s) ", (user_name, email, password_user))
+        run.execute("INSERT INTO users (user_name, email, password_user) VALUES (%s,%s,%s) ", (user_name, email, password_user))
         conn.commit()
     
     except db.errors.UniqueViolation:
@@ -48,3 +47,4 @@ def register(user_name: str, email: str, password_user: str):
     
     
     
+
