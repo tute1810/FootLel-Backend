@@ -1,11 +1,13 @@
+# IMPORT LIBRARIES #
 from fastapi import FastAPI
-from endpoints import users
 
-app = FastAPI(title="FootLel API", version="0.1.0")
+# IMPORT ROUTERS #
+from routers import user_management
+from routers import authentication
 
-app.include_router(users.router)
+# CREATE THE API #
+app = FastAPI(title="FootLel_api", version="0.1.0")
 
-"""@app.get("/")
-def read_root():
-    return {"mensaje": "¡Bienvenido al backend modular de FootLel!"}
-"""
+# INCLUDE THE ENDPOINTS TO THE API #
+app.include_router(user_management.router)
+app.include_router(authentication.router)
