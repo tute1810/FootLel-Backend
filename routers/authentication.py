@@ -24,7 +24,7 @@ def login(user_credentials: user_credentials.UserCredentials):
     
 @router.post("/auth/user-register")
 def register(user_credentials: user_credentials.UserCredentials):
-    resultado_registro = str(authentication.register_new_user(user_credentials.user_name, user_credentials.email, user_credentials.user_password))
+    resultado_registro = str(authentication.register_new_user(user_credentials.user_name, user_credentials.user_email,user_credentials.user_password))
     if resultado_registro == "Usuario creado":
         return {"message": "si"}
     else: 

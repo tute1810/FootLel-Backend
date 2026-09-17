@@ -2,7 +2,7 @@ import psycopg2 as db
 
 local_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a.oregon-postgres.render.com/footlel_db"
 deployed_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a/footlel_db"
-current_db_url = local_db_url
+current_db_url = deployed_db_url
 
 
 
@@ -15,6 +15,7 @@ def get_users_info():
     players = run.fetchall()
     
     conn.commit()
+    conn.close()
     return players
 
 def get_user_name(id_user):
@@ -27,10 +28,12 @@ def get_user_name(id_user):
         
     conn.commit()
 
+
     if user_name == None:
         conn.rollback()
+        conn.close()
         return 'Usuario inactivo o no encontrado'
-
+    conn.close()
     return user_name
 
 def get_user_password_with_user_name(user_name: str):
@@ -44,4 +47,7 @@ def get_user_password_with_user_name(user_name: str):
     conn.commit()
     if players == None:
         conn.rollback()
+        conn.close()
+        return 'Usuario inactivo o no encontrado'
+    conn.close()
     return players
