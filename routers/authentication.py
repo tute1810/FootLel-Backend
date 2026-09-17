@@ -31,6 +31,6 @@ def register(user_credentials: user_credentials.UserCredentials):
         return {"message": resultado_registro}
     
 @router.post("/auth/guest-login")
-def guest(guest_credentials: guest_credentials.GuestCredentials):
+def guest():
     guest_name = "Guest67_" + str(random.randint(1000, 9999)) 
     return {"guest_name": guest_name}
