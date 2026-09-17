@@ -1,11 +1,9 @@
-# IMPORT LIBRARIES #
-import random
-
+# IMPORT EXTERNAL LIBRARIES #
 from fastapi import APIRouter
+from random import randint
 
-# IMPORT OBJECTS #
+# IMPORT INTERNAL LIBRARIES #
 from objects import user_credentials
-from objects import guest_credentials
 from database import authentication
 
 # CREATE THE ROUTER #
@@ -32,5 +30,5 @@ def register(user_credentials: user_credentials.UserCredentials):
     
 @router.post("/auth/guest-login")
 def guest():
-    guest_name = "Guest67_" + str(random.randint(1000, 9999)) 
+    guest_name = "Guest67_" + str(randint(1000, 9999))
     return {"guest_name": guest_name}

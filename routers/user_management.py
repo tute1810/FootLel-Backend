@@ -1,7 +1,7 @@
-# IMPORT LIBRARIES #
+# IMPORT EXTERNAL LIBRARIES #
 from fastapi import APIRouter
 
-# IMPORT OBJECTS #
+# IMPORT INTERNAL LIBRARIES #
 from objects import user_id
 from database import user_management
 
@@ -11,4 +11,4 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.post("/user/get-user")
 def get_user(user_id: user_id.UserId):
-    return user_management.get_user_name(user_id.user_id) 
+    return user_management.get_user_name(user_id.user_id)
