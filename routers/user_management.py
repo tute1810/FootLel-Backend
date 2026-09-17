@@ -3,6 +3,7 @@ from fastapi import APIRouter
 
 # IMPORT OBJECTS #
 from objects import user_id
+from database import user_management
 
 # CREATE THE ROUTER #
 router = APIRouter()
@@ -10,4 +11,4 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.get("/user/get-user")
 def get_user(user_id: user_id.UserId):
-    return id
+    return user_management.get_user_name(3)
