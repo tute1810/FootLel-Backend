@@ -7,59 +7,65 @@ current_db_url = deployed_db_url
 
 
 
+def check_existing_user_name(user_name: str):
+    """check if the user name is already in use in a active user returns true to indicate that an user already exists or false"""
+    conn = db.connect(current_db_url)
+    run = conn.cursor()
+       
+        # Comprobar nombre en usuarios activos
+    run.execute("""SELECT 1 FROM users WHERE user_name = (%s) AND user_eliminated = FALSE""",(user_name,))
+    check_user_name = run.fetchone()
+    if check_user_name is not None:
+        conn.rollback()
+        return True
+        
+    conn.commit()
+    return False
+    
+def check_existing_user_email(user_email: str):
+    
+    """Check if the user email is already in use by an active user, returns true to indicate that a user already exists or false"""
+    
+    conn = db.connect(current_db_url)
+    run = conn.cursor()
+    
+    run.execute("""SELECT 1 FROM users WHERE user_email = (%s) AND user_eliminated = FALSE""",(user_email,))
+    check_user_email = run.fetchone()
+    if check_user_email is not None:
+        conn.rollback()
+        return True
+
+    conn.commit()
+    return False
+
+
+    
 def register_new_user(user_name: str, user_email: str, user_password: str):
     """Sets new user with: user_name: str, user_email: str, user_password: str"""
     conn = db.connect(current_db_url)
     run = conn.cursor()
-       
-    try:
-        # Comprobar nombre o user_email en usuarios activos
-        run.execute(
-            """
-            SELECT 1
-            FROM users
-            WHERE (user_name = %s OR user_email = %s)
-              AND eliminated_user = FALSE
-            """,
-            (user_name, user_email)
-        )
-
-        if run.fetchone() is not None:
-            conn.rollback()
-            conn.close()
-            return 'Usuario ya existente'
-
         # Obtener siguiente ID
-        run.execute(
+    run.execute(
             "SELECT COALESCE(MAX(pk_user_id), 0) + 1 FROM users"
         )
-        user_id = run.fetchone()[0]
+    user_id = run.fetchone()[0]
         
-        run.execute(
+    run.execute(
             """
             INSERT INTO users
-            (pk_user_id, user_name, user_email, user_password, eliminated_user)
-            VALUES (%s, %s, %s, %s, FALSE)
+            (pk_user_id, user_name, user_email, user_password, user_eliminated)
+            VALUES (%s, %s, %s, %s, false)
             """,
             (user_id, user_name, user_email, user_password)
         )
-
-        conn.commit()
-        conn.close()
-        return 'Usuario creado'
-
-    except Exception:
-        conn.rollback()
-        conn.close()
-        raise
-
-
-def eliminate_user(user_id: int):
-    """Eliminates user with: user_id: int"""
-    conn = db.connect(current_db_url)
-    run = conn.cursor()
         
-    run.execute("UPDATE users SET eliminated_user = TRUE WHERE pk_user_id = (%s) ", (user_id,))
+    run.execute(""" INSERT INTO user_configuration (pk_user_id) VALUES (%s)""", (user_id,))
+        
+    run.execute(""" INSERT INTO user_stats (pk_user_id) VALUES (%s)""", (user_id,))
+        
+
     conn.commit()
-    conn.close()
+    
+    return True
+
 
