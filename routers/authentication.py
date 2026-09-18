@@ -3,32 +3,48 @@ from fastapi import APIRouter
 from random import randint
 
 # IMPORT INTERNAL LIBRARIES #
-from objects import user_credentials
+from objects import user_register_credentials
+from objects import user_login_credentials
 from database import authentication
+from database import user_management
 
 # CREATE THE ROUTER #
 router = APIRouter()
 
 # ENDPOINT FUNCTIONS #
 @router.post("/auth/user-login")
-def login(user_credentials: user_credentials.UserCredentials):
-    user_password = authentication.get_user_password_with_user_name(user_credentials.user_name)
-    if user_password == None:
-        return {"message": "Usuario inactivo o no encontrado"}
-    if user_password == user_credentials.user_password:
-        return {"message": "si"}
-    else:
-        return {"message": "Contraseña incorrecta"}
+def user_login(user_login_credentials: user_login_credentials.UserLoginCredentials):
+    if authentication.is_user_name_available(user_login_credentials.user_name) == True:
+        return { "result": "Login Error: user name incorrect" }
+
+    user_password = user_management.get_user_password_with_user_name(user_login_credentials.user_name)
+
+    if user_password is None:
+        return { "result": "Login Error: user password is empty or was not found" }
+
+    if user_password != user_login_credentials.user_password:
+        return { "result": "Login Error: user password is incorrect" }
+
+    return { "result": "success" }
     
 @router.post("/auth/user-register")
-def register(user_credentials: user_credentials.UserCredentials):
-    resultado_registro = str(authentication.register_new_user(user_credentials.user_name, user_credentials.user_email,user_credentials.user_password))
-    if resultado_registro == "Usuario creado":
-        return {"message": "si"}
-    else: 
-        return {"message": resultado_registro}
+def user_register(user_register_credentials: user_register_credentials.UserRegisterCredentials):
+    if authentication.is_user_name_available(user_register_credentials.user_name) == False:
+        return { "result": "Register Error: user name already in use" }
+
+    if authentication.is_user_email_available(user_register_credentials.user_email) == False:
+        return { "result": "Register Error: user email already in use" }
+
+    if authentication.register_new_user(user_register_credentials.user_name, user_register_credentials.user_email, user_register_credentials.user_password) == False:
+        return { "result": "Register Error: could not register user. Maybe try again?" }
+
+    return { "result": "success" }
     
 @router.post("/auth/guest-login")
-def guest():
-    guest_name = "Guest67_" + str(randint(1000, 9999))
-    return {"guest_name": guest_name}
+def guest_login():
+    guest_name: str = "guest_" + str(randint(1000, 9999))
+
+    if authentication.is_user_name_available(guest_name) == False:
+        return { "result": "Guest Error: user name already in use. Maybe Try again?" }
+
+    return { "result": "success", "guest_name": guest_name }
