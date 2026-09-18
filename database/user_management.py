@@ -6,6 +6,24 @@ current_db_url = deployed_db_url
 
 
 
+def get_users_table():
+    """Get users table"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute("SELECT * FROM users",)
+        users = run.fetchall()
+        conn.commit()
+
+        conn.close()
+        print(users)
+        print(users[0])
+        return users[0]
+    except Exception as e:
+        print(e)
+        return None
+
 def get_user_name(user_id: int):
     """Get user_name in form of a string using user_id"""
     try:
@@ -115,3 +133,32 @@ def change_user_data(user_id:int, user_name: str, user_email: str, user_password
     except Exception as e:
         print(e)
         return False
+
+def get_user_info(user_name: str):
+    """Get user_email and user_id with user_name"""
+    conn = None
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute("SELECT pk_user_id, user_email FROM users WHERE user_name = (%s) AND user_eliminated = false", (user_name,) )
+        user_id_email = run.fetchall()
+        conn.commit()
+
+        if user_id_email == []:
+            conn.rollback()
+            conn.close()
+            return None
+
+        conn.close()
+        print(user_id_email)
+        print(user_id_email[0])
+        return user_id_email[0]
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e)
+        return None
+    finally:
+        if conn:
+            conn.close()
