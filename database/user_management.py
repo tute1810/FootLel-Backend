@@ -4,7 +4,7 @@ local_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dp
 deployed_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a/footlel_db"
 current_db_url = deployed_db_url
 
-def get_user_name(user_id):
+def get_user_name(user_id: int):
     """Get user_name in form of a string using user_id"""
     try:
         conn = db.connect(current_db_url)
