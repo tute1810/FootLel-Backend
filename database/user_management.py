@@ -17,9 +17,7 @@ def get_users_table():
         conn.commit()
 
         conn.close()
-        print(users)
-        print(users[0])
-        return users[0]
+        return users
     except Exception as e:
         print(e)
         return None
@@ -151,8 +149,6 @@ def get_user_info(user_name: str):
             return None
 
         conn.close()
-        print(user_id_email)
-        print(user_id_email[0])
         return user_id_email[0]
     except Exception as e:
         if conn:
