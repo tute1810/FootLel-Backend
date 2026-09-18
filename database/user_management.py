@@ -98,17 +98,18 @@ def eliminate_user(user_id: int):
         conn.commit()
 
         conn.close()
-        return True
+        return [True, ""]
     except Exception as e:
         if conn:
             conn.rollback()
         print(e)
-        return False
+        return [False, str(e)]
     finally:
         if conn:
             #conn.rollback()
             conn.close()
-        return False
+        
+        return [False, str("finally")]
 
 def change_password(user_id: int, user_password: str):
     """Change passowrd from active user with user_id: int and user_password: str """

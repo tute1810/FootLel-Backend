@@ -30,7 +30,8 @@ def get_user_info(user_name: user_name.UserName):
 
 @router.post("/user/eliminate-user")
 def eliminate_user(user_id: user_id.UserId):
-    if user_management.eliminate_user(user_id.user_id) == False:
-        return { "result": "user elimiation error: failed to eliminate user" }
+    ab = user_management.eliminate_user(user_id.user_id)
+    if ab[0] == False:
+        return { "result": "user elimiation error: failed to eliminate user", "error": ab[1] }
     
     return { "result": "success" }
