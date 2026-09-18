@@ -69,9 +69,8 @@ def get_user_id(user_email: str):
         
         conn.close()
         return user_id[0]
-    except:        
-        conn.rollback()
-        conn.close()
+    except Exception as e:
+        print(e)
         return None
 
 def eliminate_user(user_id: int):
