@@ -20,7 +20,7 @@ def user_login(user_login_credentials: user_login_credentials.UserLoginCredentia
     user_password = user_management.get_user_password_with_user_name(user_login_credentials.user_name)
 
     if user_password is None:
-        return { "result": "Login Error: user password is empty or was not found" }
+        return { "result": "Login Error: user name was not found" }
 
     if user_password != user_login_credentials.user_password:
         return { "result": "Login Error: user password is incorrect" }
