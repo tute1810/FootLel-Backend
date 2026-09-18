@@ -89,18 +89,27 @@ def get_user_id(user_email: str):
 
 def eliminate_user(user_id: int):
     """Eliminates user with: user_id: int"""
+    conn = None
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
-            
+
         run.execute("UPDATE users SET user_eliminated = TRUE WHERE pk_user_id = (%s) ", (user_id,))
         conn.commit()
+
+        result = run
 
         conn.close()
         return True
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e)
         return False
+    finally:
+        if conn:
+            conn.rollback()
+            conn.close()
 
 def change_password(user_id: int, user_password: str):
     """Change passowrd from active user with user_id: int and user_password: str """
