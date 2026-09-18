@@ -2,5 +2,5 @@
 from pydantic import BaseModel
 
 # CREATE THE OBJECT #
-class UserEmail(BaseModel):
-    user_email: str
+class UserName(BaseModel):
+    user_name: str
