@@ -60,7 +60,7 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
             "SELECT COALESCE(MAX(pk_user_id), 0) + 1 FROM users"
         )
         user_id = run.fetchone()[0]
-            
+
         run.execute(
             """
             INSERT INTO users
@@ -69,11 +69,11 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
             """,
             (user_id, user_name, user_email, user_password)
         )
-            
+
         run.execute(""" INSERT INTO user_configuration (pk_user_id) VALUES (%s)""", (user_id,))
-        run.execute(""" INSERT INTO user_stats (pk_user_id) VALUES (%s)""", (user_id,))
+        run.execute(""" INSERT INTO user_stats (pk_user_id, win_streak, user_points) VALUES (%s,0,0)""", (user_id,))
         conn.commit()
-        
+
         conn.close()
         return True
     except Exception as e:
