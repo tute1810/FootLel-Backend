@@ -97,8 +97,6 @@ def eliminate_user(user_id: int):
         run.execute("UPDATE users SET user_eliminated = TRUE WHERE pk_user_id = (%s) ", (user_id,))
         conn.commit()
 
-        result = run
-
         conn.close()
         return True
     except Exception as e:
