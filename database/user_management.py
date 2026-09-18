@@ -4,6 +4,8 @@ local_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dp
 deployed_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a/footlel_db"
 current_db_url = deployed_db_url
 
+
+
 def get_user_name(user_id: int):
     """Get user_name in form of a string using user_id"""
     try:
@@ -21,9 +23,8 @@ def get_user_name(user_id: int):
         
         conn.close()
         return user_name[0] 
-    except:        
-        conn.rollback()
-        conn.close()
+    except Exception as e:
+        print(e)
         return None
 
 def get_user_password_with_user_name(user_name: str):
@@ -43,11 +44,8 @@ def get_user_password_with_user_name(user_name: str):
         
         conn.close()
         return user_password[0]
-    
-        
-    except:   
-        conn.rollback()
-        conn.close()
+    except Exception as e:
+        print(e)
         return None
 
 def get_user_id(user_email: str):
@@ -84,9 +82,8 @@ def eliminate_user(user_id: int):
 
         conn.close()
         return True
-    except:
-        conn.rollback()
-        conn.close()
+    except Exception as e:
+        print(e)
         return False
 
 def change_password(user_id: int, user_password: str):
@@ -100,9 +97,8 @@ def change_password(user_id: int, user_password: str):
 
         conn.close()
         return True
-    except:
-        conn.rollback()
-        conn.close()
+    except Exception as e:
+        print(e)
         return False
 
 def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
@@ -116,7 +112,6 @@ def change_user_data(user_id:int, user_name: str, user_email: str, user_password
 
         conn.close()
         return True    
-    except:
-        conn.rollback() 
-        conn.close()  
+    except Exception as e:
+        print(e)
         return False

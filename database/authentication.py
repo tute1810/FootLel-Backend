@@ -23,8 +23,8 @@ def is_user_name_available(user_name: str):
             
         conn.close()
         return True
-    except:
-        conn.close()
+    except Exception as e:
+        print(e)
         return False
 
 def is_user_email_available(user_email: str):
@@ -43,8 +43,8 @@ def is_user_email_available(user_email: str):
 
         conn.close()
         return True
-    except: 
-        conn.close()
+    except Exception as e:
+        print(e)
         return False
     
 def register_new_user(user_name: str, user_email: str, user_password: str):
@@ -73,7 +73,6 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
         
         conn.close()
         return True
-    except:
-        conn.rollback()
-        conn.close()
+    except Exception as e:
+        print(e)
         return False
