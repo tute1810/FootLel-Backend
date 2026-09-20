@@ -108,7 +108,7 @@ def get_player(team: str, league: str, nationality: str):
 
         
 
-        run.execute(f"""SELECT player_name, nationality FROM players WHERE {column} = %s AND nationality = (%s) """,  (team,nationality))
+        run.execute(f"""SELECT player_name FROM players WHERE {column} = %s AND nationality = (%s) """,  (team,nationality))
 
         teams = run.fetchall()
         conn.commit()
