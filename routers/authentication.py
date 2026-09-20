@@ -26,7 +26,7 @@ def user_login(user_login_credentials: user_login_credentials.UserLoginCredentia
         return { "result": "login error: user password is incorrect" }
 
     return { "result": "success" }
-    
+
 @router.post("/auth/user-register")
 def user_register(user_register_credentials: user_register_credentials.UserRegisterCredentials):
     if authentication.is_user_name_available(user_register_credentials.user_name) == False:
@@ -39,7 +39,7 @@ def user_register(user_register_credentials: user_register_credentials.UserRegis
         return { "result": "register error: could not register user. maybe try again?" }
 
     return { "result": "success" }
-    
+
 @router.post("/auth/guest-login")
 def guest_login():
     guest_name: str = "guest_" + str(randint(1000, 9999))
