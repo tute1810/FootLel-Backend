@@ -11,15 +11,6 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.post("/game/create-table")
 def create_table():
-    """
-        E1  E2  E3
-    N1    | X | X
-        ----------
-    N2    | X |
-        ----------
-    N3    |   | X
-    """
-
     leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
     nationalities_name: list[str] = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
 
