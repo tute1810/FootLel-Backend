@@ -59,9 +59,9 @@ def get_random_players(team: str, league: str):
         
         columns = {
             "premier": "premier",
-            "bundes": "bundesliga",
-            "serie_a":"serie_a",
-            "la_liga":"la_liga"
+            "bundesliga": "bundesliga",
+            "serie_a": "serie_a",
+            "la_liga": "la_liga"
             }
         column = columns[league]
 
