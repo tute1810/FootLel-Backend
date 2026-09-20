@@ -42,7 +42,7 @@ def create_table():
                 random_nationality: str = nationalities_name[this_nationality_index]
                 nationalities[j] = random_nationality
         print(teams[i], random_league, nationalities[i])
-        players[i] = str(get_players.get_player(teams[i], random_league, nationalities[i])[0])
+        players[i] = str(get_players.get_player(teams[i], random_league, nationalities[i]))
         print(
             "GET PLAYER:",
             repr(teams[i]),
