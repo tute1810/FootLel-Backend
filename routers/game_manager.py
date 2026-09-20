@@ -38,8 +38,10 @@ def create_table():
         if len(nationalities) == 0:
             for j in range(0, 3, 1):
                 this_nationality_index: int = randint(0, nationalities_count - 1)
-                random_nationality: str = nationalities_name[this_nationality_index]
+                print(nationalities_name[this_nationality_index])
+                random_nationality: str = nationalities_name[this_nationality_index][0]
                 nationalities[j] = random_nationality
+                print(random_nationality)
         players[i] = get_players.get_player(teams[i], random_league, nationalities[i])
         result += " //|\\ " + str(players[i]) + " | " + str(teams[i]) + " | " + str(random_league) + " | " + str(nationalities[i])
     return { "result": str(result) }
