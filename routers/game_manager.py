@@ -41,6 +41,5 @@ def create_table():
                 random_nationality: str = nationalities_name[this_nationality_index]
                 nationalities[j] = random_nationality
         players[i] = get_players.get_player(teams[i], random_league, nationalities[i])
-        result += "\n " + str(teams[i]) + " | " + str(random_league) + " | " + str(nationalities[i])
-        print(result)
+        result += " //|\\ " + str(players[i]) + " | " + str(teams[i]) + " | " + str(random_league) + " | " + str(nationalities[i])
     return { "result": str(result) }
