@@ -25,9 +25,9 @@ def create_table():
     nationalities_count: int = 5
     nationalities_name = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
 
-    teams: list[str] = [3]
-    nationalities: list[str] = [3]
-    players: list[str] = [3]
+    teams: list[str] = ["", "", ""]
+    nationalities: list[str] = ["", "", ""]
+    players: list[str] = ["", "", ""]
     result: str = ""
     for i in range(0, 3, 1):
         this_league_index: int = randint(0, leagues_count - 1)
