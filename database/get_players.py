@@ -100,7 +100,7 @@ def get_player(team: str, league: str, nationality: str):
         
         columns = {
             "premier": "premier",
-            "bundes": "bundesliga",
+            "bundesliga": "bundesliga",
             "serie_a":"serie_a",
             "la_liga":"la_liga"
             }
