@@ -42,4 +42,4 @@ def create_table():
                 nationalities[j] = random_nationality
         players[i] = get_players.get_player(teams[i], random_league, nationalities[i])
         result += "\n " + str(teams[i]) + " | " + str(random_league) + " | " + str(nationalities[i])
-    return { "result": result}
+    return { "result": str(result) }
