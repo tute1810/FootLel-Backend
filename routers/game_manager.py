@@ -35,11 +35,11 @@ def create_table():
         teams_of_random_league: list[str] = get_players.get_league_teams(random_league, teams[0], teams[1])
         random_team_of_random_league: str = teams_of_random_league[randint(0, len(teams_of_random_league) - 1)][0]
         teams[i] = random_team_of_random_league
-        if len(nationalities) == 0:
+        if nationalities[0] == "":
             for j in range(0, 3, 1):
                 this_nationality_index: int = randint(0, nationalities_count - 1)
                 print(nationalities_name[this_nationality_index])
-                random_nationality: str = nationalities_name[this_nationality_index][0]
+                random_nationality: str = nationalities_name[this_nationality_index]
                 nationalities[j] = random_nationality
                 print(random_nationality)
         players[i] = get_players.get_player(teams[i], random_league, nationalities[i])
