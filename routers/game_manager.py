@@ -23,7 +23,7 @@ def create_table():
     leagues_count: int = 4
     leagues_name = ["premier", "bundesliga", "serie_a", "la_liga"]
     nationalities_count: int = 5
-    nationalities_name = ["argentina", "italia", "inglaterra", "españa", "francia"]
+    nationalities_name = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
 
     teams: list[str] = [3]
     nationalities: list[str] = [3]
@@ -42,4 +42,5 @@ def create_table():
                 nationalities[j] = random_nationality
         players[i] = get_players.get_player(teams[i], random_league, nationalities[i])
         result += "\n " + str(teams[i]) + " | " + str(random_league) + " | " + str(nationalities[i])
+        print(result)
     return { "result": str(result) }
