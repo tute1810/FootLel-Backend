@@ -21,7 +21,7 @@ def create_table():
     """
 
     leagues_cout: int = 4
-    leagues_name = ["premier", "bundes", "serie_a", "la_liga"]
+    leagues_name = ["premier", "bundesliga", "serie_a", "la_liga"]
 
     this_league_index: int = randint(0, leagues_cout - 1)
     # teams_of_random_league: list[str] = 
