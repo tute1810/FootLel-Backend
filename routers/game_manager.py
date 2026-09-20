@@ -41,7 +41,6 @@ def create_table():
                 this_nationality_index: int = randint(0, nationalities_count - 1)
                 random_nationality: str = nationalities_name[this_nationality_index]
                 nationalities[j] = random_nationality
-        print(get_players.get_player(teams[i], random_league, nationalities[i])[0])
-        print(get_players.get_player(teams[i], random_league, nationalities[i])[1])
+        print(get_players.get_player(teams[i], random_league, nationalities[i])[0][0])
         players[i] = get_players.get_player(teams[i], random_league, nationalities[i])
     return { "result": "success", "team_rows": str(teams), "nationality_columns": str(nationalities), "players_column_to_rows": str(players) }
