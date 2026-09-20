@@ -106,12 +106,21 @@ def get_player(team: str, league: str, nationality: str):
             }
         column = columns[league]
 
-        
+        print(
+            f"""
+            league={repr(league)}
+            column={repr(column)}
+            team={repr(team)}
+            nationality={repr(nationality)}
+            """
+        )
 
         run.execute(f"""SELECT player_name FROM players WHERE {column} = %s AND nationality = (%s) """,  (team,nationality))
 
         teams = run.fetchall()
         conn.commit()
+
+        print("SQL RESULT:", repr(teams))
 
         if teams == []:
             conn.rollback()

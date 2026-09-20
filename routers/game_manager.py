@@ -30,6 +30,7 @@ def create_table():
     players: list[str] = ["", "", ""]
 
     for i in range(0, 3, 1):
+        
         this_league_index: int = randint(0, leagues_count - 1)
         random_league: str = leagues_name[this_league_index]
         teams_of_random_league: list[str] = get_players.get_league_teams(random_league, teams[0], teams[1])
@@ -42,4 +43,10 @@ def create_table():
                 nationalities[j] = random_nationality
         print(teams[i], random_league, nationalities[i])
         players[i] = str(get_players.get_player(teams[i], random_league, nationalities[i])[0])
+        print(
+            "GET PLAYER:",
+            repr(teams[i]),
+            repr(random_league),
+            repr(nationalities[i])
+        )
     return { "result": "success", "team_rows": str(teams), "nationality_columns": str(nationalities), "players_column_to_rows": str(players) }
