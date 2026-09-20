@@ -20,27 +20,25 @@ def create_table():
     N3    |   |
     """
 
-    leagues_count: int = 4
-    leagues_name = ["premier", "bundesliga", "serie_a", "la_liga"]
-    nationalities_count: int = 5
-    nationalities_name = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
+    leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
+    nationalities_name: list[str] = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
 
     teams: list[str] = ["", "", ""]
     nationalities: list[str] = ["", "", ""]
     players: list[str] = ["", "", ""]
 
     for i in range(0, 3, 1):
-        
-        this_league_index: int = randint(0, leagues_count - 1)
+        this_league_index: int = randint(0, len(leagues_name) - 1)
         random_league: str = leagues_name[this_league_index]
         teams_of_random_league: list[str] = get_players.get_league_teams(random_league, teams[0], teams[1])
         random_team_of_random_league: str = teams_of_random_league[randint(0, len(teams_of_random_league) - 1)][0]
         teams[i] = random_team_of_random_league
         if nationalities[0] == "":
+            temp_nationalities_name: list[str] = nationalities_name
             for j in range(0, 3, 1):
-                this_nationality_index: int = randint(0, nationalities_count - 1)
-                random_nationality: str = nationalities_name[this_nationality_index]
+                this_nationality_index: int = randint(0, len(temp_nationalities_name) - 1)
+                random_nationality: str = temp_nationalities_name[this_nationality_index]
                 nationalities[j] = random_nationality
-        print(get_players.get_player(teams[i], random_league, nationalities[i])[0][0])
-        players[i] = get_players.get_player(teams[i], random_league, nationalities[i])
+                temp_nationalities_name.pop(this_nationality_index)
+        players[i] = get_players.get_player(teams[i], random_league, nationalities[i])[0][0]
     return { "result": "success", "team_rows": str(teams), "nationality_columns": str(nationalities), "players_column_to_rows": str(players) }
