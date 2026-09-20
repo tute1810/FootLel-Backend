@@ -13,11 +13,11 @@ router = APIRouter()
 def create_table():
     """
         E1  E2  E3
-    N1    |   |
+    N1    | X | X
         ----------
-    N2    |   |
+    N2    | X |
         ----------
-    N3    |   |
+    N3    |   | X
     """
 
     leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
@@ -40,5 +40,6 @@ def create_table():
                 random_nationality: str = temp_nationalities_name[this_nationality_index]
                 nationalities[j] = random_nationality
                 temp_nationalities_name.pop(this_nationality_index)
-        players[i] = get_players.get_player(teams[i], random_league, nationalities[i])[0][0]
+        for j in range(0, 3, 1):
+            players[i] = get_players.get_player(teams[i], random_league, nationalities[j])[0][0]
     return { "result": "success", "team_rows": str(teams), "nationality_columns": str(nationalities), "players_column_to_rows": str(players) }
