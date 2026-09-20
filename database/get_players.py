@@ -7,23 +7,26 @@ current_db_url = local_db_url
 
 
 
-def get_league_teams(league: str):
+def get_league_teams(league: str, used_team1: str, used_team2: str):
     """Get league teams"""
     conn = None
 
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
+        
+        
 
         query = sql.SQL("""
             SELECT DISTINCT {league}
             FROM players
             WHERE {league} IS NOT NULL
+            AND {league} NOT IN (%s, %s)
         """).format(
             league=sql.Identifier(league)
         )
 
-        run.execute(query)
+        run.execute(query, (used_team1, used_team2))
 
         teams = run.fetchall()
         conn.commit()
@@ -43,11 +46,11 @@ def get_league_teams(league: str):
     finally:
         if conn:
             conn.close()
-
+            
 
 
 def get_random_players(team: str, league: str):
-    """Get league teams"""
+    """Get random players"""
     conn = None
 
     try:
@@ -88,7 +91,7 @@ def get_random_players(team: str, league: str):
 
 
 def get_player(team: str, league: str, nationality: str):
-    """Get league teams"""
+    """Get player"""
     conn = None
 
     try:
