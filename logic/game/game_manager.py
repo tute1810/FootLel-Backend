@@ -12,12 +12,11 @@ player_slots: dict[str, bool] = {}
 
 
 def game_start() -> tuple[list[str], list[str]]:
-    reset_game()
-
     global is_playing
 
     is_playing = True
 
+    _ = next_turn()
     create_board()
 
     return teams_row, nationalities_column
@@ -69,11 +68,15 @@ def next_turn() -> bool:
 
     return bool(game_turn % 2 != 0)
 
-def turn_end(player_guess: str) -> tuple[dict[str, bool], bool]:
+def turn_end(player_guess: str) -> tuple[dict[str, bool], bool, bool]:
     if is_playing == False:
         return None
 
     if player_guess in player_slots:
         player_slots[player_guess] = True
-        return player_slots, True
-    return player_slots, False
+        if all(player_slots.values()):
+            reset_game()
+            return player_slots, True, True
+        
+        return player_slots, True, False
+    return player_slots, False, False

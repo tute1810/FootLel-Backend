@@ -40,15 +40,15 @@ def guess_player_and_start_new_turn(player_guess: player_guess.PlayerGuess):
     if player_guess.was_local_player_guessing == False:
         return None # ai
 
-    updated_board: dict[str, bool]; correct_answer: bool;
-    updated_board, correct_answer = turn_end(player_guess.player_guess)
+    updated_board: dict[str, bool]; correct_answer: bool; game_ended: bool;
+    updated_board, correct_answer, game_ended = turn_end(player_guess.player_guess)
 
     if updated_board is None:
         return { "result": "board error: not in a game" }
 
     is_local_players_turn: bool = next_turn()
 
-    return { "result": "success", "correct_answer": correct_answer, "board": updated_board, "local_player_turn": is_local_players_turn }
+    return { "result": "success", "correct_answer": correct_answer, "game_ended": game_ended, "board": updated_board, "local_player_turn": is_local_players_turn }
 
 """@router.post("/game/create-table")
 def create_table():
