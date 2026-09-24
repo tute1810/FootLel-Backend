@@ -1,6 +1,6 @@
 # IMPORT EXTERNAL LIBRARIES #
 from fastapi import APIRouter
-import logging
+
 
 # IMPORT INTERNAL LIBRARIES #
 from logic.game.game_manager import player_guessed, ai_guessed, next_turn, game_start
@@ -9,7 +9,18 @@ from objects import player_guess
 # CREATE THE ROUTER #
 router = APIRouter()
 
-logger = logging.getLogger("uvicorn.error")
+import logging
+import sys
+
+# 1. Obligamos a Python a imprimir de INFO para arriba directo en la consola
+logging.basicConfig(
+    level=logging.INFO, 
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
+# 2. Creamos nuestro propio logger independiente
+logger = logging.getLogger(__name__)
 
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
