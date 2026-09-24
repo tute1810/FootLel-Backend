@@ -64,6 +64,7 @@ def create_board():
         player_slots[players[i]] = False
 
 def next_turn() -> bool:
+    global game_turn
     game_turn += 1
 
     return bool(game_turn % 2 != 0)
@@ -72,8 +73,7 @@ def turn_end(player_guess: str) -> tuple[dict[str, bool], bool]:
     if is_playing == False:
         return None
 
-    for i in range(0, len(player_slots), 1):
-        if player_guess == player_slots.keys()[i]:
-            player_slots[i] = True
-            return player_slots, True
+    if player_guess in player_slots:
+        player_slots[player_guess] = True
+        return player_slots, True
     return player_slots, False
