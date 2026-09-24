@@ -2,12 +2,6 @@ from random import randint
 from database import get_players
 
 
-
-# imports
-from routers.game import turn_start
-
-
-
 # =====[ VARIABLES ]===== #
 is_playing: bool = False
 game_turn: int = 0
