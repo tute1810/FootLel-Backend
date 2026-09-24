@@ -1,16 +1,47 @@
-# IMPORT EXTERNAL LIBRARIES #
-from fastapi import APIRouter
 from random import randint
-
-# IMPORT INTERNAL LIBRARIES #
 from database import get_players
 
-# CREATE THE ROUTER #
-router = APIRouter()
 
-# ENDPOINT FUNCTIONS #
-@router.post("/game/create-table")
-def create_table():
+
+# imports
+from routers.game import turn_start
+
+
+
+# =====[ VARIABLES ]===== #
+is_playing: bool = False
+game_turn: int = 0
+
+teams_row: list[str] = []
+nationalities_column: list[str] = []
+player_slots: dict[str, bool] = []
+
+
+def game_start() -> list[str]:
+    reset_game()
+
+    global is_playing;
+
+    is_playing = True
+
+    create_board()
+
+    return teams_row, nationalities_column
+
+def reset_game():
+    global teams_row; global nationalities_column; global player_slots; global game_turn; global is_playing;
+
+    is_playing = False
+
+    game_turn = 0
+
+    teams_row = []
+    nationalities_column = []
+    player_slots = []
+
+def create_board():
+    global teams_row; global nationalities_column; global player_slots
+
     leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
     nationalities_name: list[str] = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
 
@@ -33,4 +64,21 @@ def create_table():
                 temp_nationalities_name.pop(this_nationality_index)
         for j in range(0, 3, 1):
             players.append(get_players.get_player(teams[i], random_league, nationalities[j])[0][0])
-    return { "result": "success", "team_rows": str(teams), "nationality_columns": str(nationalities), "players_column_to_rows": str(players) }
+    teams_row = teams
+    nationalities_column = nationalities
+    player_slots.keys = players
+
+def next_turn() -> bool:
+    game_turn += 1
+
+    return bool(game_turn % 2 != 0)
+
+def turn_end(player_guess: str) -> dict[str, bool]:
+    if is_playing == False:
+        return None
+
+    for i in range(0, len(player_slots), 1):
+        if player_guess == player_slots.keys[i]:
+            player_slots.values[i] = True
+            return player_slots, True
+    return player_slots, False
