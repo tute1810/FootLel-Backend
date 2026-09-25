@@ -107,7 +107,6 @@ def next_turn() -> bool:
 
 def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | None:
     print("----------player guessed func------------", flush=True)
-    logger.error("----------player guessed func------------")
     if is_playing == False:
         logger.info("not playing")
         return None
@@ -115,6 +114,7 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
     global player_names_matrix, player_slots_matrix
 
     for i in range(0, (len(player_names_matrix) * len(player_names_matrix[0])), 1):
+        print("inside")
         row: int = i // 3
         column: int = i % 3
         if player_names_matrix[row][column] == player_guess:
@@ -130,9 +130,9 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
     return player_slots_matrix, False, False
 
 def ai_guessed() -> tuple[list[list[int]], bool] | None:
-    logger.info("----------ai guessed func------------")
+    print("----------ai guessed func------------")
     if is_playing == False:
-        logger.info("not playing")
+        print("not playing")
         return None
 
     global player_names_matrix, player_slots_matrix
@@ -144,17 +144,17 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
         column: int = i % 3
 
         if player_slots_matrix[row][column] == 1:
-            logger.info("detecte un slot del jugador")
+            print("detecte un slot del jugador")
             player_slots_rows.append(row)
             player_slots_columns.append(column)
 
     if len(player_slots_rows) == 0:
-        logger.info("ia terminada: no habia slots del jogadore")
+        print("ia terminada: no habia slots del jogadore")
         return player_slots_matrix, False
 
     random_player_slot_index: int = randint(0, (len(player_slots_rows) - 1))
     selected_player_slot_packaged: list[int] = [ player_slots_rows[random_player_slot_index], player_slots_columns[random_player_slot_index] ]
-    logger.info("slot del jugador random seleccionado es: " + str(selected_player_slot_packaged))
+    print("slot del jugador random seleccionado es: " + str(selected_player_slot_packaged))
 
     slot_selected: bool = False
     for i in range(0, 4, 1):
@@ -206,15 +206,15 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
                         break
 
     if slot_selected == False:
-        logger.info("le erre a los slots vacios")
+        print("le erre a los slots vacios")
         return player_slots_matrix, False
     else:
         if all(value != 0 for row in player_slots_matrix for value in row):
-            logger.info("juego terminado, no hay mas slots vacios")
+            print("juego terminado, no hay mas slots vacios")
             reset_game()
             return player_slots_matrix, True
         else:
-            logger.info("puse slot")
+            print("puse slot")
             return player_slots_matrix, False
 
 def _in_range(value, minimum, maximum):
