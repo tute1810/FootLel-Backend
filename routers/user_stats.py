@@ -16,7 +16,7 @@ def get_leaderboard():
     if leaderboard is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de ranking: no fue posible acceder al ranking")
     
-    return { "result": "success" }
+    return { "result": "success", "leaderboard": leaderboard }
 
 @router.post("/stat/set-user-dark-mode-state")
 def set_dark_mode_state(boolean_state: boolean_state.BooleanState):
