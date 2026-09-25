@@ -2,8 +2,6 @@
 from fastapi import APIRouter
 import logging
 
-logger = logging.getLogger(__name__)
-
 # IMPORT INTERNAL LIBRARIES #
 from logic.game.game_manager import player_guessed, ai_guessed, next_turn, game_start
 from objects import player_guess
@@ -11,13 +9,16 @@ from objects import player_guess
 # CREATE THE ROUTER #
 router = APIRouter()
 
+logger = logging.getLogger("uvicorn.error")
+
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
 def start_game():
-    logger.info("🔥🔥🔥 START 🔥🔥🔥")
+    print("🔥🔥🔥 estart 🔥🔥🔥", flush=True)
+    logger.info("🔥🔥🔥 estart 🔥🔥🔥")
     column_headers: list[str]; row_headers: list[str];
     column_headers, row_headers = game_start()
-    raise Exception("🔥 ESTOY EN EL START 🔥")
+    raise Exception("🔥 error EN EL START 🔥")
     return { "result": "success", "column_headers": column_headers, "row_headers": row_headers, "local_player_turn": True }
 
 @router.post("/game/player-guess")
