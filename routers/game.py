@@ -11,7 +11,7 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
 def start_game():
-    print("start")
+    print("start", flush=True)
     column_headers: list[str]; row_headers: list[str];
     column_headers, row_headers = game_start()
 
