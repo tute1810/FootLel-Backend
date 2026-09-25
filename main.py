@@ -1,11 +1,17 @@
 # IMPORT LIBRARIES #
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+import logging
+import sys
 
 # IMPORT ROUTERS #
 from routers import user_management
 from routers import authentication
 from routers import game
+
+# LOGS #
+logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[logging.StreamHandler(sys.stdout)])
+logger = logging.getLogger(__name__)
 
 # CREATE THE API #
 app = FastAPI(title="FootLel_api", version="0.1.0")
@@ -20,8 +26,4 @@ app.include_router(game.router)
 
 @app.get("/")
 def root():
-    return {"status": "ok"}
-
-@app.get("/health")
-def health():
     return {"status": "ok"}
