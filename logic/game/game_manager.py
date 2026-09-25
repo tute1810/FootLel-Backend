@@ -134,6 +134,10 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
         # if the i player_name_matrix is equal to the guess the user made #
         if player_names_matrix[row][column] == player_guess:
 
+            # if the slot the player guess is on is already occupied, do nothing and return the matrix
+            if player_slots_matrix[row][column] != 0:
+                return player_slots_matrix, False, False
+
             # set the slot to "1" to indicate that it belongs to the player #
             player_slots_matrix[row][column] = 1
 
