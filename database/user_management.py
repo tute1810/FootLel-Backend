@@ -168,4 +168,3 @@ def get_user_info(user_name: str):
     finally:
         if conn:
             conn.close()
-        return None
