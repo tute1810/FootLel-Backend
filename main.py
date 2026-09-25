@@ -17,3 +17,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, 
 app.include_router(user_management.router)
 app.include_router(authentication.router)
 app.include_router(game.router)
+
+@app.get("/")
+def root():
+    return {"message": "Hello"}
