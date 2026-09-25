@@ -10,36 +10,18 @@ from database import user_management
 router = APIRouter()
 
 # ENDPOINT FUNCTIONS #
-@router.post("/user/get-users-table")
-def get_users_table():
-    users_table = user_management.get_users_table()
-
-    if users_table is None:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="users table error: could not fetch users"
-        )
-
-    return { "result": "success", "users_table": str(users_table) }
-
 @router.post("/user/get-user-info")
 def get_user_info(user_name: user_name.UserName):
     user_info = user_management.get_user_info(user_name.user_name)
 
     if user_info is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="user info error: could not fetch user info"
-        )
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de informacion del usuario: no se pudo encontrar el usuario")
 
     return { "result": "success", "user_id": int(user_info[0]), "user_email": str(user_info[1]) }
 
 @router.post("/user/eliminate-user")
 def eliminate_user(user_id: user_id.UserId):
     if user_management.eliminate_user(user_id.user_id) == False:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="user elimiation error: failed to eliminate user"
-        )
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de eliminacion de usuario: no fue posible eliminar el usuario")
     
     return { "result": "success" }

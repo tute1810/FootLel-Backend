@@ -22,10 +22,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
     updated_board, correct_answer, game_ended = player_guessed(player_guess.player_guess)
 
     if updated_board is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="board error: not in a game"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = next_turn()
 
@@ -37,10 +34,7 @@ def ai_guesses():
     updated_board, game_ended = ai_guessed()
 
     if updated_board is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="board error: not in a game"
-        )
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = next_turn()
 
