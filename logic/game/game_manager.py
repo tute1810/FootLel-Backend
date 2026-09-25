@@ -10,6 +10,16 @@ game_turn: int = 1
 
 leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
 nationalities_name: list[str] = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
+winning_lines: list[list[int]] = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6]
+]
 
 teams_row: list[str] = []
 nationalities_column: list[str] = []
@@ -141,6 +151,12 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
             # set the slot to "1" to indicate that it belongs to the player #
             player_slots_matrix[row][column] = 1
 
+            # check if any player won #
+            if check_winning_lines() == True:
+                finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
+                stop_game_board()
+                return finished_player_slots_matrix, True
+
             # if the whole board has no "0" in it, that means there are no empty slots #
             if all(value != 0 for row in player_slots_matrix for value in row):
                 
@@ -218,6 +234,12 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
         # put the ai slot and break from the for loop #
         player_slots_matrix[selected_player_slot_packaged[0] + direction[0]][selected_player_slot_packaged[1] + direction[1]] = -1
 
+        # check if any player won #
+        if check_winning_lines() == True:
+            finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
+            stop_game_board()
+            return finished_player_slots_matrix, True
+
         # if there are no more empty slots, then end the game #
         if all(value != 0 for row in player_slots_matrix for value in row):
             finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
@@ -233,3 +255,40 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
 # simple function that returns if the value is inside a range #
 def _in_range(value: int, minimum: int, maximum: int) -> bool:
     return minimum <= value <= maximum
+
+# function that checks the board for any winning lines #
+def check_winning_lines() -> bool:
+    for i in range(0, len(winning_lines), 1):
+        line_is_from_the_player: bool = False
+        for j in range(0, len(winning_lines[i]), 1):
+
+            # store the slot value #
+            slot: int = player_slots_matrix[winning_lines[i][j] // 3][winning_lines[i][j] % 3]
+            if slot != 0:
+                if slot == 1:
+
+                    # check if we are not on the first slot check #
+                    if j > 0:
+                        if line_is_from_the_player == False:
+                            break
+                    
+                    # check if the last slot is the same and return true #
+                    if j == 2:
+                        return True
+
+                    line_is_from_the_player = True
+                elif slot == -1:
+
+                    # check if we are not on the first slot check #
+                    if j > 0:
+                        if line_is_from_the_player == True:
+                            break
+                    
+                    # check if the last slot is the same and return true #
+                    if j == 2:
+                        return True
+
+                    line_is_from_the_player = False
+            else:
+                break
+    return False
