@@ -1,11 +1,12 @@
 # IMPORT EXTERNAL LIBRARIES #
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 import logging
 import sys
 
 # LOGS #
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[logging.StreamHandler(sys.stdout)])
 logger = logging.getLogger(__name__)
+
 # IMPORT INTERNAL LIBRARIES #
 from logic.game.game_manager import player_guessed, ai_guessed, next_turn, game_start
 from objects import player_guess
@@ -30,7 +31,10 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
     updated_board, correct_answer, game_ended = player_guessed(player_guess.player_guess)
 
     if updated_board is None:
-        return { "result": "board error: not in a game" }
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="board error: not in a game"
+        )
 
     is_local_players_turn: bool = next_turn()
 
@@ -42,7 +46,10 @@ def ai_guesses():
     updated_board, game_ended = ai_guessed()
 
     if updated_board is None:
-        return { "result": "board error: not in a game" }
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="board error: not in a game"
+        )
 
     is_local_players_turn: bool = next_turn()
 
