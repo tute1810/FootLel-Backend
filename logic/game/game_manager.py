@@ -33,11 +33,11 @@ def game_start() -> tuple[list[str], list[str]]:
     global is_playing
 
     print("print", flush=True)
-    logger.warning("⚠️ warn")("a", flush=True)
-    logger.info("⚠️ info")("a", flush=True)
-    logger.error("⚠️ error")("a", flush=True)
-    logger.debug("⚠️ debug")("a", flush=True)
-    logger.critical("⚠️ critical")("a", flush=True)
+    logger.warning("⚠️ warn")
+    logger.info("⚠️ info")
+    logger.error("⚠️ error")
+    logger.debug("⚠️ debug")
+    logger.critical("⚠️ critical")
 
     is_playing = True
 
