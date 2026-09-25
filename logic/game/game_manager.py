@@ -155,7 +155,7 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
             if check_winning_lines() == True:
                 finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
                 stop_game_board()
-                return finished_player_slots_matrix, True
+                return finished_player_slots_matrix, True, True
 
             # if the whole board has no "0" in it, that means there are no empty slots #
             if all(value != 0 for row in player_slots_matrix for value in row):
