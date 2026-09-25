@@ -199,11 +199,10 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
                     continue
 
                 if player_slots_matrix[selected_player_slot_packaged[0]][new_column] == 0:
-                    if randint(0, 1) == 1:
-                        logger.info("eleji der")
-                        player_slots_matrix[selected_player_slot_packaged[0]][new_column] = -1
-                        slot_selected = True
-                        break
+                    logger.info("eleji der")
+                    player_slots_matrix[selected_player_slot_packaged[0]][new_column] = -1
+                    slot_selected = True
+                    break
 
     if slot_selected == False:
         print("le erre a los slots vacios", flush=True)
