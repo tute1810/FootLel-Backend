@@ -128,7 +128,7 @@ def next_turn() -> bool:
     # return True if "game_turn" is odd and False if its even #
     return bool(game_turn % 2 != 0)
 
-def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | None:
+def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool, bool] | None:
 
     # error out if the player is not in a game #
     if is_playing == False:
@@ -146,16 +146,18 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
 
             # if the slot the player guess is on is already occupied, do nothing and return the matrix
             if player_slots_matrix[row][column] != 0:
-                return player_slots_matrix, False, False
+                return player_slots_matrix, False, False, False
 
             # set the slot to "1" to indicate that it belongs to the player #
             player_slots_matrix[row][column] = 1
 
             # check if any player won #
-            if check_winning_lines() == True:
+            somebody_won: bool; local_player_won: bool;
+            somebody_won, local_player_won = check_winning_lines()
+            if somebody_won == True:
                 finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
                 stop_game_board()
-                return finished_player_slots_matrix, True, True
+                return finished_player_slots_matrix, True, True, local_player_won
 
             # if the whole board has no "0" in it, that means there are no empty slots #
             if all(value != 0 for row in player_slots_matrix for value in row):
@@ -163,12 +165,54 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
                 # finish the game #
                 finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
                 stop_game_board()
-                return finished_player_slots_matrix, True, True
+                return finished_player_slots_matrix, True, True, False
             
-            return player_slots_matrix, True, False
-    return player_slots_matrix, False, False
+            return player_slots_matrix, True, False, False
+    return player_slots_matrix, False, False, False
 
-def ai_guessed() -> tuple[list[list[int]], bool] | None:
+def player2_guessed(player2_guess: str) -> tuple[list[list[int]], bool, bool, bool] | None:
+
+    # error out if the player is not in a game #
+    if is_playing == False:
+        return None
+
+    global player_slots_matrix
+
+    # repeat this code for the amount of players that exist #
+    for i in range(0, (len(player_names_matrix) * len(player_names_matrix[0])), 1):
+        row: int = i // 3
+        column: int = i % 3
+
+        # if the i player_name_matrix is equal to the guess the user made #
+        if player_names_matrix[row][column] == player2_guess:
+
+            # if the slot the player guess is on is already occupied, do nothing and return the matrix
+            if player_slots_matrix[row][column] != 0:
+                return player_slots_matrix, False, False, False
+
+            # set the slot to "1" to indicate that it belongs to the player #
+            player_slots_matrix[row][column] = -1
+
+            # check if any player won #
+            somebody_won: bool; local_player_won: bool;
+            somebody_won, local_player_won = check_winning_lines()
+            if somebody_won == True:
+                finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
+                stop_game_board()
+                return finished_player_slots_matrix, True, True, local_player_won
+
+            # if the whole board has no "0" in it, that means there are no empty slots #
+            if all(value != 0 for row in player_slots_matrix for value in row):
+                
+                # finish the game #
+                finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
+                stop_game_board()
+                return finished_player_slots_matrix, True, True, False
+            
+            return player_slots_matrix, True, False, False
+    return player_slots_matrix, False, False, False
+
+def ai_guessed() -> tuple[list[list[int]], bool, bool] | None:
     
     # error out if the player is not in a game #
     if is_playing == False:
@@ -191,7 +235,7 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
 
     # if there were no player slots, just return the matrix #
     if len(player_slots_rows) == 0:
-        return player_slots_matrix, False
+        return player_slots_matrix, False, False
 
     # grab a random slot from all of the player slots #
     random_player_slot_index: int = randint(0, (len(player_slots_rows) - 1))
@@ -235,29 +279,31 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
         player_slots_matrix[selected_player_slot_packaged[0] + direction[0]][selected_player_slot_packaged[1] + direction[1]] = -1
 
         # check if any player won #
-        if check_winning_lines() == True:
+        somebody_won: bool; local_player_won: bool;
+        somebody_won, local_player_won = check_winning_lines()
+        if somebody_won == True:
             finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
             stop_game_board()
-            return finished_player_slots_matrix, True
+            return finished_player_slots_matrix, True, local_player_won
 
         # if there are no more empty slots, then end the game #
         if all(value != 0 for row in player_slots_matrix for value in row):
             finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
             stop_game_board()
-            return finished_player_slots_matrix, True
+            return finished_player_slots_matrix, True, False
 
         # if there are more empty slots, then just return the new matrix without ending the game #
-        return player_slots_matrix, False
+        return player_slots_matrix, False, False
 
     # if the ai could not place a slot, just return the same matrix #
-    return player_slots_matrix, False
+    return player_slots_matrix, False, False
 
 # simple function that returns if the value is inside a range #
 def _in_range(value: int, minimum: int, maximum: int) -> bool:
     return minimum <= value <= maximum
 
 # function that checks the board for any winning lines #
-def check_winning_lines() -> bool:
+def check_winning_lines() -> tuple[bool, bool]:
     for i in range(0, len(winning_lines), 1):
         line_is_from_the_player: bool = False
         for j in range(0, len(winning_lines[i]), 1):
@@ -274,7 +320,7 @@ def check_winning_lines() -> bool:
                     
                     # check if the last slot is the same and return true #
                     if j == 2:
-                        return True
+                        return True, True
 
                     line_is_from_the_player = True
                 elif slot == -1:
@@ -286,9 +332,9 @@ def check_winning_lines() -> bool:
                     
                     # check if the last slot is the same and return true #
                     if j == 2:
-                        return True
+                        return True, False
 
                     line_is_from_the_player = False
             else:
                 break
-    return False
+    return False, False
