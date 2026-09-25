@@ -25,7 +25,7 @@ player_slots_matrix: list[list[int]] = [
 ]
 
 # FUNCTIONS #
-def start_game() -> tuple[list[str], list[str]]:
+def start_game_board() -> tuple[list[str], list[str]]:
     # set "is_playing" to true #
     global is_playing
     is_playing = True
@@ -36,7 +36,7 @@ def start_game() -> tuple[list[str], list[str]]:
     # return the headers that the "create_game_board" func generated #
     return teams_row, nationalities_column
 
-def stop_game():
+def stop_game_board():
     global teams_row, nationalities_column, game_turn, is_playing, player_names_matrix, player_slots_matrix
 
     # reset game variables #
@@ -146,7 +146,7 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
                 
                 # finish the game #
                 finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
-                stop_game()
+                stop_game_board()
                 return finished_player_slots_matrix, True, True
             
             return player_slots_matrix, True, False
@@ -221,7 +221,7 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
         # if there are no more empty slots, then end the game #
         if all(value != 0 for row in player_slots_matrix for value in row):
             finished_player_slots_matrix: list[list[int]] = player_slots_matrix.copy()
-            stop_game()
+            stop_game_board()
             return finished_player_slots_matrix, True
 
         # if there are more empty slots, then just return the new matrix without ending the game #

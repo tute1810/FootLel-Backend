@@ -2,7 +2,7 @@
 from fastapi import APIRouter, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
-from logic.game.game_manager import player_guessed, ai_guessed, next_turn, start_game
+from logic.game.game_manager import player_guessed, ai_guessed, next_turn, start_game_board
 from objects import player_guess
 
 # CREATE THE ROUTER #
@@ -12,7 +12,7 @@ router = APIRouter()
 @router.post("/game/start")
 def start_game():
     column_headers: list[str]; row_headers: list[str]
-    column_headers, row_headers = start_game()
+    column_headers, row_headers = start_game_board()
     
     return { "result": "success", "column_headers": column_headers, "row_headers": row_headers, "local_player_turn": True }
 
@@ -33,7 +33,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
 
 @router.post("/game/ai-guess")
 def ai_guesses():
-    updated_board: list[list[int]]; game_ended: bool;
+    updated_board: list[list[int]]; game_ended: bool
     updated_board, game_ended = ai_guessed()
 
     if updated_board is None:
