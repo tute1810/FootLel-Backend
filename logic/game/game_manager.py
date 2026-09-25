@@ -106,7 +106,7 @@ def next_turn() -> bool:
     return bool(game_turn % 2 != 0)
 
 def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | None:
-    logger.info("----------player guessed func------------")
+    logger.error("----------player guessed func------------")
     if is_playing == False:
         logger.info("not playing")
         return None
@@ -121,7 +121,7 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
             player_slots_matrix[row][column] = 1
             
             if all(value != 0 for row in player_slots_matrix for value in row):
-                logger.info("juego terminado")
+                logger.critical("juego terminado")
                 reset_game()
                 return player_slots_matrix, True, True
             
