@@ -17,7 +17,7 @@ def start_game():
     logger.info("🔥🔥🔥 START 🔥🔥🔥")
     column_headers: list[str]; row_headers: list[str];
     column_headers, row_headers = game_start()
-
+    raise Exception("🔥 ESTOY EN EL START 🔥")
     return { "result": "success", "column_headers": column_headers, "row_headers": row_headers, "local_player_turn": True }
 
 @router.post("/game/player-guess")
