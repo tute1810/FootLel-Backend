@@ -9,7 +9,7 @@ from routers import game
 from routers import user_stats
 
 # CREATE THE API #
-app = FastAPI(title="FootLel_api_hqig", version="0.1.0")
+app = FastAPI(title="FootLel_api", version="0.1.0")
 
 # CORS STUFF #
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
