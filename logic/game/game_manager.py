@@ -2,6 +2,7 @@ from random import randint
 from database import get_players
 
 
+
 # =====[ VARIABLES ]===== #
 is_playing: bool = False
 game_turn: int = 0
@@ -10,19 +11,31 @@ teams_row: list[str] = []
 nationalities_column: list[str] = []
 player_slots: dict[str, bool] = {}
 
+player_names_matrix: list[list[str]] = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""]
+]
+player_slots_matrix: list[list[int]] = [
+    [0, 0, 0],
+    [0, 0, 0],
+    [0, 0, 0]
+]
+
+
 
 def game_start() -> tuple[list[str], list[str]]:
     global is_playing
 
     is_playing = True
 
-    _ = next_turn()
     create_board()
+    _ = next_turn()
 
     return teams_row, nationalities_column
 
 def reset_game():
-    global teams_row, nationalities_column, player_slots, game_turn, is_playing
+    global teams_row, nationalities_column, game_turn, is_playing, player_names_matrix, player_slots_matrix
 
     is_playing = False
 
@@ -30,10 +43,19 @@ def reset_game():
 
     teams_row = []
     nationalities_column = []
-    player_slots = {}
+    player_slots_matrix = [
+        [0, 0, 0],
+        [0, 0, 0],
+        [0, 0, 0]
+    ]
+    player_names_matrix = [
+        ["", "", ""],
+        ["", "", ""],
+        ["", "", ""]
+    ]
 
 def create_board():
-    global teams_row, nationalities_column, player_slots
+    global teams_row, nationalities_column, player_names_matrix, player_slots_matrix
 
     leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
     nationalities_name: list[str] = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
@@ -60,7 +82,10 @@ def create_board():
     teams_row = teams
     nationalities_column = nationalities
     for i in range(0, len(players), 1):
-        player_slots[players[i]] = False
+        row: int = i // 3
+        column: int = i % 3
+        player_names_matrix[row][column] = players[i]
+        player_slots_matrix[row][column] = 0
 
 def next_turn() -> bool:
     global game_turn
@@ -68,15 +93,116 @@ def next_turn() -> bool:
 
     return bool(game_turn % 2 != 0)
 
-def turn_end(player_guess: str) -> tuple[dict[str, bool], bool, bool]:
+def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | None:
+    print("----------player guessed func------------")
     if is_playing == False:
+        print("not playing")
         return None
 
-    if player_guess in player_slots:
-        player_slots[player_guess] = True
-        if all(player_slots.values()):
+    global player_names_matrix, player_slots_matrix
+
+    for i in range(0, (len(player_names_matrix) * len(player_names_matrix[0])), 1):
+        row: int = i // 3
+        column: int = i % 3
+        if player_names_matrix[row][column] == player_guess:
+            print("le pegaste")
+            player_slots_matrix[row][column] = 1
+            
+            if all(value != 0 for row in player_slots_matrix for value in row):
+                print("juego terminado")
+                reset_game()
+                return player_slots_matrix, True, True
+            
+            return player_slots_matrix, True, False
+    return player_slots_matrix, False, False
+
+def ai_guessed() -> tuple[list[list[int]], bool] | None:
+    print("----------ai guessed func------------")
+    if is_playing == False:
+        print("not playing")
+        return None
+
+    global player_names_matrix, player_slots_matrix
+
+    player_slots_rows: list[int] = []
+    player_slots_columns: list[int] = []
+    for i in range(0, (len(player_names_matrix) * len(player_names_matrix[0])), 1):
+        row: int = i // 3
+        column: int = i % 3
+
+        if player_slots_matrix[row][column] == 1:
+            print("detecte un slot del jugador")
+            player_slots_rows.append(row)
+            player_slots_columns.append(column)
+
+    if len(player_slots_rows) == 0:
+        print("ia terminada: no habia slots del jogadore")
+        return player_slots_matrix, False
+
+    random_player_slot_index: int = randint(0, (len(player_slots_rows) - 1))
+    selected_player_slot_packaged: list[int] = [ player_slots_rows[random_player_slot_index], player_slots_columns[random_player_slot_index] ]
+    print("slot del jugador random seleccionado es: " + str(selected_player_slot_packaged))
+
+    slot_selected: bool = False
+    for i in range(0, 4, 1):
+        if i < 2:
+            if i == 0:
+                new_row: int = selected_player_slot_packaged[0] - 1
+                if _in_range(new_row, 0, 2) == False:
+                    continue
+
+                if player_slots_matrix[new_row][selected_player_slot_packaged[1]] == 0:
+                    if randint(0, 1) == 1:
+                        print("eleji arriba")
+                        player_slots_matrix[new_row][selected_player_slot_packaged[1]] = -1
+                        slot_selected = True
+                        break
+            else:
+                new_row: int = selected_player_slot_packaged[0] + 1
+                if _in_range(new_row, 0, 2) == False:
+                    continue
+
+                if player_slots_matrix[new_row][selected_player_slot_packaged[1]] == 0:
+                    if randint(0, 1) == 1:
+                        print("eleji abajo")
+                        player_slots_matrix[new_row][selected_player_slot_packaged[1]] = -1
+                        slot_selected = True
+                        break
+        else:
+            if i == 2:
+                new_column: int = selected_player_slot_packaged[1] - 1
+                if _in_range(new_column, 0, 2) == False:
+                    continue
+
+                if player_slots_matrix[selected_player_slot_packaged[0]][new_column] == 0:
+                    if randint(0, 1) == 1:
+                        print("eleji izq")
+                        player_slots_matrix[selected_player_slot_packaged[0]][new_column] = -1
+                        slot_selected = True
+                        break
+            else:
+                new_column: int = selected_player_slot_packaged[1] + 1
+                if _in_range(new_column, 0, 2) == False:
+                    continue
+
+                if player_slots_matrix[selected_player_slot_packaged[0]][new_column] == 0:
+                    if randint(0, 1) == 1:
+                        print("eleji der")
+                        player_slots_matrix[selected_player_slot_packaged[0]][new_column] = -1
+                        slot_selected = True
+                        break
+
+    if slot_selected == False:
+        print("le erre a los slots vacios")
+        return player_slots_matrix, False
+    else:
+        if all(value != 0 for row in player_slots_matrix for value in row):
+            print("juego terminado, no hay mas slots vacios")
             reset_game()
-            return player_slots, True, True
-        
-        return player_slots, True, False
-    return player_slots, False, False
+            return player_slots_matrix, True
+        else:
+            print("puse slot")
+            return player_slots_matrix, False
+
+def _in_range(value, minimum, maximum):
+    return minimum <= value <= maximum
