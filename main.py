@@ -6,6 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from routers import user_management
 from routers import authentication
 from routers import game
+from routers import user_stats
 
 # CREATE THE API #
 app = FastAPI(title="FootLel_api_hqig", version="0.1.0")
@@ -17,6 +18,7 @@ app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, 
 app.include_router(user_management.router)
 app.include_router(authentication.router)
 app.include_router(game.router)
+app.include_router(user_stats.router)
 
 @app.get("/")
 def root():
