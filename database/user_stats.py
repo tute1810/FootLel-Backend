@@ -16,11 +16,15 @@ def set_user_matches_stats(matches_played: int, matches_won: int, matches_lost: 
         
         
         
-        run.execute("""UPDATE user_stats SET matches_played = (%s), matches_won = (%s), matches_lost = (%s), user_points = (%s)  WHERE pk_user_id = (%s)""", (matches_played, matches_won, matches_lost, points, user_id) )
-        
+        run.execute("""UPDATE user_stats SET matches_played = (%s), matches_won = (%s), matches_lost = (%s), user_points = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (matches_played, matches_won, matches_lost, points, user_id, user_id) )
+        rows = run.rowcount
         conn.commit()
+
         conn.close()
-        return True
+        if rows == 1:
+            return True
+        else:
+           return False
     
     except Exception as e:
         print(e)
@@ -29,6 +33,7 @@ def set_user_matches_stats(matches_played: int, matches_won: int, matches_lost: 
         if conn:
             conn.close()
             
+            
 def set_user_guesses_stats(guesses_made: int, correct_guesses: int, user_id: int):
     """Set guesses stats, with the amount of guesses made and the correct ones by the user id"""
     conn = None
@@ -36,11 +41,16 @@ def set_user_guesses_stats(guesses_made: int, correct_guesses: int, user_id: int
         conn = db.connect(current_db_url)
         run = conn.cursor()
         
-        run.execute("""UPDATE user_stats SET guesses_made = (%s), correct_guesses = (%s) WHERE pk_user_id = (%s)""", (guesses_made, correct_guesses , user_id) )
+        run.execute("""UPDATE user_stats SET guesses_made = (%s), correct_guesses = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (guesses_made, correct_guesses , user_id, user_id) )
         
+        rows = run.rowcount
         conn.commit()
+
         conn.close()
-        return True
+        if rows == 1:
+            return True
+        else:
+           return False
     
     except Exception as e:
         if conn:
@@ -62,12 +72,16 @@ def set_user_win_streak(win_streak: int, user_id: int):
         
     
         
-        run.execute("""UPDATE user_stats SET win_streak = (%s) WHERE pk_user_id = (%s)""", (win_streak, user_id) )
+        run.execute("""UPDATE user_stats SET win_streak = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (win_streak, user_id, user_id) )
     
+        rows = run.rowcount
         conn.commit()
+
         conn.close()
-        return True
-        
+        if rows == 1:
+            return True
+        else:
+           return False
             
     except Exception as e:
         if conn:
@@ -122,7 +136,7 @@ def get_user_stats(user_id: int):
             
             
 def get_table_ranking():
-    """Get the global rankings"""    
+    """Get the global rankings"""
 
     conn = None
     try:
@@ -159,4 +173,3 @@ def get_table_ranking():
     finally:
         if conn:
             conn.close()
-    
