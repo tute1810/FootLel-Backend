@@ -168,3 +168,22 @@ def get_user_info(user_name: str):
     finally:
         if conn:
             conn.close()
+
+def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
+    """Change the user user_email, user_name and the user_password with user_name:str, user_email, user_password using user_id)"""
+    conn = None
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute(""" UPDATE users SET user_name = %s, user_email = %s, user_password = %s  WHERE pk_user_id = (%s)  AND user_eliminated = false """, (user_name, user_email, user_password, user_id))
+        conn.commit()
+        
+        conn.close()
+        return True
+    except Exception as e:
+        print(e)
+        return False
+    finally:
+        if conn:
+            conn.close()
