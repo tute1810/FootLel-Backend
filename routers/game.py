@@ -1,5 +1,8 @@
 # IMPORT EXTERNAL LIBRARIES #
 from fastapi import APIRouter
+import logging
+
+logger = logging.getLogger(__name__)
 
 # IMPORT INTERNAL LIBRARIES #
 from logic.game.game_manager import player_guessed, ai_guessed, next_turn, game_start
@@ -11,7 +14,7 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
 def start_game():
-    print("start", flush=True)
+    logger.info("🔥🔥🔥 START 🔥🔥🔥")
     column_headers: list[str]; row_headers: list[str];
     column_headers, row_headers = game_start()
 
