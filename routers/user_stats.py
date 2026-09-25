@@ -2,9 +2,7 @@
 from fastapi import APIRouter, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
-from objects import dark_mode_state
 from objects import boolean_state
-from objects import compatibility_state
 from database import user_stats
 
 # CREATE THE ROUTER #
