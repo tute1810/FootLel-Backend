@@ -20,14 +20,14 @@ def set_dark_mode_state(dark_mode_state: dark_mode_state.DarkModeState):
 
 @router.post("/stat/set-user-animation-state")
 def set_animation_state(animation_state: animation_state.AnimationState):
-    if user_stats.set_animation_config_state(animation_state) == False:
+    if user_stats.set_animations_config_state(animation_state) == False:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de animacion: no se pudo guardar el valor")
     
     return { "result": "success" }
 
 @router.post("/stat/set-user-compatibility-state")
 def set_compatibility_state(compatibility_state: compatibility_state.CompatibilityState):
-    if user_stats.set_compatibility_config_state(compatibility_state) == False:
+    if user_stats.set_compatibility_config_status(compatibility_state) == False:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de compatibilidad: no se pudo guardar el valor")
     
     return { "result": "success" }
