@@ -106,6 +106,7 @@ def next_turn() -> bool:
     return bool(game_turn % 2 != 0)
 
 def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | None:
+    print("----------player guessed func------------", flush=True)
     logger.error("----------player guessed func------------")
     if is_playing == False:
         logger.info("not playing")
