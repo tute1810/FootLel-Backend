@@ -11,6 +11,7 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
 def start_game():
+    print("start")
     column_headers: list[str]; row_headers: list[str];
     column_headers, row_headers = game_start()
 
@@ -18,6 +19,7 @@ def start_game():
 
 @router.post("/game/player-guess")
 def player_guesses(player_guess: player_guess.PlayerGuess):
+    print("player")
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool;
     updated_board, correct_answer, game_ended = player_guessed(player_guess.player_guess)
 
@@ -30,6 +32,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
 
 @router.post("/game/ai-guess")
 def ai_guesses():
+    print("ia")
     updated_board: list[list[int]]; game_ended: bool;
     updated_board, game_ended = ai_guessed()
 

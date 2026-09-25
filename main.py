@@ -20,4 +20,8 @@ app.include_router(game.router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello"}
+    return {"status": "ok"}
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
