@@ -1,11 +1,5 @@
 # IMPORT EXTERNAL LIBRARIES #
 from fastapi import APIRouter, HTTPException, status
-import logging
-import sys
-
-# LOGS #
-logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", handlers=[logging.StreamHandler(sys.stdout)])
-logger = logging.getLogger(__name__)
 
 # IMPORT INTERNAL LIBRARIES #
 from logic.game.game_manager import player_guessed, ai_guessed, next_turn, game_start
