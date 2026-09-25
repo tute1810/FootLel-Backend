@@ -146,12 +146,12 @@ def get_table_ranking():
         
         run.execute("""
         SELECT
-        user_stats.user_points,
-        users.user_name
+        users.user_name,
+        user_stats.user_points
         FROM user_stats
         JOIN users
         ON user_stats.pk_user_id = users.pk_user_id
-        WHERE users.user_eliminated = FALSE
+        WHERE users.user_eliminated = false
         ORDER BY user_stats.user_points DESC""")
         
         ranking = run.fetchall()
@@ -164,7 +164,6 @@ def get_table_ranking():
             return None
         conn.close()
         return ranking
-            
     except Exception as e:
         if conn:
             conn.rollback()
