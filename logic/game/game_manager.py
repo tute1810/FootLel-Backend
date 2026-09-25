@@ -130,9 +130,9 @@ def player_guessed(player_guess: str) -> tuple[list[list[int]], bool, bool] | No
     return player_slots_matrix, False, False
 
 def ai_guessed() -> tuple[list[list[int]], bool] | None:
-    print("----------ai guessed func------------")
+    print("----------ai guessed func------------", flush=True)
     if is_playing == False:
-        print("not playing")
+        print("not playing", flush=True)
         return None
 
     global player_names_matrix, player_slots_matrix
@@ -144,17 +144,17 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
         column: int = i % 3
 
         if player_slots_matrix[row][column] == 1:
-            print("detecte un slot del jugador")
+            print("detecte un slot del jugador", flush=True)
             player_slots_rows.append(row)
             player_slots_columns.append(column)
 
     if len(player_slots_rows) == 0:
-        print("ia terminada: no habia slots del jogadore")
+        print("ia terminada: no habia slots del jogadore", flush=True)
         return player_slots_matrix, False
 
     random_player_slot_index: int = randint(0, (len(player_slots_rows) - 1))
     selected_player_slot_packaged: list[int] = [ player_slots_rows[random_player_slot_index], player_slots_columns[random_player_slot_index] ]
-    print("slot del jugador random seleccionado es: " + str(selected_player_slot_packaged))
+    print("slot del jugador random seleccionado es: " + str(selected_player_slot_packaged), flush=True)
 
     slot_selected: bool = False
     for i in range(0, 4, 1):
@@ -206,15 +206,15 @@ def ai_guessed() -> tuple[list[list[int]], bool] | None:
                         break
 
     if slot_selected == False:
-        print("le erre a los slots vacios")
+        print("le erre a los slots vacios", flush=True)
         return player_slots_matrix, False
     else:
         if all(value != 0 for row in player_slots_matrix for value in row):
-            print("juego terminado, no hay mas slots vacios")
+            print("juego terminado, no hay mas slots vacios", flush=True)
             reset_game()
             return player_slots_matrix, True
         else:
-            print("puse slot")
+            print("puse slot", flush=True)
             return player_slots_matrix, False
 
 def _in_range(value, minimum, maximum):
