@@ -20,14 +20,14 @@ def start_game(user_id: user_id.UserId):
     
     game_owner_id = user_id.user_id
 
-    row_headers: list[str]; column_headers: list[str];
+    row_headers: list[str]; column_headers: list[str]
     row_headers, column_headers = start_game_board()
     
     return { "result": "success", "row_headers": row_headers, "column_headers": column_headers, "local_player_turn": True }
 
 @router.post("/game/player-guess")
 def player_guesses(player_guess: player_guess.PlayerGuess):
-    updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool;
+    updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool
     updated_board, correct_answer, game_ended, local_player_won = player_guessed(player_guess.player_guess)
 
     if updated_board is None:
@@ -46,7 +46,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
 
 @router.post("/game/player2-guess")
 def player2_guesses(player2_guess: player_guess.PlayerGuess):
-    updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool;
+    updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool
     updated_board, correct_answer, game_ended, local_player_won = player2_guessed(player2_guess.player_guess)
 
     if updated_board is None:
@@ -66,7 +66,7 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
 
 @router.post("/game/ai-guess")
 def ai_guesses():
-    updated_board: list[list[int]]; game_ended: bool; local_player_won: bool;
+    updated_board: list[list[int]]; game_ended: bool; local_player_won: bool
     updated_board, game_ended, local_player_won = ai_guessed()
 
     if updated_board is None:
