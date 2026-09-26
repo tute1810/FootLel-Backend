@@ -3,14 +3,22 @@ from fastapi import APIRouter, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
 from logic.game.game_manager import player_guessed, player2_guessed, ai_guessed, next_turn, start_game_board
+from logic.stats.stats_manager import set_matches_stats, set_guesses_stats
+from objects import user_id
 from objects import player_guess
 
 # CREATE THE ROUTER #
 router = APIRouter()
 
+# VARIABLES #
+game_owner_id: int = -1
+
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
-def start_game():
+def start_game(user_id: user_id.UserId):
+    global game_owner_id
+    game_owner_id = user_id.user_id
+
     row_headers: list[str]; column_headers: list[str];
     row_headers, column_headers = start_game_board()
     
@@ -28,6 +36,11 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
     if game_ended == False:
         is_local_players_turn = next_turn()
 
+    # update stats #
+    set_guesses_stats(game_owner_id, correct_answer)
+    if game_ended == True:
+        set_matches_stats(game_owner_id, local_player_won)
+
     return { "result": "success", "correct_answer": correct_answer, "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
 
 @router.post("/game/player2-guess")
@@ -41,6 +54,11 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
     is_local_players_turn: bool = False
     if game_ended == False:
         is_local_players_turn = next_turn()
+
+    # update stats #
+    set_guesses_stats(game_owner_id, correct_answer)
+    if game_ended == True:
+        set_matches_stats(game_owner_id, local_player_won)
 
     return { "result": "success", "correct_answer": correct_answer, "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
 
@@ -56,5 +74,9 @@ def ai_guesses():
     is_local_players_turn: bool = False
     if game_ended == False:
         is_local_players_turn = next_turn()
+
+    # update stats #
+    if game_ended == True:
+        set_matches_stats(game_owner_id, local_player_won)
 
     return { "result": "success", "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }

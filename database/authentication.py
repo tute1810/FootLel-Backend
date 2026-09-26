@@ -19,15 +19,12 @@ def is_user_name_available(user_name: str):
         if check_user_name is not None:
             conn.rollback()
             conn.close()
-            print("usu cre")
             return False
             
         conn.close()
-        print("god")
         return True
     except Exception as e:
         print(e)
-        print("caca")
         return False
 
 def is_user_email_available(user_email: str):

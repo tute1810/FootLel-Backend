@@ -6,7 +6,7 @@ current_db_url = local_db_url
 
 
 
-def set_user_matches_stats(user_id: int, matches_played: int, matches_won: int, matches_lost: int, points: int):
+def set_user_matches_stats(user_id: int, matches_played: int, matches_won: int, points: int):
     
     """Set matches played, won and lost by the user id"""
     conn = None
@@ -16,7 +16,7 @@ def set_user_matches_stats(user_id: int, matches_played: int, matches_won: int, 
         
         
         
-        run.execute("""UPDATE user_stats SET matches_played = (%s), matches_won = (%s), matches_lost = (%s), user_points = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (matches_played, matches_won, matches_lost, points, user_id, user_id) )
+        run.execute("""UPDATE user_stats SET matches_played = (%s), matches_won = (%s), user_points = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (matches_played, matches_won, points, user_id, user_id) )
         rows = run.rowcount
         conn.commit()
 
