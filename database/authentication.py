@@ -46,7 +46,57 @@ def is_user_email_available(user_email: str):
     except Exception as e:
         print(e)
         return False
-    
+
+def is_user_name_used_by_another_user(user_id: int, user_name: str):
+    """Get user_name in form of a string using user_id"""
+    conn = None
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute("SELECT * FROM users WHERE pk_user_id != %s AND user_name = %s AND user_eliminated = false", (user_id,user_name) )
+        user_name = run.fetchone()
+        conn.commit()
+
+        if user_name is None:
+            conn.rollback()
+            conn.close()
+            return True
+
+        conn.close()
+        return False
+    except Exception as e:
+        print(e)
+        return None
+    finally :
+        if conn:
+            conn.close()
+
+def is_user_email_used_by_another_user(user_id: int, user_email: str):
+    """Get user_name in form of a string using user_id"""
+    conn = None
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute("SELECT * FROM users WHERE pk_user_id != %s AND user_email = %s AND user_eliminated = false", (user_id,user_email) )
+        user_email = run.fetchone()
+        conn.commit()
+
+        if user_email is None:
+            conn.rollback()
+            conn.close()
+            return True
+
+        conn.close()
+        return False 
+    except Exception as e:
+        print(e)
+        return None
+    finally :
+        if conn:
+            conn.close()
+
 def register_new_user(user_name: str, user_email: str, user_password: str):
     """Sets new user with: user_name: str, user_email: str, user_password: str"""
     try:

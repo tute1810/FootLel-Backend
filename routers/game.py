@@ -17,6 +17,7 @@ game_owner_id: int = -1
 @router.post("/game/start")
 def start_game(user_id: user_id.UserId):
     global game_owner_id
+    
     game_owner_id = user_id.user_id
 
     row_headers: list[str]; column_headers: list[str];

@@ -30,10 +30,10 @@ def eliminate_user(user_id: user_id.UserId):
 
 @router.post("/user/edit-user-info")
 def edit_user_info(user_info: user_info.UserInfo):
-    if authentication.is_user_name_available(user_info.user_name) == False:
+    if authentication.is_user_name_used_by_another_user(user_info.user_id, user_info.user_name) == False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error al editar perfil: ese nombre de usuario ya esta en uso")
 
-    if authentication.is_user_email_available(user_info.user_email) == False:
+    if authentication.is_user_email_used_by_another_user(user_info.user_id, user_info.user_email) == False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error al editar perfil: ese email ya esta en uso")
     
     if user_management.change_user_data(user_info.user_id, user_info.user_name, user_info.user_email, user_info.user_password) == False:
