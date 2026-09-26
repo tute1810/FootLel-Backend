@@ -152,12 +152,13 @@ def change_user_data(user_id:int, user_name: str, user_email: str, user_password
         string = string.strip(", ")
 
         run.execute(f""" UPDATE users {string} WHERE pk_user_id = (%s) """, (user_id,))
+        print(f""" UPDATE users {string} WHERE pk_user_id = (%s) """, (user_id,), flush=True)
         conn.commit()
 
         conn.close()
         return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return False
 
 def get_user_info(user_name: str):
