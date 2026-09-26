@@ -143,7 +143,7 @@ def change_user_data(user_id:int, user_name: str, user_email: str, user_password
         
         if len(data_to_update) == 0:
             conn.close()
-            return False
+            return True
 
         string: str = "SET "
         for i in range(0, len(data_to_update), 1):
