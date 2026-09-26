@@ -13,7 +13,7 @@ def set_matches_stats(user_id: int, match_won: int) -> bool:
         match_won_value = 1
         points_value = 10
 
-    return user_stats.set_user_matches_stats(user_id, all_user_stats[0][2] + 1, all_user_stats[0][3] + match_won_value, all_user_stats[0][6] + points_value)
+    return user_stats.set_user_matches_stats(user_id, all_user_stats[0][3] + 1, all_user_stats[0][4] + match_won_value, all_user_stats[0][0] + points_value)
     
 def set_guesses_stats(user_id: int, correct_guess: bool):
     # guesses_made, correct_guesses, matches_played, matches_won, matches_lost, win_streak, user_points #
@@ -26,4 +26,4 @@ def set_guesses_stats(user_id: int, correct_guess: bool):
     if correct_guess == True:
         correct_guess_value = 1
 
-    return user_stats.set_user_guesses_stats(user_id, all_user_stats[0][0] + 1, all_user_stats[0][1] + correct_guess_value)
+    return user_stats.set_user_guesses_stats(user_id, all_user_stats[0][1] + 1, all_user_stats[0][2] + correct_guess_value)
