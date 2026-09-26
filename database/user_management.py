@@ -133,11 +133,29 @@ def change_user_data(user_id:int, user_name: str, user_email: str, user_password
         conn = db.connect(current_db_url)
         run = conn.cursor()
         
-        run.execute(""" UPDATE users SET user_name = %s, user_email = %s, user_password = %s  WHERE pk_user_id = (%s) """, (user_name, user_email, user_password, user_id))
+        data_to_update: list[str] = []
+        if user_name != "":
+            data_to_update.append( "user_name = \'" + user_name + "\'")
+        if user_email != "":
+            data_to_update.append( "user_email = \'" + user_email + "\'")
+        if user_password != "":
+            data_to_update.append( "user_password = \'" + user_password + "\'")
+        
+        if len(data_to_update) == 0:
+            conn.close()
+            return False
+
+        string: str = "SET "
+        for i in range(0, len(data_to_update), 1):
+            string += data_to_update[i] + ", "
+
+        string = string.strip(", ")
+
+        run.execute(f""" UPDATE users {string} WHERE pk_user_id = (%s) """, (user_id,))
         conn.commit()
 
         conn.close()
-        return True    
+        return True
     except Exception as e:
         print(e)
         return False

@@ -1,12 +1,12 @@
 import psycopg2 as db
-from psycopg2 import sql
+
 local_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a.oregon-postgres.render.com/footlel_db"
 deployed_db_url = "postgresql://footlel_db_user:4s67LSdik8NJwqG5N6dCeFd3W46fcZaF@dpg-daks7dlbedkc73cttod0-a/footlel_db"
 current_db_url = local_db_url
 
 
 
-def set_user_matches_stats(matches_played: int, matches_won: int, matches_lost: int, user_id: int, points: int):
+def set_user_matches_stats(user_id: int, matches_played: int, matches_won: int, matches_lost: int, points: int):
     
     """Set matches played, won and lost by the user id"""
     conn = None
@@ -34,7 +34,7 @@ def set_user_matches_stats(matches_played: int, matches_won: int, matches_lost: 
             conn.close()
             
             
-def set_user_guesses_stats(guesses_made: int, correct_guesses: int, user_id: int):
+def set_user_guesses_stats(user_id: int, guesses_made: int, correct_guesses: int):
     """Set guesses stats, with the amount of guesses made and the correct ones by the user id"""
     conn = None
     try:
@@ -62,7 +62,7 @@ def set_user_guesses_stats(guesses_made: int, correct_guesses: int, user_id: int
         if conn:
             conn.close()
             
-def set_user_win_streak(win_streak: int, user_id: int):
+def set_user_win_streak(user_id: int, win_streak: int):
     """ Updates the amount of win streaks that the user has"""
     conn = None
     
