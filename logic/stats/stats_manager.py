@@ -1,6 +1,6 @@
 from database import user_stats
 
-def set_matches_stats(user_id: int, match_won: int) -> bool:
+def set_matches_stats(user_id: int, match_won: bool) -> bool:
     all_user_stats = user_stats.get_user_stats(user_id)
     
     if all_user_stats is None:
@@ -14,7 +14,7 @@ def set_matches_stats(user_id: int, match_won: int) -> bool:
 
     return user_stats.set_user_matches_stats(user_id, all_user_stats[0][3] + 1, all_user_stats[0][4] + match_won_value, all_user_stats[0][0] + points_value)
     
-def set_guesses_stats(user_id: int, correct_guess: bool):
+def set_guesses_stats(user_id: int, correct_guess: bool) -> bool:
     all_user_stats = user_stats.get_user_stats(user_id)
     
     if all_user_stats is None:
