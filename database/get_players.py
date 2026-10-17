@@ -8,7 +8,7 @@ current_db_url = local_db_url
 
 
 def get_league_teams(league: str, used_team1: str, used_team2: str):
-    """Get league teams"""
+    """Returns a list of tuples of the league teams"""
     conn = None
 
     try:
@@ -50,7 +50,7 @@ def get_league_teams(league: str, used_team1: str, used_team2: str):
 
 
 def get_player(team: str, league: str, nationality: str):
-    """Get player"""
+    """Returns a player from the team and nationality selected"""
     conn = None
 
     try:
