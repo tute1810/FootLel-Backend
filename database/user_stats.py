@@ -94,7 +94,7 @@ def set_user_win_streak(user_id: int, win_streak: int):
     
 
 def get_user_stats(user_id: int):
-    """get user stats in this order: guesses_made, correct_guesses, matches_played, matches_won, matches_lost, win_streak, user_points"""
+    """get user stats in this order: user_points,guesses_made, correct_guesses, matches_played, matches_won, matches_lost, win_streak"""
     
     conn = None
     try:
@@ -136,7 +136,7 @@ def get_user_stats(user_id: int):
             
             
 def get_table_ranking():
-    """Get the global rankings"""
+    """Get the global rankings in form of a list of tuples"""
 
     conn = None
     try:
