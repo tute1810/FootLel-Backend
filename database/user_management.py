@@ -7,7 +7,7 @@ current_db_url = deployed_db_url
 
 
 def get_users_table():
-    """Get users table"""
+    """Get users table, returns a list of tuples"""
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
@@ -211,7 +211,7 @@ def get_user_info(user_name: str):
         if conn:
             conn.close()
 
-def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
+"""def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
     """Change the user user_email, user_name and the user_password with user_name:str, user_email, user_password using user_id)"""
     conn = None
     try:
