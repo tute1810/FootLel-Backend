@@ -2,8 +2,8 @@
 from fastapi import APIRouter, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
-from logic.game.game_manager import GameManager
-from logic.stats.stats_manager import StatsManager
+from logic import game_manager
+from logic import stats_manager
 from objects import user_strid
 from objects import player_guess
 
@@ -11,16 +11,16 @@ from objects import player_guess
 router = APIRouter()
 
 # VARIABLES #
-games_in_progress: dict[str, GameManager] = {}
+games_in_progress: dict[str, game_manager.GameManager] = {}
 
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
 def start_game(_user_strid: user_strid.UserStrid):
     global games_in_progress
 
-    game_in_progress: GameManager
+    game_in_progress: game_manager.GameManager
     if _user_strid.user_strid not in games_in_progress:
-        games_in_progress[_user_strid.user_strid] = GameManager()
+        games_in_progress[_user_strid.user_strid] = game_manager.GameManager()
     game_in_progress = games_in_progress[_user_strid.user_strid]
 
     row_headers: list[str]; column_headers: list[str]
@@ -36,7 +36,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
     global games_in_progress
 
     # VARIABLES #
-    game_owner_strid: str = player_guess.user_strid; game_in_progress: GameManager = games_in_progress[game_owner_strid]
+    game_owner_strid: str = player_guess.user_strid; game_in_progress: game_manager.GameManager = games_in_progress[game_owner_strid]
 
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool
     
@@ -65,7 +65,7 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
     global games_in_progress
 
     # VARIABLES #
-    game_owner_strid: str = player2_guess.user_strid; game_in_progress: GameManager = games_in_progress[game_owner_strid]
+    game_owner_strid: str = player2_guess.user_strid; game_in_progress: game_manager.GameManager = games_in_progress[game_owner_strid]
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool
     
     updated_board, correct_answer, game_ended, local_player_won = game_in_progress.player2_guessed(player2_guess.player_guess)
@@ -94,7 +94,7 @@ def ai_guesses(user_strid: user_strid.UserStrid):
     global games_in_progress
 
     # VARIABLES #
-    game_owner_strid: str = user_strid.user_strid; game_in_progress: GameManager = games_in_progress[game_owner_strid]
+    game_owner_strid: str = user_strid.user_strid; game_in_progress: game_manager.GameManager = games_in_progress[game_owner_strid]
     updated_board: list[list[int]]; game_ended: bool; local_player_won: bool
     
     updated_board, game_ended, local_player_won = game_in_progress.ai_guessed()
