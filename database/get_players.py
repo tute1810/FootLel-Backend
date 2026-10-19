@@ -55,7 +55,7 @@ def get_player(team: str, league: str, nationality: str):
     conn = None
 
     try:
-        conn = sql.connect(current_db_url)
+        conn = db.connect(current_db_url)
         run = conn.cursor()
         
         columns = {
