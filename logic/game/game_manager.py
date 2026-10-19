@@ -45,12 +45,14 @@ class GameManager():
         self.is_playing = True
 
         # create the board #
-        self.create_game_board()
+        if self.create_game_board() == False:
+            print("ERROR CREATING GAME BOARD", flush=True)
+            return ([], [])
 
         # return the headers that the "create_game_board" func generated #
         return self.teams_row, self.nationalities_column
 
-    def stop_game_board(self):
+    def stop_game_board(self) -> bool:
         # reset game variables #
         self.is_playing = False
         self.game_turn = 1
@@ -82,7 +84,12 @@ class GameManager():
             random_league: str = self.leagues_name[randint(0, len(self.leagues_name) - 1)]
 
             # get all of the teams of the previous selected league #
-            all_teams_of_random_league: list[str] = get_players.get_league_teams(random_league, teams[0], teams[1])
+            all_teams = get_players.get_league_teams(random_league, teams[0], teams[1])
+            if all_teams is None:
+                print("ERROR CREATING GAME BOARD: Could not fetch teams from db", flush=True)
+                return False
+
+            all_teams_of_random_league: list[str] = all_teams
 
             # pick a random team of that whole list and store it on the "teams" var #
             teams[i] = all_teams_of_random_league[randint(0, len(all_teams_of_random_league) - 1)][0]
@@ -109,7 +116,13 @@ class GameManager():
             for j in range(0, 3, 1):
 
                 # store the corresponding players of that selected team and those 3 nationalities on the "players" var #
-                players.append(get_players.get_player(teams[i], random_league, nationalities[j])[0][0])
+                player = get_players.get_player(teams[i], random_league, nationalities[j])[0][0]
+
+                if player is None:
+                    print("ERROR CREATING GAME BOARD: Could not fetch player from db", flush=True)
+                    return False
+
+                players.append(player)
 
         # once we picked all of the board, store it on the global vars #
         self.teams_row = teams
@@ -119,6 +132,7 @@ class GameManager():
             column: int = i % 3
             self.player_names_matrix[row][column] = players[i]
             self.player_slots_matrix[row][column] = 0
+        return True
 
     def next_turn(self) -> bool:
         # increment the turn int #
