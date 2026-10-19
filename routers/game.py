@@ -51,9 +51,9 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
 
     # update stats #
     if game_owner_strid.isdigit():
-        StatsManager.set_guesses_stats(game_owner_strid, correct_answer)
+        stats_manager.StatsManager.set_guesses_stats(game_owner_strid, correct_answer)
         if game_ended == True:
-            StatsManager.set_matches_stats(game_owner_strid, local_player_won)
+            stats_manager.StatsManager.set_matches_stats(game_owner_strid, local_player_won)
     
     if game_ended == True:
         del games_in_progress[game_owner_strid]
@@ -79,9 +79,9 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
 
     # update stats #
     if game_owner_strid.isdigit():
-        StatsManager.set_guesses_stats(game_owner_strid, correct_answer)
+        stats_manager.StatsManager.set_guesses_stats(game_owner_strid, correct_answer)
         if game_ended == True:
-            StatsManager.set_matches_stats(game_owner_strid, local_player_won)
+            stats_manager.StatsManager.set_matches_stats(game_owner_strid, local_player_won)
     
     if game_ended == True:
         del games_in_progress[game_owner_strid]
@@ -109,7 +109,7 @@ def ai_guesses(user_strid: user_strid.UserStrid):
     # update stats #
     if game_ended == True:
         if game_owner_strid.isdigit():
-            StatsManager.set_matches_stats(game_owner_strid, local_player_won)
+            stats_manager.StatsManager.set_matches_stats(game_owner_strid, local_player_won)
         del games_in_progress[game_owner_strid]
 
     return { "result": "success", "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
