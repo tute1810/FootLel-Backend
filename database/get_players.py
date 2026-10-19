@@ -67,16 +67,16 @@ def get_player(team: str, league: str, nationality: str):
 
         run.execute(f"""SELECT player_name FROM players WHERE {column} = %s AND nationality = (%s) """,  (team,nationality))
 
-        teams = run.fetchall()
+        player = run.fetchall()
         conn.commit()
 
-        if teams == []:
+        if player == []:
             conn.rollback()
             conn.close()
             return None
 
         conn.close()
-        return teams
+        return player
     except Exception as e:
         if conn:
             conn.rollback()

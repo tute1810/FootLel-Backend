@@ -25,6 +25,9 @@ def start_game(_user_strid: user_strid.UserStrid):
 
     row_headers: list[str]; column_headers: list[str]
     row_headers, column_headers = game_in_progress.start_game_board()
+
+    if len(row_headers) == 0 or len(column_headers) == 0:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="error de inicio de juego: se produjo un error al crear el tablero")
     
     return { "result": "success", "row_headers": row_headers, "column_headers": column_headers, "local_player_turn": True }
 
