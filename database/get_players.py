@@ -1,4 +1,5 @@
 import psycopg2 as db
+from psycopg2 import sql
 import os
 
 deployed_db_url = os.environ.get("Database_URL")
@@ -17,13 +18,13 @@ def get_league_teams(league: str, used_team1: str, used_team2: str):
         
         
 
-        query = db.sql.SQL("""
+        query = sql.SQL("""
             SELECT DISTINCT {league}
             FROM players
             WHERE {league} IS NOT NULL
             AND {league} NOT IN (%s, %s)
         """).format(
-            league=db.sql.Identifier(league)
+            league=sql.Identifier(league)
         )
 
         run.execute(query, (used_team1, used_team2))
