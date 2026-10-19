@@ -27,7 +27,7 @@ def start_game(_user_strid: user_strid.UserStrid):
     row_headers, column_headers = game_in_progress.start_game_board()
 
     if len(row_headers) == 0 or len(column_headers) == 0:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="error de inicio de juego: se produjo un error al crear el tablero")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de inicio de juego: se produjo un error al crear el tablero")
     
     return { "result": "success", "row_headers": row_headers, "column_headers": column_headers, "local_player_turn": True }
 
@@ -43,7 +43,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
     updated_board, correct_answer, game_ended, local_player_won = game_in_progress.player_guessed(player_guess.player_guess)
 
     if updated_board is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="error de tablero: no estas en una partida")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = False
     if game_ended == False:
@@ -71,7 +71,7 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
     updated_board, correct_answer, game_ended, local_player_won = game_in_progress.player2_guessed(player2_guess.player_guess)
 
     if updated_board is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,detail="error de tablero: no estas en una partida")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = False
     if game_ended == False:
@@ -100,7 +100,7 @@ def ai_guesses(user_strid: user_strid.UserStrid):
     updated_board, game_ended, local_player_won = game_in_progress.ai_guessed()
 
     if updated_board is None:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="error de tablero: no estas en una partida")
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = False
     if game_ended == False:

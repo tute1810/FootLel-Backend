@@ -46,6 +46,7 @@ class GameManager():
 
         # create the board #
         if self.create_game_board() == False:
+            print("ERROR CREATING GAME BOARD", flush=True)
             return ([], [])
 
         # return the headers that the "create_game_board" func generated #
@@ -86,7 +87,7 @@ class GameManager():
             teams = get_players.get_league_teams(random_league, teams[0], teams[1])
 
             if teams is None:
-                print("ERROR CREATING GAME BOARD: Could not fetch teams from db")
+                print("ERROR CREATING GAME BOARD: Could not fetch teams from db", flush=True)
                 return False
 
             all_teams_of_random_league: list[str] = teams
@@ -119,7 +120,7 @@ class GameManager():
                 player = get_players.get_player(teams[i], random_league, nationalities[j])[0][0]
 
                 if players is None:
-                    print("ERROR CREATING GAME BOARD: Could not fetch player from db")
+                    print("ERROR CREATING GAME BOARD: Could not fetch player from db", flush=True)
                     return False
 
                 players.append(player)
