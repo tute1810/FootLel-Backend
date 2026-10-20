@@ -13,7 +13,7 @@ from security import jwt
 router = APIRouter()
 
 # ENDPOINT FUNCTIONS #
-@router.get("/user/get-user-info/{user_id}")
+@router.get("/user/get-user-info")
 def get_user_info(user_id: str = Depends(jwt.check_access_token_and_return_user_id)):
     user_info = user_management.get_user_info(user_id)
     user_password = user_management.get_user_password_with_user_id(user_id)
