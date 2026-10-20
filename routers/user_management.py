@@ -1,5 +1,5 @@
 # IMPORT EXTERNAL LIBRARIES #
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
 from objects import user_id
@@ -7,19 +7,23 @@ from objects import user_name
 from objects import user_info
 from database import user_management
 from database import authentication
+from security import jwt
 
 # CREATE THE ROUTER #
 router = APIRouter()
 
 # ENDPOINT FUNCTIONS #
-@router.get("/user/get-user-info/{user_name}")
-def get_user_info(user_name: str):
-    user_info = user_management.get_user_info(user_name)
-    user_password = user_management.get_user_password_with_user_name(user_name)
+@router.get("/user/get-user-info/{user_id}")
+def get_user_info(user_id: str = Depends(jwt.check_access_token_and_return_user_id)):
+    user_info = user_management.get_user_info(user_id)
+    user_password = user_management.get_user_password_with_user_id(user_id)
 
     if user_info is None or user_password is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de informacion del usuario: no se pudo encontrar el usuario")
 
+    if str(user_info[0]) != str(user_id):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="error de autenticacion no estas autorizado")
+    
     return { "result": "success", "user_id": int(user_info[0]), "user_email": str(user_info[1]), "user_password": str(user_password) }
 
 @router.delete("/user/eliminate-user/{user_id}")
