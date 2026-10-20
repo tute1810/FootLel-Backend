@@ -39,7 +39,7 @@ def get_user_name(user_id: int):
             return None
         
         conn.close()
-        return user_name[0] 
+        return user_name[0]
     except Exception as e:
         print(e)
         return None

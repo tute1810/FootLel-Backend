@@ -15,19 +15,20 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.get("/user/get-user-info")
 def get_user_info(user_id: str = Depends(jwt.check_access_token_and_return_user_id)):
-    print("rancio", flush=True)
+    user_name: str = user_management.get_user_name(int(user_id))
+
+    if user_name is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de informacion del usuario: no se pudo encontrar el nombre usuario")
+
     user_info = user_management.get_user_info(int(user_id))
-    user_password = user_management.get_user_password_with_user_id(int(user_id))
-    print("rancio2", flush=True)
+    user_password = user_management.get_user_password_with_user_name()
 
     if user_info is None or user_password is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de informacion del usuario: no se pudo encontrar el usuario")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de informacion del usuario: no se pudo encontrar los datos del usuario")
 
-    print("rancio3", flush=True)
-    if str(user_info[0]) != str(user_id):
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="error de autenticacion no estas autorizado")
+    if str(user_info[0]) != user_id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="error de informacion del usuario: no estas autorizado a recibir esta informacion")
     
-    print("chau", flush=True)
     return { "result": "success", "user_id": int(user_info[0]), "user_email": str(user_info[1]), "user_password": str(user_password) }
 
 @router.delete("/user/eliminate-user/{user_id}")
