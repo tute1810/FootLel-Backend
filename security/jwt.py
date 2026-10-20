@@ -14,7 +14,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 def get_access_token(user_id: str) -> str:
     payload = {"sub": str(user_id), "exp": datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRE_MINUTES),}
-    print({"sub": str(user_id), "exp": datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRE_MINUTES),}, flush=True)
 
     return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM,)
 

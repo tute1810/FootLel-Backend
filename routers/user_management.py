@@ -21,7 +21,7 @@ def get_user_info(user_id: str = Depends(jwt.check_access_token_and_return_user_
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de informacion del usuario: no se pudo encontrar el nombre usuario")
 
     user_info = user_management.get_user_info(int(user_id))
-    user_password = user_management.get_user_password_with_user_name()
+    user_password = user_management.get_user_password_with_user_name(user_name)
 
     if user_info is None or user_password is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,detail="error de informacion del usuario: no se pudo encontrar los datos del usuario")
