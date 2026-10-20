@@ -16,8 +16,8 @@ router = APIRouter()
 @router.get("/user/get-user-info")
 def get_user_info(user_id: str = Depends(jwt.check_access_token_and_return_user_id)):
     print("rancio", flush=True)
-    user_info = user_management.get_user_info(user_id)
-    user_password = user_management.get_user_password_with_user_id(user_id)
+    user_info = user_management.get_user_info(int(user_id))
+    user_password = user_management.get_user_password_with_user_id(int(user_id))
     print("rancio2", flush=True)
 
     if user_info is None or user_password is None:
