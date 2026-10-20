@@ -7,6 +7,7 @@ from objects import user_register_credentials
 from objects import user_login_credentials
 from database import authentication
 from database import user_management
+from security import jwt
 
 # CREATE THE ROUTER #
 router = APIRouter()
@@ -30,7 +31,7 @@ def user_login(user_login_credentials: user_login_credentials.UserLoginCredentia
     if user_id is None:
         print("advertencia de login: no se pudo conseguir el user_id durante el login")
 
-    return { "result": "success", "user_id": user_id }
+    return { "result": "success", "user_id": user_id, "token": jwt.get_access_token(user_id) }
 
 @router.post("/auth/user-register")
 def user_register(user_register_credentials: user_register_credentials.UserRegisterCredentials):
