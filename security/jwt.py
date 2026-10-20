@@ -13,28 +13,14 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 
 
 def get_access_token(user_id: str) -> str:
-    payload = {
-        "sub": str(user_id),
-        "exp": datetime.now(timezone.utc)
-        + timedelta(minutes=TOKEN_EXPIRE_MINUTES),
-    }
+    payload = {"sub": str(user_id), "exp": datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRE_MINUTES),}
+    print({"sub": str(user_id), "exp": datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRE_MINUTES),}, flush=True)
 
-    return jwt.encode(
-        payload,
-        SECRET_KEY,
-        algorithm=ALGORITHM,
-    )
+    return jwt.encode(payload, SECRET_KEY, algorithm=ALGORITHM,)
 
-
-def check_access_token_and_return_user_id(
-    token: str = Depends(oauth2_scheme),
-) -> str:
+def check_access_token_and_return_user_id(token: str = Depends(oauth2_scheme),) -> str:
     try:
-        payload = jwt.decode(
-            token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM],
-        )
+        payload = jwt.decode(token, SECRET_KEY,algorithms=[ALGORITHM],)
 
         user_id = payload.get("sub")
 
@@ -42,10 +28,5 @@ def check_access_token_and_return_user_id(
             raise InvalidTokenError("Missing user ID")
 
         return user_id
-
     except InvalidTokenError:
-        raise HTTPException(
-            status_code=401,
-            detail="Invalid or expired token",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Invalid or expired token",headers={"WWW-Authenticate": "Bearer"},)
