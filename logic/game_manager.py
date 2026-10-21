@@ -45,7 +45,7 @@ class GameManager():
         self.is_playing = True
 
         # create the board #
-        if self.create_game_board() == False:
+        if self.create_game_board() is False:
             print("ERROR CREATING GAME BOARD", flush=True)
             return ([], [])
 
@@ -144,7 +144,7 @@ class GameManager():
     def player_guessed(self, player_guess: str) -> tuple[list[list[int]], bool, bool, bool] | None:
 
         # error out if the player is not in a game #
-        if self.is_playing == False:
+        if self.is_playing is False:
             return None
 
         # repeat this code for the amount of players that exist #
@@ -165,7 +165,7 @@ class GameManager():
                 # check if any player won #
                 somebody_won: bool; local_player_won: bool
                 somebody_won, local_player_won = self.check_winning_lines()
-                if somebody_won == True:
+                if somebody_won is True:
                     finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                     self.stop_game_board()
                     return finished_player_slots_matrix, True, True, local_player_won
@@ -184,7 +184,7 @@ class GameManager():
     def player2_guessed(self, player2_guess: str) -> tuple[list[list[int]], bool, bool, bool] | None:
 
         # error out if the player is not in a game #
-        if self.is_playing == False:
+        if self.is_playing is False:
             return None
 
         # repeat this code for the amount of players that exist #
@@ -205,7 +205,7 @@ class GameManager():
                 # check if any player won #
                 somebody_won: bool; local_player_won: bool
                 somebody_won, local_player_won = self.check_winning_lines()
-                if somebody_won == True:
+                if somebody_won is True:
                     finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                     self.stop_game_board()
                     return finished_player_slots_matrix, True, True, local_player_won
@@ -224,7 +224,7 @@ class GameManager():
     def ai_guessed(self) -> tuple[list[list[int]], bool, bool] | None:
         
         # error out if the player is not in a game #
-        if self.is_playing == False:
+        if self.is_playing is False:
             return None
 
         # store all the rows and columns where the player has a slot #
@@ -271,7 +271,7 @@ class GameManager():
                 direction = (-1, 1)
 
             # if the direction is out of bounds or if there was an error on the direction code, try another dir #
-            if direction == (0, 0) or self._in_range(selected_player_slot_packaged[0] + direction[0], 0, 2) == False or self._in_range(selected_player_slot_packaged[1] + direction[1], 0, 2) == False:
+            if direction == (0, 0) or self._in_range(selected_player_slot_packaged[0] + direction[0], 0, 2) is False or self._in_range(selected_player_slot_packaged[1] + direction[1], 0, 2) is False:
                 continue
 
             # if the slot is occupied, then try with another dir #
@@ -288,7 +288,7 @@ class GameManager():
             # check if any player won #
             somebody_won: bool; local_player_won: bool
             somebody_won, local_player_won = self.check_winning_lines()
-            if somebody_won == True:
+            if somebody_won is True:
                 finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                 self.stop_game_board()
                 return finished_player_slots_matrix, True, local_player_won
@@ -322,7 +322,7 @@ class GameManager():
 
                         # check if we are not on the first slot check #
                         if j > 0:
-                            if line_is_from_the_player == False:
+                            if line_is_from_the_player is False:
                                 break
                         
                         # check if the last slot is the same and return true #
@@ -334,7 +334,7 @@ class GameManager():
 
                         # check if we are not on the first slot check #
                         if j > 0:
-                            if line_is_from_the_player == True:
+                            if line_is_from_the_player is True:
                                 break
                         
                         # check if the last slot is the same and return true #

@@ -46,16 +46,16 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = False
-    if game_ended == False:
+    if game_ended is False:
         is_local_players_turn = game_in_progress.next_turn()
 
     # update stats #
     if game_owner_strid.isdigit():
         stats_manager.StatsManager.set_guesses_stats(game_owner_strid, correct_answer)
-        if game_ended == True:
+        if game_ended is True:
             stats_manager.StatsManager.set_matches_stats(game_owner_strid, local_player_won)
     
-    if game_ended == True:
+    if game_ended is True:
         del games_in_progress[game_owner_strid]
 
     return { "result": "success", "correct_answer": correct_answer, "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
@@ -74,16 +74,16 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = False
-    if game_ended == False:
+    if game_ended is False:
         is_local_players_turn = game_in_progress.next_turn()
 
     # update stats #
     if game_owner_strid.isdigit():
         stats_manager.StatsManager.set_guesses_stats(game_owner_strid, correct_answer)
-        if game_ended == True:
+        if game_ended is True:
             stats_manager.StatsManager.set_matches_stats(game_owner_strid, local_player_won)
     
-    if game_ended == True:
+    if game_ended is True:
         del games_in_progress[game_owner_strid]
 
     return { "result": "success", "correct_answer": correct_answer, "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
@@ -103,11 +103,11 @@ def ai_guesses(user_strid: user_strid.UserStrid):
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de tablero: no estas en una partida")
 
     is_local_players_turn: bool = False
-    if game_ended == False:
+    if game_ended is False:
         is_local_players_turn = game_in_progress.next_turn()
 
     # update stats #
-    if game_ended == True:
+    if game_ended is True:
         if game_owner_strid.isdigit():
             stats_manager.StatsManager.set_matches_stats(game_owner_strid, local_player_won)
         del games_in_progress[game_owner_strid]

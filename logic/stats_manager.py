@@ -12,7 +12,7 @@ class StatsManager():
 
         match_won_value: int = 0
         points_value: int = 2
-        if match_won == True:
+        if match_won is True:
             match_won_value = 1
             points_value = 10
 
@@ -25,7 +25,7 @@ class StatsManager():
             return False
         
         correct_guess_value: int = 0
-        if correct_guess == True:
+        if correct_guess is True:
             correct_guess_value = 1
 
         return user_stats.set_user_guesses_stats(user_id, all_user_stats[0][1] + 1, all_user_stats[0][2] + correct_guess_value)

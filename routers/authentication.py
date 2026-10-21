@@ -15,43 +15,54 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.post("/auth/user-login")
 def user_login(user_login_credentials: user_login_credentials.UserLoginCredentials):
-    if authentication.is_user_name_available(user_login_credentials.user_name) == True:
+    user_name: str = user_login_credentials.user_name
+    db_user_name_unused: bool | None = authentication.is_user_name_available(user_name)
+
+    if db_user_name_unused is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: error al buscar el nombre de usuario")
+    elif db_user_name_unused is True:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: nombre de usuario incorrecto")
 
-    user_password = user_management.get_user_password_with_user_name(user_login_credentials.user_name)
+    db_user_password: str | None = user_management.get_user_password_with_user_name(user_name)
 
-    if user_password is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: no se encontro el usuario")
+    if db_user_password is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: error al buscar la contrasenia")
 
-    if user_password != user_login_credentials.user_password:
+    user_password: str = user_login_credentials.user_password
+
+    if user_password != db_user_password:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error de login: contrasenia incorrecta")
 
-    user_id = user_management.get_user_id_with_user_name(user_login_credentials.user_name)
+    db_user_id: int | None = user_management.get_user_id_with_user_name(user_name)
 
-    if user_id is None:
-        print("advertencia de login: no se pudo conseguir el user_id durante el login")
+    if db_user_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de login: error al buscar el id del usuario")
 
-    return { "result": "success", "user_id": user_id, "token": jwt.get_access_token(user_id) }
+    access_token: str = jwt.get_access_token(db_user_id)
+
+    return { "result": "success", "user_id": db_user_id, "access_token": access_token }
 
 @router.post("/auth/user-register")
 def user_register(user_register_credentials: user_register_credentials.UserRegisterCredentials):
-    if authentication.is_user_name_available(user_register_credentials.user_name) == False:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error al registrarse: ese nombre de usuario ya esta en uso")
+    user_name: str = user_register_credentials.user_name
 
-    if authentication.is_user_email_available(user_register_credentials.user_email) == False:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error al registrarse: ese email ya esta en uso")
+    if authentication.is_user_name_available(user_name) is False:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de registro: nombre de usuario en uso")
 
-    if authentication.register_new_user(user_register_credentials.user_name, user_register_credentials.user_email, user_register_credentials.user_password) == False:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error al registrarse: no se pudo registrar el usuario, intente de vuelta")
+    user_email: str = user_register_credentials.user_email
+
+    if authentication.is_user_email_available(user_email) is False:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de registro: email en uso")
+
+    user_password: str = user_register_credentials.user_password
+
+    if authentication.register_new_user(user_name, user_email, user_password) is False:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de registro: error al registrar el usuario")
 
     return { "result": "success" }
 
 @router.post("/auth/guest-login")
 def guest_login():
-    # devolver el user_id
     guest_name: str = "guest_" + str(randint(10000, 99999))
-
-    if authentication.is_user_name_available(guest_name) == False:
-        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de modo invitado: ese nombre de usuario ya esta en uso, intente de vuelta")
 
     return { "result": "success", "guest_name": guest_name }

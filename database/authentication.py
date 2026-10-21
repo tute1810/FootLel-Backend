@@ -25,8 +25,8 @@ def is_user_name_available(user_name: str):
         conn.close()
         return True
     except Exception as e:
-        print(e)
-        return False
+        print(e, flush=True)
+        return None
 
 def is_user_email_available(user_email: str):
     """Check if the user email is available to use"""
@@ -49,48 +49,48 @@ def is_user_email_available(user_email: str):
         return False
 
 def is_user_name_used_by_another_user(user_id: int, user_name: str):
-    """Get user_name in form of a string using user_id"""
+    """get wether the user name is already used or not by another user excluding the user with using user_id"""
     conn = None
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
 
-        run.execute("SELECT * FROM users WHERE pk_user_id != %s AND user_name = %s AND user_eliminated = false", (user_id,user_name) )
+        run.execute("SELECT user_name FROM users WHERE pk_user_id != %s AND user_name = %s AND user_eliminated = false", (user_id,user_name))
         user_name = run.fetchone()
         conn.commit()
 
         if user_name is None:
             conn.rollback()
             conn.close()
-            return True
+            return False
 
         conn.close()
-        return False
+        return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
     finally :
         if conn:
             conn.close()
 
 def is_user_email_used_by_another_user(user_id: int, user_email: str):
-    """Get user_name in form of a string using user_id"""
+    """get wether the user email is already used or not by another user excluding the user with using user_id"""
     conn = None
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
 
-        run.execute("SELECT * FROM users WHERE pk_user_id != %s AND user_email = %s AND user_eliminated = false", (user_id,user_email) )
+        run.execute("SELECT user_email FROM users WHERE pk_user_id != %s AND user_email = %s AND user_eliminated = false", (user_id,user_email) )
         user_email = run.fetchone()
         conn.commit()
 
         if user_email is None:
             conn.rollback()
             conn.close()
-            return True
+            return False
 
         conn.close()
-        return False 
+        return True
     except Exception as e:
         print(e)
         return None

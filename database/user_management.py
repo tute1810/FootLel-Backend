@@ -20,11 +20,11 @@ def get_users_table():
         conn.close()
         return users
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
 
 def get_user_name(user_id: int):
-    """Get user_name in form of a string using user_id"""
+    """get user_name in form of a string using user_id"""
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
@@ -62,7 +62,28 @@ def get_user_password_with_user_name(user_name: str):
         conn.close()
         return user_password[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
+        return None
+
+def get_user_password_with_user_id(user_id: int):
+    """get user password with user id"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute("SELECT user_password FROM users WHERE pk_user_id = (%s) AND user_eliminated = false", (user_id,))
+        user_password = run.fetchone()
+        conn.commit()
+
+        if user_password is None:
+            conn.rollback()
+            conn.close()
+            return None
+        
+        conn.close()
+        return user_password[0]
+    except Exception as e:
+        print(e, flush=True)
         return None
 
 def get_user_id_with_user_name(user_name: str):
@@ -185,28 +206,28 @@ def change_user_data(user_id:int, user_name: str, user_email: str, user_password
         print(e)
         return False
 
-def get_user_info(user_name: str):
-    """Get user_email and user_id with user_name"""
+def get_user_info(user_id: int):
+    """get user_name and user_email with user_id"""
     conn = None
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
 
-        run.execute("SELECT pk_user_id, user_email FROM users WHERE user_name = (%s) AND user_eliminated = false", (user_name,) )
-        user_id_email = run.fetchall()
+        run.execute("SELECT user_name, user_email FROM users WHERE pk_user_id = (%s) AND user_eliminated = false", (user_id,))
+        user_name_and_email = run.fetchall()
         conn.commit()
 
-        if user_id_email == []:
+        if user_name_and_email == []:
             conn.rollback()
             conn.close()
             return None
 
         conn.close()
-        return user_id_email[0]
+        return user_name_and_email[0]
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return None
     finally:
         if conn:
