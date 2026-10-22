@@ -27,10 +27,10 @@ matches_played,
 matches_won,
 win_streak
 """
-""": list[int, int, int, int, int] | None """
+""""""
 @router.get("/stat/get-user-stats")
 def get_user_stats(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    user_stats_data = user_stats.get_user_stats(user_id)
+    user_stats_data: tuple[int, int, int, int, int] | None = user_stats.get_user_stats(user_id)
     print(user_stats_data, flush=True)
 
     if user_stats_data is None:

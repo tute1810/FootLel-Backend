@@ -121,17 +121,15 @@ def get_user_stats(user_id: int):
             conn.close()
             return None
         conn.close()
-        return stats
-            
+        return stats[0]
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return None
     finally:
         if conn:
             conn.close()
-            
             
 def get_table_ranking():
     """Get the global rankings in form of a list of tuples"""
