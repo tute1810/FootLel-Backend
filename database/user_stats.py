@@ -93,7 +93,7 @@ def set_user_win_streak(user_id: int, win_streak: int):
     
 
 def get_user_stats(user_id: int):
-    """get user stats in this order: user_points,guesses_made, correct_guesses, matches_played, matches_won, win_streak"""
+    """get user stats in this order: user_points, guesses_made, correct_guesses, matches_played, matches_won, win_streak"""
     
     conn = None
     try:
@@ -112,16 +112,16 @@ def get_user_stats(user_id: int):
         FROM user_stats
         WHERE pk_user_id = (%s)""", (user_id,))
         
-        ranking = run.fetchall()
+        stats = run.fetchall()
         
         conn.commit()
         
-        if ranking == []:
+        if stats == []:
             conn.rollback()
             conn.close()
             return None
         conn.close()
-        return ranking
+        return stats
             
     except Exception as e:
         if conn:
