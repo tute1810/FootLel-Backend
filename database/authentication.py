@@ -127,3 +127,25 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
     except Exception as e:
         print(e)
         return False
+def register_guest(user_name: str):
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        
+        run.execute(
+            """
+            INSERT INTO users
+            (user_name, is_guest, user_email, user_password)
+            VALUES (%s, True, %s, %s)
+            """,
+            (user_name,f"", f"")
+        )
+        
+        conn.commit()
+
+        conn.close()
+        return True
+    except Exception as e:
+        print(e)
+        return False

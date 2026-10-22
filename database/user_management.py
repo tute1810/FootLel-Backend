@@ -232,3 +232,27 @@ def get_user_info(user_id: int):
     finally:
         if conn:
             conn.close()
+            
+def get_guest_id_with_name(guest_name: str):
+    """Get active user id with user_email: str"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute(
+        """SELECT pk_user_id FROM users WHERE (user_name = %s) AND is_guest = True""", (guest_name,)
+        )
+        guest_id = run.fetchone()
+        conn.commit()
+
+        if guest_id is None:
+            conn.rollback()
+            conn.close()
+            return None
+        
+        conn.close()
+        return guest_id[0]
+    except Exception as e:
+        print(e)
+        return None
+    

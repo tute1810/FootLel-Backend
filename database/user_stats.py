@@ -93,7 +93,7 @@ def set_user_win_streak(user_id: int, win_streak: int):
     
 
 def get_user_stats(user_id: int):
-    """get user stats in this order: user_points,guesses_made, correct_guesses, matches_played, matches_won, matches_lost, win_streak"""
+    """get user stats in this order: user_points,guesses_made, correct_guesses, matches_played, matches_won, win_streak"""
     
     conn = None
     try:
@@ -108,7 +108,6 @@ def get_user_stats(user_id: int):
         correct_guesses,
         matches_played,
         matches_won,
-        matches_lost,
         win_streak
         FROM user_stats
         WHERE pk_user_id = (%s)""", (user_id,))
