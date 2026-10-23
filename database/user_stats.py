@@ -31,8 +31,7 @@ def set_user_matches_stats(user_id: int, matches_played: int, matches_won: int, 
     finally:
         if conn:
             conn.close()
-            
-            
+
 def set_user_guesses_stats(user_id: int, guesses_made: int, correct_guesses: int):
     """Set guesses stats, with the amount of guesses made and the correct ones by the user id"""
     conn = None
@@ -60,7 +59,7 @@ def set_user_guesses_stats(user_id: int, guesses_made: int, correct_guesses: int
     finally:
         if conn:
             conn.close()
-            
+
 def set_user_win_streak(user_id: int, win_streak: int):
     """ Updates the amount of win streaks that the user has"""
     conn = None
@@ -68,8 +67,6 @@ def set_user_win_streak(user_id: int, win_streak: int):
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
-        
-    
         
         run.execute("""UPDATE user_stats SET win_streak = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (win_streak, user_id, user_id) )
     
@@ -81,16 +78,14 @@ def set_user_win_streak(user_id: int, win_streak: int):
             return True
         else:
            return False
-            
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return False
     finally:
         if conn:
             conn.close()
-    
 
 def get_user_stats(user_id: int):
     """get user stats in this order: user_points, guesses_made, correct_guesses, matches_played, matches_won, win_streak"""
