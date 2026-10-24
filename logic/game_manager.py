@@ -13,7 +13,7 @@ class GameManager():
         self.game_turn: int = 1
 
         self.leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
-        self.nationalities_name: list[str] = ["Argentina", "Italia", "Inglaterra", "España", "Francia"]
+        self.nationalities_name: list[str] = ["argentina", "italy", "england", "spain", "france"]
         self.winning_lines: list[list[int]] = [
             [0, 1, 2],
             [3, 4, 5],
@@ -37,7 +37,6 @@ class GameManager():
             [0, 0, 0],
             [0, 0, 0]
         ]
-
 
     # FUNCTIONS #
     def start_game_board(self) -> tuple[list[str], list[str]]:
