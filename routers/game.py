@@ -81,7 +81,6 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
 
     return { "result": "success", "correct_answer": correct_answer, "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
 
-
 @router.post("/game/ai-guess")
 def ai_guesses(user_strid: user_strid.UserStrid):
     global games_in_progress

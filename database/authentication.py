@@ -105,18 +105,15 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
         run = conn.cursor()
 
         run.execute(
-            "SELECT COALESCE(MAX(pk_user_id), 0) + 1 FROM users"
-        )
-        user_id = run.fetchone()[0]
-
-        run.execute(
             """
             INSERT INTO users
-            (pk_user_id, user_name, user_email, user_password, user_eliminated)
-            VALUES (%s, %s, %s, %s, false)
+            (user_name, user_email, user_password, user_eliminated)
+            VALUES (%s, %s, %s, false)
+            RETURNING pk_user_id;
             """,
-            (user_id, user_name, user_email, user_password)
+            (user_name, user_email, user_password)
         )
+        user_id = run.fetchone()[0]
 
         run.execute(""" INSERT INTO user_configuration (pk_user_id) VALUES (%s)""", (user_id,))
         run.execute(""" INSERT INTO user_stats (pk_user_id, win_streak, user_points) VALUES (%s,0,0)""", (user_id,))
@@ -127,6 +124,7 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
     except Exception as e:
         print(e, flush=True)
         return False
+
 def register_guest(user_name: str):
     try:
         conn = db.connect(current_db_url)
