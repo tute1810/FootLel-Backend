@@ -1,7 +1,7 @@
 import psycopg2 as db
 import os
 
-deployed_db_url = os.environ.get("Database_URL")
+deployed_db_url = os.environ.get("DATABASE_URL")
 
 current_db_url = deployed_db_url
 
