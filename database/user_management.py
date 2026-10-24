@@ -255,4 +255,25 @@ def get_guest_id_with_name(guest_name: str):
     except Exception as e:
         print(e, flush=True)
         return None
-    
+
+def is_guest_with_user_id(user_id:int):    
+    """Get guest status with user id"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute(
+        """SELECT is_guest FROM users WHERE (user_id = %s)""", (user_id,)
+        )
+        is_guest = run.fetchone()[0]
+        conn.commit()
+
+        if is_guest is None:
+            conn.rollback()
+            conn.close()
+            return None
+        conn.close()
+        return is_guest
+    except Exception as e:
+        print(e, flush=True)
+        return None
