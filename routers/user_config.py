@@ -11,7 +11,7 @@ router = APIRouter()
 
 # ENDPOINT FUNCTIONS #
 @router.patch("/config/set-user-config")
-def set_user_config(user_config: user_config.UserConfig, user_id: int=Depends(jwt.check_access_token_and_get_user_id)):
+def set_user_config(user_config: user_config.UserConfig, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     config_results: list[bool] = []
     config_results.extend([user_stats.set_dark_mode_config_state(user_id, user_config.config_1), user_stats.set_animations_config_state(user_id, user_config.config_2), user_stats.set_compatibility_config_status(user_id, user_config.config_3)])
 
@@ -21,8 +21,8 @@ def set_user_config(user_config: user_config.UserConfig, user_id: int=Depends(jw
 
     return { "result": "success" }
 
-@router.patch("/config/get-user-config")
-def get_user_config(user_id: int=Depends(jwt.check_access_token_and_get_user_id)):
+@router.get("/config/get-user-config")
+def get_user_config(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     config_results: list[bool | None] = []
     config_results.extend([user_stats.get_dark_mode_config_state(user_id), user_stats.get_animations_config_state(user_id), user_stats.get_compatibility_config_status(user_id)])
 
