@@ -263,7 +263,7 @@ def is_guest_with_user_id(user_id:int):
         run = conn.cursor()
         
         run.execute(
-        """SELECT is_guest FROM users WHERE (user_id = %s)""", (user_id,)
+        """SELECT is_guest FROM users WHERE (pk_user_id = %s)""", (user_id,)
         )
         is_guest = run.fetchone()[0]
         conn.commit()
