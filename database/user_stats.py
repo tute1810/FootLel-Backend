@@ -265,7 +265,7 @@ def get_compatibility_config_status(user_id:int):
         conn.close()
         return status[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
 
 def get_dark_mode_config_state(user_id:int):
@@ -286,7 +286,7 @@ def get_dark_mode_config_state(user_id:int):
         conn.close()
         return status[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
 
 def get_animations_config_state(user_id: int):
@@ -307,5 +307,5 @@ def get_animations_config_state(user_id: int):
         conn.close()
         return status[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None

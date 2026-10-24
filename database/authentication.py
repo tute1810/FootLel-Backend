@@ -45,7 +45,7 @@ def is_user_email_available(user_email: str):
         conn.close()
         return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return False
 
 def is_user_name_used_by_another_user(user_id: int, user_name: str):
@@ -92,7 +92,7 @@ def is_user_email_used_by_another_user(user_id: int, user_email: str):
         conn.close()
         return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
     finally :
         if conn:
@@ -125,7 +125,7 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
         conn.close()
         return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return False
 def register_guest(user_name: str):
     try:
@@ -147,5 +147,5 @@ def register_guest(user_name: str):
         conn.close()
         return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return False

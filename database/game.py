@@ -16,8 +16,6 @@ def get_league_teams(league: str, used_team1: str, used_team2: str):
         conn = db.connect(current_db_url)
         run = conn.cursor()
         
-        
-
         query = sql.SQL("""
             SELECT DISTINCT {league}
             FROM players
@@ -42,13 +40,11 @@ def get_league_teams(league: str, used_team1: str, used_team2: str):
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return None
     finally:
         if conn:
             conn.close()
-
-
 
 def get_player(team: str, league: str, nationality: str):
     """Returns a player from the team and nationality selected"""
@@ -81,7 +77,7 @@ def get_player(team: str, league: str, nationality: str):
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return None
     finally:
         if conn:

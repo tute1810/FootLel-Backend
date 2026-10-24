@@ -41,7 +41,7 @@ def get_user_name(user_id: int):
         conn.close()
         return user_name[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
 
 def get_user_password_with_user_name(user_name: str):
@@ -106,7 +106,7 @@ def get_user_id_with_user_name(user_name: str):
         conn.close()
         return user_id[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
 
 def get_user_id(user_email: str):
@@ -129,7 +129,7 @@ def get_user_id(user_email: str):
         conn.close()
         return user_id[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
 
 def eliminate_user(user_id: int):
@@ -151,7 +151,7 @@ def eliminate_user(user_id: int):
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return False
     finally:
         if conn:
@@ -169,7 +169,7 @@ def change_password(user_id: int, user_password: str):
         conn.close()
         return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return False
 
 def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
@@ -203,7 +203,7 @@ def change_user_data(user_id:int, user_name: str, user_email: str, user_password
         conn.close()
         return True
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return False
 
 def get_user_info(user_id: int):
@@ -253,6 +253,6 @@ def get_guest_id_with_name(guest_name: str):
         conn.close()
         return guest_id[0]
     except Exception as e:
-        print(e)
+        print(e, flush=True)
         return None
     
