@@ -2,10 +2,8 @@
 from fastapi import APIRouter, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
-from logic import game_manager
-from logic import stats_manager
-from objects import user_strid
-from objects import player_guess
+from logic import game_manager, stats_manager
+from objects import user_strid, player_guess
 
 # CREATE THE ROUTER #
 router = APIRouter()
@@ -35,9 +33,7 @@ def start_game(_user_strid: user_strid.UserStrid):
 def player_guesses(player_guess: player_guess.PlayerGuess):
     global games_in_progress
 
-    # VARIABLES #
     game_owner_strid: str = player_guess.user_strid; game_in_progress: game_manager.GameManager = games_in_progress[game_owner_strid]
-
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool
     
     updated_board, correct_answer, game_ended, local_player_won = game_in_progress.player_guessed(player_guess.player_guess)
@@ -49,12 +45,11 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
     if game_ended is False:
         is_local_players_turn = game_in_progress.next_turn()
 
-    # update stats #
+    # update user stats #
     if game_owner_strid.isdigit():
         stats_manager.set_guesses_stats(game_owner_strid, correct_answer)
         if game_ended is True:
             stats_manager.set_matches_stats(game_owner_strid, local_player_won)
-    
     if game_ended is True:
         del games_in_progress[game_owner_strid]
 
@@ -64,7 +59,6 @@ def player_guesses(player_guess: player_guess.PlayerGuess):
 def player2_guesses(player2_guess: player_guess.PlayerGuess):
     global games_in_progress
 
-    # VARIABLES #
     game_owner_strid: str = player2_guess.user_strid; game_in_progress: game_manager.GameManager = games_in_progress[game_owner_strid]
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool
     
@@ -77,12 +71,11 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
     if game_ended is False:
         is_local_players_turn = game_in_progress.next_turn()
 
-    # update stats #
+    # update user stats #
     if game_owner_strid.isdigit():
         stats_manager.set_guesses_stats(game_owner_strid, correct_answer)
         if game_ended is True:
             stats_manager.set_matches_stats(game_owner_strid, local_player_won)
-    
     if game_ended is True:
         del games_in_progress[game_owner_strid]
 
@@ -93,7 +86,6 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess):
 def ai_guesses(user_strid: user_strid.UserStrid):
     global games_in_progress
 
-    # VARIABLES #
     game_owner_strid: str = user_strid.user_strid; game_in_progress: game_manager.GameManager = games_in_progress[game_owner_strid]
     updated_board: list[list[int]]; game_ended: bool; local_player_won: bool
     
@@ -106,7 +98,7 @@ def ai_guesses(user_strid: user_strid.UserStrid):
     if game_ended is False:
         is_local_players_turn = game_in_progress.next_turn()
 
-    # update stats #
+    # update user stats #
     if game_ended is True:
         if game_owner_strid.isdigit():
             stats_manager.set_matches_stats(game_owner_strid, local_player_won)

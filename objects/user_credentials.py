@@ -2,6 +2,6 @@
 from pydantic import BaseModel
 
 # CREATE THE OBJECT #
-class UserLoginCredentials(BaseModel):
+class UserCredentials(BaseModel):
     user_name: str
     user_password: str

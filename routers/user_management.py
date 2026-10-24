@@ -3,8 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
 from objects import user_info
-from database import user_management
-from database import authentication
+from database import user_management, authentication
 from security import jwt
 
 # CREATE THE ROUTER #
