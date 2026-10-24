@@ -38,7 +38,7 @@ def user_login(user_credentials: user_credentials.UserCredentials):
 
     access_token: str = jwt.get_access_token(db_user_id)
 
-    return { "result": "success", "user_id": db_user_id, "access_token": access_token }
+    return { "result": "success", "access_token": access_token }
 
 @router.post("/auth/user-register")
 def user_register(user_info: user_info.UserInfo):
@@ -62,5 +62,21 @@ def user_register(user_info: user_info.UserInfo):
 @router.post("/auth/guest-login")
 def guest_login():
     guest_name: str = "guest_" + str(randint(10000, 99999))
+    db_user_name_unused: bool | None = authentication.is_user_name_available(guest_name)
 
-    return { "result": "success", "guest_name": guest_name }
+    if db_user_name_unused is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al buscar el nombre de invitado")
+    elif db_user_name_unused is True:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de modo invitado: nombre de invitado ya esta usado, intente de vuelta")
+    
+    if authentication.register_guest(guest_name) is False:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al registrar el invitado")
+
+    db_guest_id: int | None = user_management.get_user_id_with_user_name(guest_name)
+
+    if db_guest_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al obtener el id de invitado")
+
+    access_token: str = jwt.get_access_token(db_guest_id)
+
+    return { "result": "success", "access_token": access_token }
