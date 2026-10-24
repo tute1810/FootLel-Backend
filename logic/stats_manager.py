@@ -13,7 +13,7 @@ def set_matches_stats(user_id: int, match_won: bool) -> bool:
     win_streak
     """
 
-    all_user_stats: tuple[int, int, int, int, int, int] | None = user_stats.get_user_stats(user_id)
+    all_user_stats: tuple[int] | None = user_stats.get_user_stats(user_id)
     
     if all_user_stats is None:
         return False
@@ -47,7 +47,7 @@ def set_guesses_stats(user_id: int, correct_guess: bool) -> bool:
     win_streak
     """
     
-    all_user_stats: tuple[int, int, int, int, int, int] | None = user_stats.get_user_stats(user_id)
+    all_user_stats: tuple[int] | None = user_stats.get_user_stats(user_id)
     
     if all_user_stats is None:
         return False
