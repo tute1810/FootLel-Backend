@@ -14,11 +14,11 @@ router = APIRouter()
 @router.post("/auth/user-login")
 def user_login(user_credentials: user_credentials.UserCredentials):
     user_name: str = user_credentials.user_name
-    db_user_name_unused: bool | None = authentication.is_user_name_available(user_name)
+    is_user_name_unused: bool | None = authentication.is_user_name_available(user_name)
 
-    if db_user_name_unused is None:
+    if is_user_name_unused is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: error al buscar el nombre de usuario")
-    elif db_user_name_unused is True:
+    elif is_user_name_unused is True:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: nombre de usuario incorrecto")
 
     db_user_password: str | None = user_management.get_user_password_with_user_name(user_name)
@@ -31,12 +31,12 @@ def user_login(user_credentials: user_credentials.UserCredentials):
     if user_password != db_user_password:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error de login: contrasenia incorrecta")
 
-    db_user_id: int | None = user_management.get_user_id_with_user_name(user_name)
+    user_id: int | None = user_management.get_user_id_with_user_name(user_name)
 
-    if db_user_id is None:
+    if user_id is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de login: error al buscar el id del usuario")
 
-    access_token: str = jwt.get_access_token(db_user_id)
+    access_token: str = jwt.get_access_token(user_id)
 
     return { "result": "success", "access_token": access_token }
 
@@ -62,21 +62,21 @@ def user_register(user_info: user_info.UserInfo):
 @router.post("/auth/guest-login")
 def guest_login():
     guest_name: str = "guest_" + str(randint(10000, 99999))
-    db_user_name_unused: bool | None = authentication.is_user_name_available(guest_name)
+    is_user_name_unused: bool | None = authentication.is_user_name_available(guest_name)
 
-    if db_user_name_unused is None:
+    if is_user_name_unused is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al buscar el nombre de invitado")
-    elif db_user_name_unused is False:
+    elif is_user_name_unused is False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de modo invitado: nombre de invitado ya esta usado, intente de vuelta")
     
     if authentication.register_guest(guest_name) is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al registrar el invitado")
 
-    db_guest_id: int | None = user_management.get_user_id_with_user_name(guest_name)
+    guest_id: int | None = user_management.get_user_id_with_user_name(guest_name)
 
-    if db_guest_id is None:
+    if guest_id is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al obtener el id de invitado")
 
-    access_token: str = jwt.get_access_token(db_guest_id)
+    access_token: str = jwt.get_access_token(guest_id)
 
     return { "result": "success", "access_token": access_token }

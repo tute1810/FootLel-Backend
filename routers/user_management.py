@@ -26,13 +26,6 @@ def eliminate_user(user_id: int = Depends(jwt.check_access_token_and_get_user_id
     
     return { "result": "success" }
 
-@router.get("/user/test-is-guest")
-def test_user(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    if user_management.is_guest_with_user_id(user_id) is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error ")
-    
-    return { "result": "success" }
-
 @router.patch("/user/edit-user-info")
 def edit_user_info(user_info: user_info.UserInfo, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     user_name: str = user_info.user_name
