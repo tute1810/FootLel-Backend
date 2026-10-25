@@ -138,7 +138,7 @@ def register_guest(user_name: str):
             (user_name, is_guest, user_email, user_password)
             VALUES (%s, True, %s, %s)
             """,
-            (user_name,f"", f"")
+            (user_name,user_name, f"")
         )
         
         conn.commit()
