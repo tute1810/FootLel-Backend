@@ -19,12 +19,9 @@ def set_animations_config_state(user_id: int, state: bool):
         print(run.rowcount, flush=True)
         if run.rowcount > 0:
             conn.commit()
-            
             return True
-        else:
-            conn.rollback()
-            
-            return False
+        conn.commit()
+        return True
     
     except Exception as e:
         print(e, flush=True)
@@ -48,9 +45,8 @@ def set_dark_mode_config_state(user_id: int, state: bool):
         if run.rowcount > 0:
             conn.commit()
             return True
-        else:
-            conn.rollback()
-            return False
+        conn.commit()
+        return True
     except Exception as e:
         print(e, flush=True)
         return False
@@ -75,12 +71,9 @@ def set_compatibility_config_status(user_id: int, state: bool):
         
         if run.rowcount > 0:
             conn.commit()
-            
             return True
-        else:
-            conn.rollback()
-            
-            return False
+        conn.commit()
+        return True
     
     except Exception as e:
         print(e, flush=True)
