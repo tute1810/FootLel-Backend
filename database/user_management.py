@@ -295,8 +295,7 @@ def get_user_friends(user_id:int):
 
         
         conn.close()
-
-        if friends == None:
+        if friends[0] is None:
             return []
         else:
             return friends[0]
