@@ -281,17 +281,21 @@ def is_guest_with_user_id(user_id:int):
     except Exception as e:
         print(e, flush=True)
         return None
+
 def get_user_friends(user_id:int):
-    """Get user friends, returns a list of a list"""
+    """get user friends, returns a list of a list"""
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
 
         run.execute("SELECT friends_id FROM friends WHERE pk_user_id = %s", (user_id,))
         friends = run.fetchall()
+        print(friends, flush=True)
         friends = [row[0] for row in friends]
+        print(friends, flush=True)
+        print(friends[0], flush=True)
         conn.commit()
-
+#[[1, 3, 4, 5, 6]]
         conn.close()
         return friends
     except Exception as e:
@@ -316,7 +320,7 @@ def set_user_friends(user_id:int, friend_id:int):
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return False
     finally:
         if conn:
@@ -340,9 +344,8 @@ def delete_one_user_friend(user_id:int, friend_id:int):
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
+        print(e, flush=True)
         return False
     finally:
         if conn:
             conn.close()
-        
