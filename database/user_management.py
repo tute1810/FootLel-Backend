@@ -293,9 +293,13 @@ def get_user_friends(user_id:int):
         friends = [row[0] for row in friends]
         conn.commit()
 
-        print(friends[0], flush=True)
+        
         conn.close()
-        return friends[0]
+
+        if friends == None:
+            return []
+        else:
+            return friends[0]
     except Exception as e:
         print(e, flush=True)
         return None
