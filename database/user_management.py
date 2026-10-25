@@ -283,27 +283,24 @@ def is_guest_with_user_id(user_id:int):
         return None
 
 def get_user_friends(user_id:int):
-    """get user friends, returns a list of a list"""
+    """get user friends, returns a list ids"""
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()
 
         run.execute("SELECT friends_id FROM friends WHERE pk_user_id = %s", (user_id,))
         friends = run.fetchall()
-        print(friends, flush=True)
         friends = [row[0] for row in friends]
-        print(friends, flush=True)
-        print(friends[0], flush=True)
         conn.commit()
 
         conn.close()
-        return friends
+        return friends[0]
     except Exception as e:
         print(e, flush=True)
         return None
     
-def set_user_friends(user_id:int, friend_id:int):
-    """Set user friend"""
+def add_user_friend(user_id:int, friend_id:int):
+    """add user friend"""
     try:
         conn = db.connect(current_db_url)
         run = conn.cursor()

@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
-from objects import user_info
+from objects import user_info, user_friend
 from database import user_management, authentication
 from security import jwt
 
@@ -53,6 +53,31 @@ def edit_user_info(user_info: user_info.UserInfo, user_id: int = Depends(jwt.che
 
 @router.get("/user/get-user-friends")
 def get_user_friends(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    user_management.get_user_friends(user_id)
+    friend_ids: list[int] | None = user_management.get_user_friends(user_id)
+
+    if friend_ids is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de obtencion de amigos: error al obtener los amigos del usuario")
     
+    friend_names: list[str] = []
+
+    for i in range(0, len(friend_ids), 1):
+        friend_name: str | None = user_management.get_user_name(friend_ids[i])
+
+        if friend_name is None:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de obtencion de amigos: error al obtener el nombre de un amigo del usuario")
+        
+        friend_names.append(friend_name)
+
+    return { "result": "success", "friend_names": friend_names }
+
+@router.post("/user/add-user-friend")
+def add_user_friend(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    friend_id: int = user_friend.friend_id
+    
+    if user_management.get_user_name(friend_id) is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de agregar un amigo: amigo no encontrado")
+
+    if user_management.add_user_friend(user_id, friend_id) is False:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de agregar un amigo: error al agregar el amigo")
+
     return { "result": "success" }
