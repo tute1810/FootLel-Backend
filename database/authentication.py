@@ -117,6 +117,7 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
 
         run.execute(""" INSERT INTO user_configuration (pk_user_id) VALUES (%s)""", (user_id,))
         run.execute(""" INSERT INTO user_stats (pk_user_id, win_streak, user_points) VALUES (%s,0,0)""", (user_id,))
+        run.execute(""" INSERT INTO friends (pk_user_id)  VALUES (%s)""", (user_id,))
         conn.commit()
 
         conn.close()

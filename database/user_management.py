@@ -141,6 +141,9 @@ def eliminate_user(user_id: int):
 
         run.execute("UPDATE users SET user_eliminated = true WHERE pk_user_id = (%s) AND user_eliminated = false ", (user_id,))
         rows = run.rowcount
+        run.execute("DELETE FROM friends WHERE pk_user_id = %s", (user_id,))
+        run.execute("DELETE FROM user_configuration WHERE pk_user_id = %s", (user_id,))
+        run.execute("DELETE FROM user_stats WHERE pk_user_id = %s", (user_id,))
         conn.commit()
 
         conn.close()
@@ -151,7 +154,7 @@ def eliminate_user(user_id: int):
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e, flush=True)
+        print(e)
         return False
     finally:
         if conn:
@@ -278,3 +281,68 @@ def is_guest_with_user_id(user_id:int):
     except Exception as e:
         print(e, flush=True)
         return None
+def get_user_friends(user_id:int):
+    """Get user friends, returns a list of a list"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute("SELECT friends_id FROM friends WHERE pk_user_id = %s", (user_id,))
+        friends = run.fetchall()
+        friends = [row[0] for row in friends]
+        conn.commit()
+
+        conn.close()
+        return friends
+    except Exception as e:
+        print(e, flush=True)
+        return None
+    
+def set_user_friends(user_id:int, friend_id:int):
+    """Set user friend"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute("UPDATE friends SET friends_id = array_append( COALESCE(friends_id, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(friends_id, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows == 1:
+            return True
+        else:
+           return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e)
+        return False
+    finally:
+        if conn:
+            conn.close()
+            
+def delete_one_user_friend(user_id:int, friend_id:int):
+    """Deletes one friend from the user with the ids"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+
+        run.execute("UPDATE friends SET friends_id = array_remove(friends_id, %s) WHERE pk_user_id = %s ", (friend_id, user_id))
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows == 1:
+            return True
+        else:
+           return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e)
+        return False
+    finally:
+        if conn:
+            conn.close()
+        
