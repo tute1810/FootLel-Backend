@@ -16,10 +16,8 @@ def set_animations_config_state(user_id: int, state: bool):
         not_state = not state
         
         run.execute("""UPDATE user_configuration SET user_animations = %s WHERE pk_user_id = (%s) AND user_animations = %s""", (state,user_id,not_state) )
-        print(run.rowcount, flush=True)
-        if run.rowcount > 0:
-            conn.commit()
-            return True
+
+
         conn.commit()
         return True
     
@@ -41,10 +39,7 @@ def set_dark_mode_config_state(user_id: int, state: bool):
         
         run.execute("""UPDATE user_configuration SET user_dark_mode = %s WHERE pk_user_id = (%s) AND user_dark_mode = %s""", (state, user_id, not_state) )
         
-        
-        if run.rowcount > 0:
-            conn.commit()
-            return True
+
         conn.commit()
         return True
     except Exception as e:
@@ -68,10 +63,6 @@ def set_compatibility_config_status(user_id: int, state: bool):
         
         run.execute("""UPDATE user_configuration SET user_compatibility = %s WHERE pk_user_id = %s AND user_compatibility = %s""", (state, user_id, not_state) )
         
-        
-        if run.rowcount > 0:
-            conn.commit()
-            return True
         conn.commit()
         return True
     
