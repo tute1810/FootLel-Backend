@@ -272,6 +272,7 @@ def is_guest_with_user_id(user_id:int):
             conn.rollback()
             conn.close()
             return None
+        
         conn.close()
         return is_guest
     except Exception as e:
