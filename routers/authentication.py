@@ -66,7 +66,7 @@ def guest_login():
 
     if db_user_name_unused is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al buscar el nombre de invitado")
-    elif db_user_name_unused is True:
+    elif db_user_name_unused is False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de modo invitado: nombre de invitado ya esta usado, intente de vuelta")
     
     if authentication.register_guest(guest_name) is False:
