@@ -124,7 +124,7 @@ def get_user_stats(user_id: int):
             conn.close()
             
 def get_global_leaderboard():
-    """Get the global rankings in form of a list[list[str, int]]"""
+    """get the global rankings in form of a list[tuple[str, int]]"""
 
     conn = None
     try:

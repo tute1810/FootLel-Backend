@@ -11,11 +11,10 @@ router = APIRouter()
 # ENDPOINT FUNCTIONS #
 @router.get("/stat/get-global-leaderboard")
 def get_global_leaderboard():
-    leaderboard: list[list[str, int]] | None = user_stats.get_global_leaderboard()
+    leaderboard: list[tuple[str, int]] | None = user_stats.get_global_leaderboard()
 
     if leaderboard is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de ranking: no fue posible acceder al ranking")
-    print(leaderboard, flush=True)
 
     return { "result": "success", "leaderboard": leaderboard }
 
