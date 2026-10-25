@@ -85,7 +85,7 @@ def set_user_win_streak(user_id: int, win_streak: int):
             conn.close()
 
 def get_user_stats(user_id: int):
-    """get user stats in this order: user_points, guesses_made, correct_guesses, matches_played, matches_won, win_streak"""
+    """get user stats in this order: user_points, guesses_made, correct_guesses, matches_played, matches_won, win_streak as a tuple"""
     
     conn = None
     try:
@@ -123,12 +123,11 @@ def get_user_stats(user_id: int):
         if conn:
             conn.close()
             
-def get_table_ranking():
+def get_global_leaderboard():
     """Get the global rankings in form of a list of tuples"""
 
     conn = None
     try:
-        
         conn = db.connect(current_db_url)
         run = conn.cursor()
         
@@ -160,14 +159,3 @@ def get_table_ranking():
     finally:
         if conn:
             conn.close()
-
-
-
-
-
-
-            
-
-
-
-
