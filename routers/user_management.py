@@ -54,7 +54,6 @@ def edit_user_info(user_info: user_info.UserInfo, user_id: int = Depends(jwt.che
 @router.get("/user/get-user-friends")
 def get_user_friends(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     friend_ids: list[int] | None = user_management.get_user_friends(user_id)
-    print(friend_ids, flush=True)
 
     if friend_ids is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de obtencion de amigos: error al obtener los amigos del usuario")
@@ -69,7 +68,7 @@ def get_user_friends(user_id: int = Depends(jwt.check_access_token_and_get_user_
         
         friend_names.append(friend_name)
 
-    return { "result": "success", "friend_names": friend_names }
+    return { "result": "success", "friend_names": friend_names, "friend_ids": friend_ids }
 
 @router.post("/user/add-user-friend")
 def add_user_friend(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):

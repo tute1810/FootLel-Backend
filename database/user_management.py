@@ -292,7 +292,6 @@ def get_user_friends(user_id:int):
         friends = run.fetchall()
         friends = [row[0] for row in friends]
         conn.commit()
-
         
         conn.close()
         if friends[0] is None:
