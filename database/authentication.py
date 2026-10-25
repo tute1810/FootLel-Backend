@@ -13,11 +13,11 @@ def is_user_name_available(user_name: str):
         conn = db.connect(current_db_url)
         run = conn.cursor()
            
-        run.execute("""SELECT user_name FROM users WHERE user_name = (%s) AND user_eliminated = FALSE""",(user_name,))
-        check_user_name = run.fetchone()[0]
+        run.execute("""SELECT 1 FROM users WHERE user_name = (%s) AND user_eliminated = FALSE""",(user_name,))
+        check_user_name = run.fetchone()
         conn.commit()
 
-        if check_user_name is not None or check_user_name is not ():
+        if check_user_name is not None:
             conn.rollback()
             conn.close()
             return False
