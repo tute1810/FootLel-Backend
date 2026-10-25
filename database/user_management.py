@@ -295,7 +295,7 @@ def get_user_friends(user_id:int):
         print(friends, flush=True)
         print(friends[0], flush=True)
         conn.commit()
-#[[1, 3, 4, 5, 6]]
+
         conn.close()
         return friends
     except Exception as e:
