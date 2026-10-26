@@ -19,8 +19,7 @@ def start_game(start_game_options: start_game_options.StartGameOptions, user_id:
     global games_in_progress
 
     game_in_progress: game_manager.GameManager
-    if user_id not in games_in_progress:
-        games_in_progress[user_id] = game_manager.GameManager(start_game_options.is_last_round, start_game_options.is_daily_challenge)
+    games_in_progress[user_id] = game_manager.GameManager(start_game_options.is_last_round, start_game_options.is_daily_challenge)
     game_in_progress = games_in_progress[user_id]
 
     row_headers: list[str]; column_headers: list[str]
