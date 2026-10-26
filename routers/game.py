@@ -53,7 +53,6 @@ def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depend
     if is_owner_guest is False:
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
-            print("setting matches stats for player guess", flush=True)
             stats_manager.set_matches_stats(game_owner_id, local_player_won)
     if game_ended is True:
         del games_in_progress[game_owner_id]
@@ -83,7 +82,6 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess, user_id: int = Depe
     if is_owner_guest is False:
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
-            print("setting matches stats for player2", flush=True)
             stats_manager.set_matches_stats(game_owner_id, local_player_won)
     if game_ended is True:
         del games_in_progress[game_owner_id]
@@ -113,7 +111,6 @@ def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     if game_ended is True:
         if is_owner_guest is False and is_last_round is True:
             stats_manager.set_matches_stats(game_owner_id, local_player_won)
-            print("setting matches stats for AI guess", flush=True)
         del games_in_progress[game_owner_id]
 
     return { "result": "success", "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
