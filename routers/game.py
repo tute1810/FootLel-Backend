@@ -16,6 +16,13 @@ games_in_progress: dict[int, game_manager.GameManager] = {}
 # ENDPOINT FUNCTIONS #
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    user_daily_challenge_state: bool | None = user_stats.get_user_daily_challenge_state_with_id(user_id)
+
+    if user_daily_challenge_state is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego: error al obtener el estado del daily challenge del usuario")
+    elif user_daily_challenge_state is True:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="error de inicio de juego: el usuario ya ha completado el daily challenge hoy, vuelve mañana")
+
     global games_in_progress
 
     game_in_progress: game_manager.GameManager
