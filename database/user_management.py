@@ -36,7 +36,7 @@ def get_user_name(user_id: int):
         if user_name is None:
             conn.rollback()
             conn.close()
-            return None
+            return ""
         
         conn.close()
         return user_name[0]
@@ -57,7 +57,7 @@ def get_user_password_with_user_name(user_name: str):
         if user_password is None:
             conn.rollback()
             conn.close()
-            return None
+            return ""
         
         conn.close()
         return user_password[0]
@@ -78,7 +78,7 @@ def get_user_password_with_user_id(user_id: int):
         if user_password is None:
             conn.rollback()
             conn.close()
-            return None
+            return ""
         
         conn.close()
         return user_password[0]
@@ -101,7 +101,7 @@ def get_user_id_with_user_name(user_name: str):
         if user_id is None:
             conn.rollback()
             conn.close()
-            return None
+            return -1
         
         conn.close()
         return user_id[0]
@@ -124,7 +124,7 @@ def get_user_id(user_email: str):
         if user_id is None:
             conn.rollback()
             conn.close()
-            return None
+            return -1
         
         conn.close()
         return user_id[0]
@@ -150,7 +150,7 @@ def eliminate_user(user_id: int):
         if rows == 1:
             return True
         else:
-           return False
+           return None
     except Exception as e:
         if conn:
             conn.rollback()
@@ -167,13 +167,22 @@ def change_password(user_id: int, user_password: str):
         run = conn.cursor()
         
         run.execute(""" UPDATE users SET user_password = (%s) WHERE pk_user_id = (%s)""", (user_password,user_id ))
+        rows = run.rowcount
         conn.commit()
 
         conn.close()
-        return True
+        if rows == 1:
+            return True
+        else:
+           return None
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
         return False
+    finally:
+        if conn:
+            conn.close()
 
 def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
     """Change the user user_email, user_name and the user_password with user_name:str, user_email, user_password using user_id)"""
@@ -220,10 +229,10 @@ def get_user_info(user_id: int):
         user_name_and_email = run.fetchall()
         conn.commit()
 
-        if user_name_and_email == []:
+        if user_name_and_email is None:
             conn.rollback()
             conn.close()
-            return None
+            return []
 
         conn.close()
         return user_name_and_email[0]
@@ -251,7 +260,7 @@ def get_guest_id_with_name(guest_name: str):
         if guest_id is None:
             conn.rollback()
             conn.close()
-            return None
+            return -1
         
         conn.close()
         return guest_id[0]
@@ -340,7 +349,7 @@ def delete_one_user_friend(user_id:int, friend_id:int):
         if rows == 1:
             return True
         else:
-           return False
+           return None
     except Exception as e:
         if conn:
             conn.rollback()
