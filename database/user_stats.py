@@ -1,5 +1,6 @@
 import psycopg2 as db
 import os
+from datetime import date
 
 deployed_db_url = os.environ.get("DATABASE_URL")
 
@@ -211,3 +212,49 @@ def get_user_daily_challenge_state_with_id(user_id: int):
         print(e, flush=True)
         return None
     
+def set_current_date(current_date:str):
+    """Set the current date"""
+    conn = None
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute("""UPDATE backend_staff SET current_day = (%s)""", (current_date, ) )
+        
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        return True
+    
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+def get_current_date():
+    """Gets the current date as a string"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute(
+        """SELECT current_day FROM backend_staff""",
+        )
+        user_id = run.fetchone()
+        conn.commit()
+
+        if user_id is None:
+            conn.rollback()
+            conn.close()
+            return ""
+        
+        conn.close()
+        return user_id[0]
+    except Exception as e:
+        print(e, flush=True)
+        return None
