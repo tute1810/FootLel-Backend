@@ -198,16 +198,16 @@ def get_user_daily_challenge_state_with_id(user_id: int):
         run.execute(
         """SELECT daily_challenge FROM user_stats WHERE (pk_user_id = %s)""", (user_id,)
         )
-        user_id = run.fetchone()
+        daily_challenge = run.fetchone()
         conn.commit()
 
-        if user_id is None:
+        if daily_challenge is None:
             conn.rollback()
             conn.close()
             return None
         
         conn.close()
-        return user_id[0]
+        return daily_challenge[0]
     except Exception as e:
         print(e, flush=True)
         return None
@@ -221,7 +221,6 @@ def set_current_date(current_date:str):
         
         run.execute("""UPDATE backend_staff SET current_day = (%s)""", (current_date, ) )
         
-        rows = run.rowcount
         conn.commit()
 
         conn.close()
@@ -245,16 +244,16 @@ def get_current_date():
         run.execute(
         """SELECT current_day FROM backend_staff""",
         )
-        user_id = run.fetchone()
+        current_date = run.fetchone()
         conn.commit()
 
-        if user_id is None:
+        if current_date is None:
             conn.rollback()
             conn.close()
             return ""
         
         conn.close()
-        return user_id[0]
+        return current_date[0]
     except Exception as e:
         print(e, flush=True)
         return None
