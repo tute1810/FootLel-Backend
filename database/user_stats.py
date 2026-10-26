@@ -159,3 +159,55 @@ def get_global_leaderboard():
     finally:
         if conn:
             conn.close()
+def set_user_daily_challenge_with_user_id(user_id: int, daily_challenge:bool):
+    """Set the daily challenge state with the user_id and a bool returns True or False"""
+    conn = None
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute("""UPDATE user_stats SET daily_challenge = (%s) WHERE pk_user_id = (%s)""", (daily_challenge, user_id) )
+        
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows == 1:
+            return True
+        else:
+           return False
+    
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+
+
+def get_user_daily_challenge_state_with_id(user_id: int):
+    """Get active user id with user_email: str"""
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute(
+        """SELECT daily_challenge FROM user_stats WHERE (pk_user_id = %s)""", (user_id,)
+        )
+        user_id = run.fetchone()
+        conn.commit()
+
+        if user_id is None:
+            conn.rollback()
+            conn.close()
+            return None
+        
+        conn.close()
+        return user_id[0]
+    except Exception as e:
+        print(e, flush=True)
+        return None
+    
