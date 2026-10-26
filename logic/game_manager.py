@@ -8,9 +8,12 @@ from database import game
 class GameManager():
 
     # VARIABLES #
-    def __init__(self):
+    def __init__(self, is_last_round: bool = False, is_daily_challenge: bool = False):
         self.is_playing: bool = False
         self.game_turn: int = 1
+
+        self.is_last_round: bool = is_last_round
+        self.is_daily_challenge: bool = is_daily_challenge
 
         self.leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
         self.nationalities_name: list[str] = ["argentina", "italy", "england", "spain", "france"]
@@ -140,7 +143,7 @@ class GameManager():
         # return True if "game_turn" is odd and False if its even #
         return bool(self.game_turn % 2 != 0)
 
-    def player_guessed(self, player_guess: str) -> tuple[list[list[int]], bool, bool, bool] | None:
+    def player_guessed(self, player_guess: str) -> tuple[list[list[int]], bool, bool, bool, bool, bool] | None:
 
         # error out if the player is not in a game #
         if self.is_playing is False:
@@ -156,7 +159,7 @@ class GameManager():
 
                 # if the slot the player guess is on is already occupied, do nothing and return the matrix
                 if self.player_slots_matrix[row][column] != 0:
-                    return self.player_slots_matrix, False, False, False
+                    return self.player_slots_matrix, False, False, False, self.is_last_round, self.is_daily_challenge
 
                 # set the slot to "1" to indicate that it belongs to the player #
                 self.player_slots_matrix[row][column] = 1
@@ -167,7 +170,7 @@ class GameManager():
                 if somebody_won is True:
                     finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                     self.stop_game_board()
-                    return finished_player_slots_matrix, True, True, local_player_won
+                    return finished_player_slots_matrix, True, True, local_player_won, self.is_last_round, self.is_daily_challenge
 
                 # if the whole board has no "0" in it, that means there are no empty slots #
                 if all(value != 0 for row in self.player_slots_matrix for value in row):
@@ -175,12 +178,12 @@ class GameManager():
                     # finish the game #
                     finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                     self.stop_game_board()
-                    return finished_player_slots_matrix, True, True, False
+                    return finished_player_slots_matrix, True, True, False, self.is_last_round, self.is_daily_challenge
                 
-                return self.player_slots_matrix, True, False, False
-        return self.player_slots_matrix, False, False, False
+                return self.player_slots_matrix, True, False, False, self.is_last_round, self.is_daily_challenge
+        return self.player_slots_matrix, False, False, False, self.is_last_round, self.is_daily_challenge
 
-    def player2_guessed(self, player2_guess: str) -> tuple[list[list[int]], bool, bool, bool] | None:
+    def player2_guessed(self, player2_guess: str) -> tuple[list[list[int]], bool, bool, bool, bool, bool] | None:
 
         # error out if the player is not in a game #
         if self.is_playing is False:
@@ -196,7 +199,7 @@ class GameManager():
 
                 # if the slot the player guess is on is already occupied, do nothing and return the matrix
                 if self.player_slots_matrix[row][column] != 0:
-                    return self.player_slots_matrix, False, False, False
+                    return self.player_slots_matrix, False, False, False, self.is_last_round, self.is_daily_challenge
 
                 # set the slot to "1" to indicate that it belongs to the player #
                 self.player_slots_matrix[row][column] = -1
@@ -207,7 +210,7 @@ class GameManager():
                 if somebody_won is True:
                     finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                     self.stop_game_board()
-                    return finished_player_slots_matrix, True, True, local_player_won
+                    return finished_player_slots_matrix, True, True, local_player_won, self.is_last_round, self.is_daily_challenge
 
                 # if the whole board has no "0" in it, that means there are no empty slots #
                 if all(value != 0 for row in self.player_slots_matrix for value in row):
@@ -215,12 +218,12 @@ class GameManager():
                     # finish the game #
                     finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                     self.stop_game_board()
-                    return finished_player_slots_matrix, True, True, False
+                    return finished_player_slots_matrix, True, True, False, self.is_last_round, self.is_daily_challenge
                 
-                return self.player_slots_matrix, True, False, False
-        return self.player_slots_matrix, False, False, False
+                return self.player_slots_matrix, True, False, False, self.is_last_round, self.is_daily_challenge
+        return self.player_slots_matrix, False, False, False, self.is_last_round, self.is_daily_challenge
 
-    def ai_guessed(self) -> tuple[list[list[int]], bool, bool] | None:
+    def ai_guessed(self) -> tuple[list[list[int]], bool, bool, bool, bool] | None:
         
         # error out if the player is not in a game #
         if self.is_playing is False:
@@ -241,7 +244,7 @@ class GameManager():
 
         # if there were no player slots, just return the matrix #
         if len(player_slots_rows) == 0:
-            return self.player_slots_matrix, False, False
+            return self.player_slots_matrix, False, False, self.is_last_round, self.is_daily_challenge
 
         # grab a random slot from all of the player slots #
         random_player_slot_index: int = randint(0, (len(player_slots_rows) - 1))
@@ -290,19 +293,19 @@ class GameManager():
             if somebody_won is True:
                 finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                 self.stop_game_board()
-                return finished_player_slots_matrix, True, local_player_won
+                return finished_player_slots_matrix, True, local_player_won, self.is_last_round, self.is_daily_challenge
 
             # if there are no more empty slots, then end the game #
             if all(value != 0 for row in self.player_slots_matrix for value in row):
                 finished_player_slots_matrix: list[list[int]] = self.player_slots_matrix.copy()
                 self.stop_game_board()
-                return finished_player_slots_matrix, True, False
+                return finished_player_slots_matrix, True, False, self.is_last_round, self.is_daily_challenge
 
             # if there are more empty slots, then just return the new matrix without ending the game #
-            return self.player_slots_matrix, False, False
+            return self.player_slots_matrix, False, False, self.is_last_round, self.is_daily_challenge
 
         # if the ai could not place a slot, just return the same matrix #
-        return self.player_slots_matrix, False, False
+        return self.player_slots_matrix, False, False, self.is_last_round, self.is_daily_challenge
 
     # simple function that returns if the value is inside a range #
     def _in_range(self, value: int, minimum: int, maximum: int) -> bool:
