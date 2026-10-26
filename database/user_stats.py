@@ -160,6 +160,7 @@ def get_global_leaderboard():
     finally:
         if conn:
             conn.close()
+
 def set_user_daily_challenge_with_user_id(user_id: int, daily_challenge:bool):
     """Set the daily challenge state with the user_id and a bool returns True or False"""
     conn = None
@@ -257,3 +258,30 @@ def get_current_date():
     except Exception as e:
         print(e, flush=True)
         return None
+
+
+def reset_daily_challenge_state_to_all_users():
+    """Set the daily challenge state to False"""
+    conn = None
+    try:
+        conn = db.connect(current_db_url)
+        run = conn.cursor()
+        
+        run.execute("""UPDATE user_stats SET daily_challenge = (%s)""", (False,) )
+        
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows >= 1:
+            return True
+        else:
+           return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return False
+    finally:
+        if conn:
+            conn.close()

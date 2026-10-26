@@ -2,9 +2,9 @@
 from fastapi import APIRouter, HTTPException, status, Depends
 
 # IMPORT INTERNAL LIBRARIES #
-from logic import game_manager, stats_manager
+from logic import game_manager, stats_manager, date_manager
 from objects import player_guess, start_game_options
-from database import user_management
+from database import user_management, user_stats
 from security import jwt
 
 # CREATE THE ROUTER #
@@ -54,6 +54,9 @@ def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depend
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
             stats_manager.set_matches_stats(game_owner_id, local_player_won)
+            if is_daily_challenge is True:
+                date_manager.update_daily_challenge_date()
+                user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
     if game_ended is True:
         del games_in_progress[game_owner_id]
 
@@ -83,6 +86,9 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess, user_id: int = Depe
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
             stats_manager.set_matches_stats(game_owner_id, local_player_won)
+            if is_daily_challenge is True:
+                date_manager.update_daily_challenge_date()
+                user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
     if game_ended is True:
         del games_in_progress[game_owner_id]
 
@@ -111,6 +117,9 @@ def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     if game_ended is True:
         if is_owner_guest is False and is_last_round is True:
             stats_manager.set_matches_stats(game_owner_id, local_player_won)
+            if is_daily_challenge is True:
+                date_manager.update_daily_challenge_date()
+                user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
         del games_in_progress[game_owner_id]
 
     return { "result": "success", "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
