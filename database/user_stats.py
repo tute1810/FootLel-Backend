@@ -1,17 +1,21 @@
+# IMPORT EXTERNAL LIBRARIES #
 import psycopg2 as db
 import os
-from datetime import date
 
-deployed_db_url = os.environ.get("DATABASE_URL")
 
-current_db_url = deployed_db_url
 
+# VARIABLES #
+DB_URL: str = os.environ.get("DATABASE_URL")
+
+
+
+# FUNCTIONS #
 def set_user_matches_stats(user_id: int, matches_played: int, matches_won: int, points: int):
     
     """Set matches played, won and lost by the user id"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""UPDATE user_stats SET matches_played = (%s), matches_won = (%s), user_points = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (matches_played, matches_won, points, user_id, user_id) )
@@ -35,7 +39,7 @@ def set_user_guesses_stats(user_id: int, guesses_made: int, correct_guesses: int
     """Set guesses stats, with the amount of guesses made and the correct ones by the user id"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""UPDATE user_stats SET guesses_made = (%s), correct_guesses = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (guesses_made, correct_guesses , user_id, user_id) )
@@ -63,7 +67,7 @@ def set_user_win_streak(user_id: int, win_streak: int):
     conn = None
     
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""UPDATE user_stats SET win_streak = (%s) FROM users WHERE users.pk_user_id = (%s) AND user_stats.pk_user_id = %s AND users.user_eliminated = false""", (win_streak, user_id, user_id) )
@@ -91,7 +95,7 @@ def get_user_stats(user_id: int):
     conn = None
     try:
         
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""
@@ -129,7 +133,7 @@ def get_global_leaderboard():
 
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""
@@ -165,7 +169,7 @@ def set_user_daily_challenge_with_user_id(user_id: int, daily_challenge:bool):
     """Set the daily challenge state with the user_id and a bool returns True or False"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""UPDATE user_stats SET daily_challenge = (%s) WHERE pk_user_id = (%s)""", (daily_challenge, user_id) )
@@ -193,7 +197,7 @@ def set_user_daily_challenge_with_user_id(user_id: int, daily_challenge:bool):
 def get_user_daily_challenge_state_with_id(user_id: int):
     """Get active user id with user_email: str"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
@@ -217,7 +221,7 @@ def set_current_date(current_date:str):
     """Set the current date"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""UPDATE backend_staff SET current_day = (%s)""", (current_date, ) )
@@ -239,7 +243,7 @@ def set_current_date(current_date:str):
 def get_current_date():
     """Gets the current date as a string"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
@@ -264,7 +268,7 @@ def reset_daily_challenge_state_to_all_users():
     """Set the daily challenge state to False"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""UPDATE user_stats SET daily_challenge = (%s)""", (False,) )

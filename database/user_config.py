@@ -1,16 +1,20 @@
+# IMPORT EXTERNAL LIBRARIES #
 import psycopg2 as db
 import os
 
-deployed_db_url = os.environ.get("DATABASE_URL")
-current_db_url = deployed_db_url
+
+
+# VARIABLES #
+DB_URL: str = os.environ.get("DATABASE_URL")
 
 
 
+# FUNCTIONS #
 def set_animations_config_state(user_id: int, state: bool):
     """ set user animation with user_id: int and state"""
     conn = None 
     try:    
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         not_state = not state
@@ -32,7 +36,7 @@ def set_dark_mode_config_state(user_id: int, state: bool):
     """set user dark mode with user_id: int and state"""
     conn = None 
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         not_state = not state
@@ -55,7 +59,7 @@ def set_compatibility_config_status(user_id: int, state: bool):
     try:
         
         
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         not_state = not state
@@ -76,7 +80,7 @@ def set_compatibility_config_status(user_id: int, state: bool):
 def get_compatibility_config_status(user_id:int):
     """get user compatibility status in form of a string using user_id"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
             
         run.execute("SELECT user_compatibility FROM user_configuration WHERE pk_user_id = (%s)", (user_id,) )
@@ -97,7 +101,7 @@ def get_compatibility_config_status(user_id:int):
 def get_dark_mode_config_state(user_id:int):
     """get user dark mode status in form of a string using user_id"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
             
         run.execute("SELECT user_dark_mode FROM user_configuration WHERE pk_user_id = (%s)", (user_id,) )
@@ -118,7 +122,7 @@ def get_dark_mode_config_state(user_id:int):
 def get_animations_config_state(user_id: int):
     """get user animations status in form of a string using user_id"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
             
         run.execute("SELECT user_animations FROM user_configuration WHERE pk_user_id = (%s)", (user_id,) )

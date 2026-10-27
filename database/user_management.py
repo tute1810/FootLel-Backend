@@ -1,16 +1,19 @@
+# IMPORT EXTERNAL LIBRARIES #
 import psycopg2 as db
 import os
 
-deployed_db_url = os.environ.get("DATABASE_URL")
-
-current_db_url = deployed_db_url
 
 
+# VARIABLES #
+DB_URL: str = os.environ.get("DATABASE_URL")
 
+
+
+# FUNCTIONS #
 def get_users_table():
     """Get users table, returns a list of tuples"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("SELECT * FROM users",)
@@ -26,7 +29,7 @@ def get_users_table():
 def get_user_name(user_id: int):
     """get user_name in form of a string using user_id"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
             
         run.execute("SELECT user_name FROM users WHERE pk_user_id = (%s) AND user_eliminated = false", (user_id,) )
@@ -47,7 +50,7 @@ def get_user_name(user_id: int):
 def get_user_password_with_user_name(user_name: str):
     """Get user password with: user_name: str in form of a string or None if the user doesnt exist or is deactivated"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("SELECT user_password FROM users WHERE user_name = (%s) AND user_eliminated = false", (user_name,))
@@ -68,7 +71,7 @@ def get_user_password_with_user_name(user_name: str):
 def get_user_password_with_user_id(user_id: int):
     """get user password with user id"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("SELECT user_password FROM users WHERE pk_user_id = (%s) AND user_eliminated = false", (user_id,))
@@ -89,7 +92,7 @@ def get_user_password_with_user_id(user_id: int):
 def get_user_id_with_user_name(user_name: str):
     """Get active user id with user_name: str"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
@@ -112,7 +115,7 @@ def get_user_id_with_user_name(user_name: str):
 def get_user_id(user_email: str):
     """Get active user id with user_email: str"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
@@ -136,7 +139,7 @@ def eliminate_user(user_id: int):
     """Eliminates user with: user_id: int"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("UPDATE users SET user_eliminated = true WHERE pk_user_id = (%s) AND user_eliminated = false ", (user_id,))
@@ -163,7 +166,7 @@ def eliminate_user(user_id: int):
 def change_password(user_id: int, user_password: str):
     """Change passowrd from active user with user_id: int and user_password: str """
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(""" UPDATE users SET user_password = (%s) WHERE pk_user_id = (%s)""", (user_password,user_id ))
@@ -187,7 +190,7 @@ def change_password(user_id: int, user_password: str):
 def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
     """Change the user user_email, user_name and the user_password with user_name:str, user_email, user_password using user_id)"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         data_to_update: list[str] = []
@@ -222,7 +225,7 @@ def get_user_info(user_id: int):
     """get user_name and user_email with user_id"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("SELECT user_name, user_email FROM users WHERE pk_user_id = (%s) AND user_eliminated = false", (user_id,))
@@ -248,7 +251,7 @@ def get_user_info(user_id: int):
 def get_guest_id_with_name(guest_name: str):
     """Get active user id with user_email: str"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
@@ -271,7 +274,7 @@ def get_guest_id_with_name(guest_name: str):
 def is_guest_with_user_id(user_id:int):    
     """Get guest status with user id"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
@@ -294,7 +297,7 @@ def is_guest_with_user_id(user_id:int):
 def get_user_friends(user_id:int):
     """get user friends, returns a list ids"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("SELECT friends_id FROM friends WHERE pk_user_id = %s", (user_id,))
@@ -314,7 +317,7 @@ def get_user_friends(user_id:int):
 def add_user_friend(user_id:int, friend_id:int):
     """add user friend"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("UPDATE friends SET friends_id = array_append( COALESCE(friends_id, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(friends_id, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
@@ -338,7 +341,7 @@ def add_user_friend(user_id:int, friend_id:int):
 def delete_one_user_friend(user_id:int, friend_id:int):
     """Deletes one friend from the user with the ids"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("UPDATE friends SET friends_id = array_remove(friends_id, %s) WHERE pk_user_id = %s ", (friend_id, user_id))

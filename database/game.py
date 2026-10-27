@@ -1,19 +1,22 @@
+# IMPORT EXTERNAL LIBRARIES #
 import psycopg2 as db
 from psycopg2 import sql
 import os
 
-deployed_db_url = os.environ.get("DATABASE_URL")
-
-current_db_url = deployed_db_url
 
 
+# VARIABLES #
+DB_URL: str = os.environ.get("DATABASE_URL")
 
+
+
+# FUNCTIONS #
 def get_league_teams(league: str, used_team1: str, used_team2: str):
     """Returns a list of tuples of the league teams"""
     conn = None
 
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         query = sql.SQL("""
@@ -51,7 +54,7 @@ def get_player(team: str, league: str, nationality: str):
     conn = None
 
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         columns = {

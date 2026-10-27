@@ -1,16 +1,19 @@
+# IMPORT EXTERNAL LIBRARIES #
 import psycopg2 as db
 import os
 
-deployed_db_url = os.environ.get("DATABASE_URL")
-
-current_db_url = deployed_db_url
 
 
+# VARIABLES #
+DB_URL: str = os.environ.get("DATABASE_URL")
 
+
+
+# FUNCTIONS #
 def is_user_name_available(user_name: str):
     """check if the user name is available to use"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
            
         run.execute("""SELECT 1 FROM users WHERE user_name = (%s) AND user_eliminated = FALSE""",(user_name,))
@@ -31,7 +34,7 @@ def is_user_name_available(user_name: str):
 def is_user_email_available(user_email: str):
     """Check if the user email is available to use"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute("""SELECT 1 FROM users WHERE user_email = (%s) AND user_eliminated = FALSE""",(user_email,))
@@ -52,7 +55,7 @@ def is_user_name_used_by_another_user(user_id: int, user_name: str):
     """get wether the user name is already used or not by another user excluding the user with using user_id"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("SELECT user_name FROM users WHERE pk_user_id != %s AND user_name = %s AND user_eliminated = false", (user_id,user_name))
@@ -77,7 +80,7 @@ def is_user_email_used_by_another_user(user_id: int, user_email: str):
     """get wether the user email is already used or not by another user excluding the user with using user_id"""
     conn = None
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute("SELECT user_email FROM users WHERE pk_user_id != %s AND user_email = %s AND user_eliminated = false", (user_id,user_email) )
@@ -101,7 +104,7 @@ def is_user_email_used_by_another_user(user_id: int, user_email: str):
 def register_new_user(user_name: str, user_email: str, user_password: str):
     """Sets new user with: user_name: str, user_email: str, user_password: str"""
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         run.execute(
@@ -128,7 +131,7 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
 
 def register_guest(user_name: str):
     try:
-        conn = db.connect(current_db_url)
+        conn = db.connect(DB_URL)
         run = conn.cursor()
 
         
