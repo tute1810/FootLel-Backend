@@ -113,7 +113,7 @@ def get_compatibility_config_status(user_id:int)-> bool | None:
             conn.rollback()
         print(e, flush = True)
         return None
-     finally:
+    finally:
         if conn:
             conn.close()
 def get_dark_mode_config_state(user_id:int)-> bool | None:
