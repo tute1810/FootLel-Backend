@@ -78,7 +78,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depend
 def player2_guesses(player2_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     global games_in_progress
 
-    game_owner_id: str = user_id; game_in_progress: game_manager.GameManager = games_in_progress.get(game_owner_id)
+    game_owner_id: int = user_id; game_in_progress: game_manager.GameManager = games_in_progress.get(game_owner_id)
     
     if game_in_progress is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de adivinanza: no estas en un juego")
@@ -115,7 +115,7 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess, user_id: int = Depe
 def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     global games_in_progress
 
-    game_owner_id: str = user_id; game_in_progress: game_manager.GameManager = games_in_progress.get(game_owner_id)
+    game_owner_id: int = user_id; game_in_progress: game_manager.GameManager = games_in_progress.get(game_owner_id)
 
     if game_in_progress is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de adivinanza: no estas en un juego")
