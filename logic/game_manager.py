@@ -118,7 +118,7 @@ class GameManager():
             for j in range(0, 3, 1):
 
                 # store the corresponding players of that selected team and those 3 nationalities on the "players" var #
-                player = game.get_player(teams[i], random_league, nationalities[j])[0][0]
+                player = game.get_player(teams[i], random_league, nationalities[j])[0]
 
                 if player is None:
                     print("ERROR CREATING GAME BOARD: Could not fetch player from db", flush=True)
