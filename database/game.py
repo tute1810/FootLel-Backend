@@ -39,7 +39,7 @@ def get_league_teams(league: str, used_team1: str, used_team2: str)-> tuple[list
             return []
 
         conn.close()
-        return teams[0] 
+        return teams[0]
     except Exception as e:
         if conn:
             conn.rollback()
