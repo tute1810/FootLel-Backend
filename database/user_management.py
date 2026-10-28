@@ -28,24 +28,24 @@ def get_users_table():
 
 def get_user_name(user_id: int):
     """get user_name in form of a string using user_id"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
             
         run.execute("SELECT user_name FROM users WHERE pk_user_id = (%s) AND user_eliminated = false", (user_id,) )
         user_name = run.fetchone()
-        conn.commit()
 
         if user_name is None:
-            conn.rollback()
-            conn.close()
-            return ""
-        
-        conn.close()
-        return user_name[0]
+            return None
+        else:
+            return user_name[0]
     except Exception as e:
         print(e, flush=True)
         return None
+    finally:
+        if conn:
+            conn.close()
 
 def get_user_password_with_user_name(user_name: str):
     """Get user password with: user_name: str in form of a string or None if the user doesnt exist or is deactivated"""
@@ -296,6 +296,7 @@ def is_guest_with_user_id(user_id:int):
 
 def get_user_friends(user_id:int):
     """get user friends, returns a list ids"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -303,9 +304,7 @@ def get_user_friends(user_id:int):
         run.execute("SELECT friends_id FROM friends WHERE pk_user_id = %s", (user_id,))
         friends = run.fetchall()
         friends = [row[0] for row in friends]
-        conn.commit()
         
-        conn.close()
         if friends[0] is None:
             return []
         else:
@@ -313,6 +312,9 @@ def get_user_friends(user_id:int):
     except Exception as e:
         print(e, flush=True)
         return None
+    finally:
+        if conn:
+            conn.close()
     
 def add_user_friend(user_id:int, friend_id:int):
     """add user friend"""

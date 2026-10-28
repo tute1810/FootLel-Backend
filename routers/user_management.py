@@ -55,7 +55,9 @@ def edit_user_info(user_info: user_info.UserInfo, user_id: int = Depends(jwt.che
 def get_user_friends(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     friend_ids: list[int] | None = user_management.get_user_friends(user_id)
 
-    if friend_ids is None:
+    if friend_ids == []:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de obtencion de amigos: usuario sin amigos :(")
+    elif friend_ids is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de obtencion de amigos: error al obtener los amigos del usuario")
     
     friend_names: list[str] = []
