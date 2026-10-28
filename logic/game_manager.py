@@ -155,7 +155,7 @@ class GameManager():
             column: int = i % 3
 
             # if the i player_name_matrix is equal to the guess the user made #
-            print(self.player_names_matrix[row][column] + " | " + player_guess, flush=True)
+            print(str(self.player_names_matrix[row][column]) + " | " + str(player_guess), flush=True)
             if self.player_names_matrix[row][column] == player_guess:
 
                 # if the slot the player guess is on is already occupied, do nothing and return the matrix

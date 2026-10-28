@@ -53,10 +53,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depend
 
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool; is_last_round: bool; is_daily_challenge: bool
     updated_board, correct_answer, game_ended, local_player_won, is_last_round, is_daily_challenge = game_in_progress.player_guessed(player_guess.player_guess)
-
-    if updated_board is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de tablero: error interno del tablero")
-
+    
     if updated_board is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de tablero: no estas en una partida")
 
