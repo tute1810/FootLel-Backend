@@ -1,7 +1,7 @@
 # IMPORT EXTERNAL LIBRARIES #
 import psycopg2 as db
-from psycopg2 import sql
 import os
+from psycopg2 import sql
 
 
 
