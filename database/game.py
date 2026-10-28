@@ -33,7 +33,7 @@ def get_league_teams(league: str, used_team1: str, used_team2: str)-> tuple[list
         teams = run.fetchall()
         conn.commit()
 
-        if temas == [] or all(value is None for value in teams[0])::
+        if teams == [] or all(value is None for value in teams[0]):
             conn.rollback()
             conn.close()
             return []
@@ -70,13 +70,10 @@ def get_player(team: str, league: str, nationality: str)-> tuple[list] | None:
         player = run.fetchall()
         conn.commit()
 
-        if player == [] or all(value is None for value in player[0])::
-            conn.rollback()
-            conn.close()
+        if player == [] or all(value is None for value in player[0]):
             return []
-
-        conn.close()
-        return player[0]
+        else:
+            return player[0]
     except Exception as e:
         if conn:
             conn.rollback()
