@@ -52,8 +52,8 @@ def is_user_email_available(user_email: str) -> bool | None:
         if conn:
             conn.close()
 
-def is_user_name_used_by_another_user(user_id: int, user_name: str):
-    """returns true if the {user_name} is not used by another user"""
+def is_user_name_used_by_another_user(user_id: int, user_name: str) -> bool | None:
+    """returns true if the {user_name} is used by another user"""
     conn = None
     try:
         conn = db.connect(DB_URL)
@@ -76,8 +76,8 @@ def is_user_name_used_by_another_user(user_id: int, user_name: str):
         if conn:
             conn.close()
 
-def is_user_email_used_by_another_user(user_id: int, user_email: str):
-    """get wether the user email is already used or not by another user excluding the user with using user_id"""
+def is_user_email_used_by_another_user(user_id: int, user_email: str) -> bool | None:
+    """returns true if the {user_email} is used by another user"""
     conn = None
     try:
         conn = db.connect(DB_URL)
@@ -101,8 +101,8 @@ def is_user_email_used_by_another_user(user_id: int, user_email: str):
         if conn:
             conn.close()
 
-def register_new_user(user_name: str, user_email: str, user_password: str):
-    """Sets new user with: user_name: str, user_email: str, user_password: str"""
+def register_new_user(user_name: str, user_email: str, user_password: str)-> bool:
+    """Returns true if the user {user_name}, {user_email}, {user_password}, {user_eliminated} were succesfully inserted to the tables"""
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -129,7 +129,8 @@ def register_new_user(user_name: str, user_email: str, user_password: str):
         print(e, flush=True)
         return False
 
-def register_guest(user_name: str):
+def register_guest(user_name: str)->bool:
+    """Returns true if the guests {user_name}, {is_guest}, {user_email}, {user_password} were inserted correctly into the database"""
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()

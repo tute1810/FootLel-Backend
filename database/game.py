@@ -11,7 +11,7 @@ DB_URL: str = os.environ.get("DATABASE_URL")
 
 
 # FUNCTIONS #
-def get_league_teams(league: str, used_team1: str, used_team2: str):
+def get_league_teams(league: str, used_team1: str, used_team2: str)-> tuple[list] | None :
     """Returns a list of tuples of the league teams"""
     conn = None
 
@@ -33,13 +33,13 @@ def get_league_teams(league: str, used_team1: str, used_team2: str):
         teams = run.fetchall()
         conn.commit()
 
-        if teams == []:
+        if temas == [] or all(value is None for value in teams[0])::
             conn.rollback()
             conn.close()
-            return None
+            return []
 
         conn.close()
-        return teams 
+        return teams[0] 
     except Exception as e:
         if conn:
             conn.rollback()
@@ -49,8 +49,8 @@ def get_league_teams(league: str, used_team1: str, used_team2: str):
         if conn:
             conn.close()
 
-def get_player(team: str, league: str, nationality: str):
-    """Returns a player from the team and nationality selected"""
+def get_player(team: str, league: str, nationality: str)-> tuple[list] | None:
+    """Returns a list of tuples of the players from the team and nationality selected"""
     conn = None
 
     try:
@@ -70,13 +70,13 @@ def get_player(team: str, league: str, nationality: str):
         player = run.fetchall()
         conn.commit()
 
-        if player == []:
+        if player == [] or all(value is None for value in player[0])::
             conn.rollback()
             conn.close()
-            return None
+            return []
 
         conn.close()
-        return player
+        return player[0]
     except Exception as e:
         if conn:
             conn.rollback()
