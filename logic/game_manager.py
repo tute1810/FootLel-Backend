@@ -94,7 +94,7 @@ class GameManager():
             all_teams_of_random_league: list[str] = all_teams
 
             # pick a random team of that whole list and store it on the "teams" var #
-            teams[i] = all_teams_of_random_league[randint(0, len(all_teams_of_random_league) - 1)][0]
+            teams[i] = all_teams_of_random_league[randint(0, len(all_teams_of_random_league) - 1)]
 
             # if the nationalities var is empty, then select the 3 nationalities alltogether #
             if nationalities[0] == "":
