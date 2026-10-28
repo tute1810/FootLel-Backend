@@ -155,6 +155,7 @@ class GameManager():
             column: int = i % 3
 
             # if the i player_name_matrix is equal to the guess the user made #
+            print(self.player_names_matrix[row][column] + " | " + player_guess, flush=True)
             if self.player_names_matrix[row][column] == player_guess:
 
                 # if the slot the player guess is on is already occupied, do nothing and return the matrix
@@ -201,7 +202,7 @@ class GameManager():
                 if self.player_slots_matrix[row][column] != 0:
                     return self.player_slots_matrix, False, False, False, self.is_last_round, self.is_daily_challenge
 
-                # set the slot to "1" to indicate that it belongs to the player #
+                # set the slot to "-1" to indicate that it belongs to the 2nd player #
                 self.player_slots_matrix[row][column] = -1
 
                 # check if any player won #
