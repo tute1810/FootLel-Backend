@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 # IMPORT INTERNAL LIBRARIES #
 from logic import game_manager, stats_manager, date_manager
 from objects import player_guess, start_game_options
-from database import user_management, user_stats
+from database import user_management, user_stats, game
 from security import jwt
 
 # CREATE THE ROUTER #
@@ -14,6 +14,12 @@ router = APIRouter()
 games_in_progress: dict[int, game_manager.GameManager] = {}
 
 # ENDPOINT FUNCTIONS #
+@router.post("/test/test")
+def test():
+    test = game.get_league_teams("premier", "", "")
+
+    return { test }
+
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     if start_game_options.is_daily_challenge is True:

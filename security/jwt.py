@@ -31,4 +31,4 @@ def check_access_token_and_get_user_id(token: str = Depends(oauth2_scheme)) -> i
 
         return int(user_id)
     except InvalidTokenError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="error de token: token invalido o ha expirado")
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error de token: token invalido o ha expirado")

@@ -10,22 +10,6 @@ DB_URL: str = os.environ.get("DATABASE_URL")
 
 
 # FUNCTIONS #
-def get_users_table():
-    """Get users table, returns a list of tuples"""
-    try:
-        conn = db.connect(DB_URL)
-        run = conn.cursor()
-
-        run.execute("SELECT * FROM users",)
-        users = run.fetchall()
-        conn.commit()
-
-        conn.close()
-        return users
-    except Exception as e:
-        print(e, flush=True)
-        return None
-
 def get_user_name(user_id: int):
     """get user_name in form of a string using user_id"""
     conn = None
@@ -47,8 +31,8 @@ def get_user_name(user_id: int):
         if conn:
             conn.close()
 
-def get_user_password_with_user_name(user_name: str):
-    """Get user password with: user_name: str in form of a string or None if the user doesnt exist or is deactivated"""
+""" def get_user_password_with_user_name(user_name: str):
+    Get user password with: user_name: str in form of a string or None if the user doesnt exist or is deactivated
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -66,7 +50,7 @@ def get_user_password_with_user_name(user_name: str):
         return user_password[0]
     except Exception as e:
         print(e, flush=True)
-        return None
+        return None """
 
 def get_user_password_with_user_id(user_id: int):
     """get user password with user id"""
@@ -112,14 +96,14 @@ def get_user_id_with_user_name(user_name: str):
         print(e, flush=True)
         return None
 
-def get_user_id(user_email: str):
-    """Get active user id with user_email: str"""
+"""def get_user_id(user_email: str):
+    Get active user id with user_email: str
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
-        """SELECT pk_user_id FROM users WHERE (user_email = %s) AND user_eliminated = FALSE""", (user_email,)
+        SELECT pk_user_id FROM users WHERE (user_email = %s) AND user_eliminated = false, (user_email,)
         )
         user_id = run.fetchone()
         conn.commit()
@@ -133,7 +117,7 @@ def get_user_id(user_email: str):
         return user_id[0]
     except Exception as e:
         print(e, flush=True)
-        return None
+        return None"""
 
 def eliminate_user(user_id: int):
     """Eliminates user with: user_id: int"""
@@ -163,13 +147,13 @@ def eliminate_user(user_id: int):
         if conn:
             conn.close()
 
-def change_password(user_id: int, user_password: str):
-    """Change passowrd from active user with user_id: int and user_password: str """
+""" def change_password(user_id: int, user_password: str):
+    Change passowrd from active user with user_id: int and user_password: str 
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
-        run.execute(""" UPDATE users SET user_password = (%s) WHERE pk_user_id = (%s)""", (user_password,user_id ))
+        run.execute(UPDATE users SET user_password = (%s) WHERE pk_user_id = (%s), (user_password,user_id ))
         rows = run.rowcount
         conn.commit()
 
@@ -185,7 +169,7 @@ def change_password(user_id: int, user_password: str):
         return False
     finally:
         if conn:
-            conn.close()
+            conn.close() """
 
 def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
     """Change the user user_email, user_name and the user_password with user_name:str, user_email, user_password using user_id)"""
@@ -248,14 +232,14 @@ def get_user_info(user_id: int):
         if conn:
             conn.close()
             
-def get_guest_id_with_name(guest_name: str):
-    """Get active user id with user_email: str"""
+""" def get_guest_id_with_name(guest_name: str):
+    Get active user id with user_email: str
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
-        """SELECT pk_user_id FROM users WHERE (user_name = %s) AND is_guest = True""", (guest_name,)
+        SELECT pk_user_id FROM users WHERE (user_name = %s) AND is_guest = True, (guest_name,)
         )
         guest_id = run.fetchone()
         conn.commit()
@@ -269,7 +253,7 @@ def get_guest_id_with_name(guest_name: str):
         return guest_id[0]
     except Exception as e:
         print(e, flush=True)
-        return None
+        return None """
 
 def is_guest_with_user_id(user_id:int):    
     """Get guest status with user id"""
