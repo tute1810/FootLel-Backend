@@ -94,7 +94,7 @@ class GameManager():
             all_teams_of_random_league: list[str] = all_teams
 
             # pick a random team of that whole list and store it on the "teams" var #
-            teams[i] = all_teams_of_random_league[randint(0, len(all_teams_of_random_league) - 1)]
+            teams[i] = all_teams_of_random_league[randint(0, len(all_teams_of_random_league) - 1)][0]
 
             # if the nationalities var is empty, then select the 3 nationalities alltogether #
             if nationalities[0] == "":
@@ -128,8 +128,8 @@ class GameManager():
                     )
                     return False
                 #print(" player from db: " + str(player), flush=True)
-
-                players.append(player)
+                selected_player = player[randint(0, len(player) - 1)][0]
+                players.append(selected_player)
 
         # once we picked all of the board, store it on the global vars #
         self.teams_row = teams
@@ -137,8 +137,8 @@ class GameManager():
         for i in range(0, len(players), 1):
             row: int = i // 3
             column: int = i % 3
-            self.player_names_matrix[row][column] = players[i][0]
-            print(players[i][0], flush=True)
+            self.player_names_matrix[row][column] = players[i]
+            print(players[i], flush=True)
             self.player_slots_matrix[row][column] = 0
         return True
 
