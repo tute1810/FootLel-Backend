@@ -335,6 +335,8 @@ def get_user_friends(user_id:int):
         
         if friends[0] is None:
             return None
+        if friends[0][0] is None:
+            return []
         else:
             return friends[0][0]
     except Exception as e:
@@ -409,6 +411,8 @@ def get_user_friend_request(user_id:int):
         
         if friends[0] is None:
             return None
+        if friends[0][0] is None:
+            return []
         else:
             return friends[0][0]    
     except Exception as e:
@@ -481,6 +485,8 @@ def get_user_friend_match_request(user_id:int):
         
         if friends[0] is None:
             return None
+        if friends[0][0] is None:
+            return []
         else:
             return friends[0][0]
     except Exception as e:
