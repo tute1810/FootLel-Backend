@@ -121,11 +121,15 @@ class GameManager():
                 player = game.get_all_players_from_a_team_with_nationality(teams[i], random_league, nationalities[j])
 
                 if player is None:
-                    print("ERROR CREATING GAME BOARD: Could not fetch player from db: " + str(player), flush=True)
+                    print(
+                        f"ERROR: No players found for team={teams[i]}, "
+                        f"league={random_league}, nationality={nationalities[j]}",
+                        flush=True
+                    )
                     return False
                 #print(" player from db: " + str(player), flush=True)
 
-                players.append(player[0])
+                players.append(player)
 
         # once we picked all of the board, store it on the global vars #
         self.teams_row = teams
