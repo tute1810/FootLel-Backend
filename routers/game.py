@@ -3,8 +3,8 @@ from fastapi import APIRouter, HTTPException, status, Depends
 
 # IMPORT INTERNAL LIBRARIES #
 from logic import game_manager, stats_manager, date_manager
-from objects import player_guess, start_game_options
-from database import user_management, user_stats, game
+from objects import player_guess, start_game_options,user_friend
+from database import user_management, user_stats, game,multiplayer_game
 from security import jwt
 
 # CREATE THE ROUTER #
@@ -156,3 +156,18 @@ def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
         del games_in_progress[game_owner_id]
 
     return { "result": "success", "game_ended": game_ended, "local_player_won": local_player_won, "board": updated_board, "local_player_turn": is_local_players_turn }
+
+@router.post("/game/start-multiplayer-game")
+def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    if user_friend.friend_user_id == -1:
+        pass
+    else:
+        game_id: int | None = multiplayer_game.create_game_mp([user_id, user_friend.friend_user_id])
+
+        if game_id is None:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: error al crear el juego multijugador")
+
+@router.post("/game/multiplayer-guess")
+def multiplayer_guess(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    pass
+
