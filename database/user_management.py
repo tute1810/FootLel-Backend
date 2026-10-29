@@ -331,12 +331,12 @@ def get_user_friends(user_id:int):
 
         run.execute("SELECT friends_id FROM friends WHERE pk_user_id = %s", (user_id,))
         friends = run.fetchall()
-        friends = [row[0] for row in friends]
+       
         
         if friends[0] is None:
             return None
         else:
-            return friends
+            return friends[0][0]
     except Exception as e:
         if conn:
             conn.rollback()
@@ -405,12 +405,12 @@ def get_user_friend_request(user_id:int):
 
         run.execute("SELECT friend_request FROM friends WHERE pk_user_id = %s", (user_id,))
         friends = run.fetchall()
-        friends = [row[0] for row in friends]
+        
         
         if friends[0] is None:
             return None
         else:
-            return friends
+            return friends[0][0]    
     except Exception as e:
         print(e, flush=True)
         return None
@@ -468,7 +468,7 @@ def delete_one_user_friend_request(user_id:int, friend_id:int):
         if conn:
             conn.close()
 
-def get_user_match_request(user_id:int):
+def get_user_friend_match_request(user_id:int):
     """get user friends match requests, returns a list ids"""
     conn = None
     try:
@@ -477,12 +477,12 @@ def get_user_match_request(user_id:int):
 
         run.execute("SELECT match_request FROM friends WHERE pk_user_id = %s", (user_id,))
         friends = run.fetchall()
-        friends = [row[0] for row in friends]
+        
         
         if friends[0] is None:
             return None
         else:
-            return friends
+            return friends[0][0]
     except Exception as e:
         print(e, flush=True)
         return None
@@ -491,7 +491,7 @@ def get_user_match_request(user_id:int):
             conn.close()
 
 
-def add_user_match_request(user_id:int, friend_id:int):
+def add_user_friend_match_request(user_id:int, friend_id:int):
     """add user friend match request"""
     conn = None
     try:
@@ -516,7 +516,7 @@ def add_user_match_request(user_id:int, friend_id:int):
         if conn:
             conn.close()
 
-def delete_one_user_match_request(user_id:int, friend_id:int):
+def delete_one_user_friend_match_request(user_id:int, friend_id:int):
     """Deletes one match request from the user with the ids"""
     conn = None
     try:
