@@ -53,7 +53,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depend
 
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; local_player_won: bool; is_last_round: bool; is_daily_challenge: bool
     updated_board, correct_answer, game_ended, local_player_won, is_last_round, is_daily_challenge = game_in_progress.player_guessed(player_guess.player_guess)
-    
+
     if updated_board is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de tablero: no estas en una partida")
 
@@ -65,7 +65,7 @@ def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depend
     if is_owner_guest is False:
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
-            stats_manager.set_matches_stats(game_owner_id, local_player_won)
+            stats_manager.set_matches_stats(game_owner_id, is_daily_challenge, local_player_won)
             if is_daily_challenge is True:
                 date_manager.update_daily_challenge_date()
                 user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
@@ -102,7 +102,7 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess, user_id: int = Depe
     if is_owner_guest is False:
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
-            stats_manager.set_matches_stats(game_owner_id, local_player_won)
+            stats_manager.set_matches_stats(game_owner_id, is_daily_challenge, local_player_won)
             if is_daily_challenge is True:
                 date_manager.update_daily_challenge_date()
                 user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
@@ -138,7 +138,7 @@ def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     # update user stats #
     if game_ended is True:
         if is_owner_guest is False and is_last_round is True:
-            stats_manager.set_matches_stats(game_owner_id, local_player_won)
+            stats_manager.set_matches_stats(game_owner_id, is_daily_challenge, local_player_won)
             if is_daily_challenge is True:
                 date_manager.update_daily_challenge_date()
                 user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
