@@ -49,7 +49,7 @@ def start_game(start_game_options: start_game_options.StartGameOptions, user_id:
     if len(row_headers) == 0 or len(column_headers) == 0:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de inicio de juego: se produjo un error al crear el tablero")
     
-    return { "result": "success", "row_headers": row_headers, "column_headers": column_headers, "local_player_turn": True, str(a): str(b), "": str(c) }
+    return { "result": "success", "row_headers": row_headers, "column_headers": column_headers, "local_player_turn": True }
 
 @router.post("/game/player-guess")
 def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
