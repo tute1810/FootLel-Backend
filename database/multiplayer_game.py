@@ -180,7 +180,7 @@ def get_players_id_from_mp()-> list[()] | None:
         run = conn.cursor()
         
         run.execute(
-        """SELECT players_id FROM games"""
+        """SELECT players_id, game_id FROM games"""
         )
         players_id = run.fetchall()
         conn.commit()
@@ -191,8 +191,6 @@ def get_players_id_from_mp()-> list[()] | None:
       
         return players_id
     except Exception as e:
-        if conn:
-            conn.rollback()
         print(e, flush=True)
         return None
     finally:
