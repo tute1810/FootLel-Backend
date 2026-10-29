@@ -5,7 +5,7 @@ import os
 
 
 # VARIABLES #
-DB_URL: str = os.environ.get("DATABASE_URL")
+DB_URL: str = "postgresql://footlel_db_f0iu_user:HApPoL4jEAIJsvxd6F7IwXW7NjzUeBoa@dpg-db8kuetg1s2s73ak7q30-a.oregon-postgres.render.com/Footlet"
 
 
 
@@ -95,14 +95,14 @@ def get_board(game_id:int)->list[int]|None:
         if conn:
             conn.close()
 
-def turn_ended_mp(board:list[int], first_player_turn:bool, game_ended:bool, first_player_won:bool)->bool|None:
+def turn_ended_mp(board:list[int], first_player_turn:bool, game_ended:bool, first_player_won:bool, game_id:int)->bool|None:
     """Modifies the {board}, {first_player_turn}, {game_ended}, {first_player_won} returns true if succesfull"""
     conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
 
-        run.execute("UPDATE games SET board = %s, first_player_turn = %s, game_ended = %s, first_player_won = %s WHERE game_id = %s ", (board, first_player_turn, game_ended, first_player_won))
+        run.execute("UPDATE games SET board = %s, first_player_turn = %s, game_ended = %s, first_player_won = %s WHERE game_id = %s ", (board, first_player_turn, game_ended, first_player_won, game_id))
         rows = run.rowcount
         conn.commit()
 
