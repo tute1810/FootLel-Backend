@@ -11,7 +11,7 @@ DB_URL: str = os.environ.get("DATABASE_URL")
 
 
 # FUNCTIONS #
-def get_league_teams(league: str, used_team1: str, used_team2: str) -> tuple | None :
+def get_league_teams(league: str, used_team1: str, used_team2: str) -> list[tuple] | None:
     """Returns a list of tuples of the league teams"""
     conn = None
     try:
@@ -25,7 +25,7 @@ def get_league_teams(league: str, used_team1: str, used_team2: str) -> tuple | N
         if teams == [] or all(value is None for value in teams[0]):
             return []
         else:
-            return teams[0]
+            return teams
     except Exception as e:
         if conn:
             conn.rollback()
