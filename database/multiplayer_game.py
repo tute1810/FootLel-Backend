@@ -172,4 +172,29 @@ def get_user_multiplayer_state(user_id: str)-> bool | None:
         if conn:
             conn.close()
 
+def get_players_id_from_mp()-> list[()] | None:
+    """Get all the {players_id}"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
         
+        run.execute(
+        """SELECT players_id FROM games"""
+        )
+        players_id = run.fetchall()
+        conn.commit()
+
+        if players_id is None:
+            return []
+        
+      
+        return players_id
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
