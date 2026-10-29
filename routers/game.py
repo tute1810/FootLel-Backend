@@ -25,7 +25,10 @@ def test():
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     if start_game_options.is_daily_challenge is True:
-        a, b, c = date_manager.update_daily_challenge_date()
+        a, b, c, error = date_manager.update_daily_challenge_date()
+
+        if error is True:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de daily challenge: error al resetear el estado del daily challenge")
         
         user_daily_challenge_state: bool | None = user_stats.get_user_daily_challenge_state_with_id(user_id)
 

@@ -61,7 +61,7 @@ def user_register(user_info: user_info.UserInfo):
 
     user_password: str = user_info.user_password
 
-    if authentication.register_new_user(user_name, user_email, user_password) is False:
+    if authentication.user_register(user_name, user_email, user_password) is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de registro: error al registrar el usuario")
 
     return { "result": "success" }
@@ -76,7 +76,7 @@ def guest_login():
     elif is_user_name_unused is False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de modo invitado: nombre de invitado ya esta usado, intente de vuelta")
     
-    if authentication.register_guest(guest_name) is False:
+    if authentication.guest_register(guest_name) is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de modo invitado: error al registrar el invitado")
 
     guest_id: int | None = user_management.get_user_id_with_user_name(guest_name)
