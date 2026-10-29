@@ -10,6 +10,28 @@ DB_URL: str = os.environ.get("DATABASE_URL")
 
 
 # FUNCTIONS #
+def get_users_table():
+    """Get users table, returns a list of tuples"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("SELECT * FROM users",)
+        users = run.fetchall()
+        conn.commit()
+
+        
+        return users
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
 def get_user_name(user_id: int):
     """get user_name in form of a string using user_id"""
     conn = None
@@ -25,14 +47,17 @@ def get_user_name(user_id: int):
         else:
             return user_name[0]
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
         return None
     finally:
         if conn:
             conn.close()
 
-""" def get_user_password_with_user_name(user_name: str):
-    Get user password with: user_name: str in form of a string or None if the user doesnt exist or is deactivated
+def get_user_password_with_user_name(user_name: str):
+    """Get user password with: user_name: str in form of a string or None if the user doesnt exist or is deactivated"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -42,18 +67,21 @@ def get_user_name(user_id: int):
         conn.commit()
 
         if user_password is None:
-            conn.rollback()
-            conn.close()
             return ""
         
-        conn.close()
         return user_password[0]
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
-        return None """
+        return None
+    finally:
+        if conn:
+            conn.close()
 
 def get_user_password_with_user_id(user_id: int):
     """get user password with user id"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -63,18 +91,22 @@ def get_user_password_with_user_id(user_id: int):
         conn.commit()
 
         if user_password is None:
-            conn.rollback()
-            conn.close()
             return ""
         
-        conn.close()
+        
         return user_password[0]
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
         return None
+    finally:
+        if conn:
+            conn.close()
 
 def get_user_id_with_user_name(user_name: str):
     """Get active user id with user_name: str"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -86,38 +118,44 @@ def get_user_id_with_user_name(user_name: str):
         conn.commit()
 
         if user_id is None:
-            conn.rollback()
-            conn.close()
             return -1
         
-        conn.close()
         return user_id[0]
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
         return None
+    finally:
+        if conn:
+            conn.close()
 
-"""def get_user_id(user_email: str):
-    Get active user id with user_email: str
+def get_user_id(user_email: str):
+    """Get active user id with user_email: str"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
-        SELECT pk_user_id FROM users WHERE (user_email = %s) AND user_eliminated = false, (user_email,)
+        """SELECT pk_user_id FROM users WHERE (user_email = %s) AND user_eliminated = FALSE""", (user_email,)
         )
         user_id = run.fetchone()
         conn.commit()
 
         if user_id is None:
-            conn.rollback()
-            conn.close()
             return -1
         
-        conn.close()
+
         return user_id[0]
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
-        return None"""
+        return None
+    finally:
+        if conn:
+            conn.close()
 
 def eliminate_user(user_id: int):
     """Eliminates user with: user_id: int"""
@@ -133,43 +171,43 @@ def eliminate_user(user_id: int):
         run.execute("DELETE FROM user_stats WHERE pk_user_id = %s", (user_id,))
         conn.commit()
 
-        conn.close()
+
         if rows == 1:
             return True
         else:
-           return None
+           return False
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e)
-        return False
+        print(e, flush= True)
+        return None
     finally:
         if conn:
             conn.close()
 
-""" def change_password(user_id: int, user_password: str):
-    Change passowrd from active user with user_id: int and user_password: str 
+def change_password(user_id: int, user_password: str):
+    """Change passowrd from active user with user_id: int and user_password: str """
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
-        run.execute(UPDATE users SET user_password = (%s) WHERE pk_user_id = (%s), (user_password,user_id ))
+        run.execute(""" UPDATE users SET user_password = (%s) WHERE pk_user_id = (%s)""", (user_password,user_id ))
         rows = run.rowcount
         conn.commit()
 
-        conn.close()
         if rows == 1:
             return True
         else:
-           return None
+           return False
     except Exception as e:
         if conn:
             conn.rollback()
         print(e, flush=True)
-        return False
+        return None
     finally:
         if conn:
-            conn.close() """
+            conn.close()
 
 def change_user_data(user_id:int, user_name: str, user_email: str, user_password: str):
     """Change the user user_email, user_name and the user_password with user_name:str, user_email, user_password using user_id)"""
@@ -217,8 +255,6 @@ def get_user_info(user_id: int):
         conn.commit()
 
         if user_name_and_email is None:
-            conn.rollback()
-            conn.close()
             return []
 
         conn.close()
@@ -232,31 +268,36 @@ def get_user_info(user_id: int):
         if conn:
             conn.close()
             
-""" def get_guest_id_with_name(guest_name: str):
-    Get active user id with user_email: str
+def get_guest_id_with_name(guest_name: str):
+    """Get active user id with user_email: str"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
         run.execute(
-        SELECT pk_user_id FROM users WHERE (user_name = %s) AND is_guest = True, (guest_name,)
+        """SELECT pk_user_id FROM users WHERE (user_name = %s) AND is_guest = True""", (guest_name,)
         )
         guest_id = run.fetchone()
         conn.commit()
 
         if guest_id is None:
-            conn.rollback()
-            conn.close()
             return -1
         
-        conn.close()
+      
         return guest_id[0]
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
-        return None """
+        return None
+    finally:
+        if conn:
+            conn.close()
 
 def is_guest_with_user_id(user_id:int):    
     """Get guest status with user id"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -268,15 +309,18 @@ def is_guest_with_user_id(user_id:int):
         conn.commit()
 
         if is_guest is None:
-            conn.rollback()
-            conn.close()
-            return None
+            return []
         
-        conn.close()
+        
         return is_guest
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
         return None
+    finally:
+        if conn:
+            conn.close()
 
 def get_user_friends(user_id:int):
     """get user friends, returns a list ids"""
@@ -290,10 +334,12 @@ def get_user_friends(user_id:int):
         friends = [row[0] for row in friends]
         
         if friends[0] is None:
-            return []
+            return None
         else:
             return friends[0]
     except Exception as e:
+        if conn:
+            conn.rollback()
         print(e, flush=True)
         return None
     finally:
@@ -302,6 +348,7 @@ def get_user_friends(user_id:int):
     
 def add_user_friend(user_id:int, friend_id:int):
     """add user friend"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -310,7 +357,7 @@ def add_user_friend(user_id:int, friend_id:int):
         rows = run.rowcount
         conn.commit()
 
-        conn.close()
+       
         if rows == 1:
             return True
         else:
@@ -319,13 +366,14 @@ def add_user_friend(user_id:int, friend_id:int):
         if conn:
             conn.rollback()
         print(e, flush=True)
-        return False
+        return None
     finally:
         if conn:
             conn.close()
             
 def delete_one_user_friend(user_id:int, friend_id:int):
     """Deletes one friend from the user with the ids"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
@@ -334,16 +382,16 @@ def delete_one_user_friend(user_id:int, friend_id:int):
         rows = run.rowcount
         conn.commit()
 
-        conn.close()
+        
         if rows == 1:
             return True
         else:
-           return None
+           return False
     except Exception as e:
         if conn:
             conn.rollback()
         print(e, flush=True)
-        return False
+        return None
     finally:
         if conn:
             conn.close()
@@ -360,7 +408,7 @@ def get_user_friend_request(user_id:int):
         friends = [row[0] for row in friends]
         
         if friends[0] is None:
-            return []
+            return None
         else:
             return friends[0]
     except Exception as e:
@@ -372,15 +420,16 @@ def get_user_friend_request(user_id:int):
 
 def add_user_friend_request(user_id:int, friend_id:int):
     """add user friend request"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
 
-        run.execute("UPDATE friends SET friend_request = array_append( COALESCE(friends_id, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(friends_id, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
+        run.execute("UPDATE friends SET friend_request = array_append( COALESCE(friend_request, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(friend_request, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
         rows = run.rowcount
         conn.commit()
 
-        conn.close()
+        
         if rows == 1:
             return True
         else:
@@ -389,31 +438,32 @@ def add_user_friend_request(user_id:int, friend_id:int):
         if conn:
             conn.rollback()
         print(e, flush=True)
-        return False
+        return None
     finally:
         if conn:
             conn.close()
 
 def delete_one_user_friend_request(user_id:int, friend_id:int):
     """Deletes one request from the user with the ids"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
 
-        run.execute("UPDATE friends SET friend_request = array_remove(friends_id, %s) WHERE pk_user_id = %s ", (friend_id, user_id))
+        run.execute("UPDATE friends SET friend_request = array_remove(friend_request, %s) WHERE pk_user_id = %s ", (friend_id, user_id))
         rows = run.rowcount
         conn.commit()
 
-        conn.close()
+        
         if rows == 1:
             return True
         else:
-           return None
+           return False
     except Exception as e:
         if conn:
             conn.rollback()
         print(e, flush=True)
-        return False
+        return None
     finally:
         if conn:
             conn.close()
@@ -430,7 +480,7 @@ def get_user_friend_match_request(user_id:int):
         friends = [row[0] for row in friends]
         
         if friends[0] is None:
-            return []
+            return None
         else:
             return friends[0]
     except Exception as e:
@@ -443,15 +493,16 @@ def get_user_friend_match_request(user_id:int):
 
 def add_user_friend_match_request(user_id:int, friend_id:int):
     """add user friend match request"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
 
-        run.execute("UPDATE friends SET match_request = array_append( COALESCE(friends_id, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(friends_id, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
+        run.execute("UPDATE friends SET match_request = array_append( COALESCE(match_request, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(match_request, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
         rows = run.rowcount
         conn.commit()
 
-        conn.close()
+        
         if rows == 1:
             return True
         else:
@@ -460,31 +511,32 @@ def add_user_friend_match_request(user_id:int, friend_id:int):
         if conn:
             conn.rollback()
         print(e, flush=True)
-        return False
+        return None
     finally:
         if conn:
             conn.close()
 
-def delete_one_user_friend_request(user_id:int, friend_id:int):
+def delete_one_user_friend_match_request(user_id:int, friend_id:int):
     """Deletes one match request from the user with the ids"""
+    conn = None
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
 
-        run.execute("UPDATE friends SET match_request = array_remove(friends_id, %s) WHERE pk_user_id = %s ", (friend_id, user_id))
+        run.execute("UPDATE friends SET match_request = array_remove(match_request, %s) WHERE pk_user_id = %s ", (friend_id, user_id))
         rows = run.rowcount
         conn.commit()
 
-        conn.close()
+        
         if rows == 1:
             return True
         else:
-           return None
+           return False
     except Exception as e:
         if conn:
             conn.rollback()
         print(e, flush=True)
-        return False
+        return None
     finally:
         if conn:
             conn.close()
