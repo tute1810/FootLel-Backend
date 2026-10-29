@@ -73,6 +73,11 @@ class GameManager():
             ["", "", ""]
         ]
 
+    def get_game_board(self, with_headers: bool):
+        if with_headers is True:
+            return self.teams_row, self.nationalities_column, self.player_slots_matrix
+        return self.player_slots_matrix
+
     def create_game_board(self):
         # create the variables that will store the game board #
         teams: list[str] = ["", "", ""]
