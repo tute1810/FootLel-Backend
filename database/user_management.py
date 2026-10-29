@@ -363,3 +363,144 @@ def delete_one_user_friend(user_id:int, friend_id:int):
     finally:
         if conn:
             conn.close()
+
+def get_user_friend_request(user_id:int):
+    """get user friends request, returns a list ids"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("SELECT friend_request FROM friends WHERE pk_user_id = %s", (user_id,))
+        friends = run.fetchall()
+        friends = [row[0] for row in friends]
+        
+        if friends[0] is None:
+            return []
+        else:
+            return friends[0]
+    except Exception as e:
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+def add_user_friend_request(user_id:int, friend_id:int):
+    """add user friend request"""
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("UPDATE friends SET friend_request = array_append( COALESCE(friends_id, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(friends_id, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows == 1:
+            return True
+        else:
+           return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+def delete_one_user_friend_request(user_id:int, friend_id:int):
+    """Deletes one request from the user with the ids"""
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("UPDATE friends SET friend_request = array_remove(friends_id, %s) WHERE pk_user_id = %s ", (friend_id, user_id))
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows == 1:
+            return True
+        else:
+           return None
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+def get_user_friend_match_request(user_id:int):
+    """get user friends match requests, returns a list ids"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("SELECT match_request FROM friends WHERE pk_user_id = %s", (user_id,))
+        friends = run.fetchall()
+        friends = [row[0] for row in friends]
+        
+        if friends[0] is None:
+            return []
+        else:
+            return friends[0]
+    except Exception as e:
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+
+def add_user_friend_match_request(user_id:int, friend_id:int):
+    """add user friend match request"""
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("UPDATE friends SET match_request = array_append( COALESCE(friends_id, ARRAY[]::INTEGER[]),%s) WHERE pk_user_id = %s AND NOT (%s = ANY( COALESCE(friends_id, ARRAY[]::INTEGER[])))  ", (friend_id, user_id, friend_id))
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows == 1:
+            return True
+        else:
+           return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return False
+    finally:
+        if conn:
+            conn.close()
+
+def delete_one_user_friend_request(user_id:int, friend_id:int):
+    """Deletes one match request from the user with the ids"""
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("UPDATE friends SET match_request = array_remove(friends_id, %s) WHERE pk_user_id = %s ", (friend_id, user_id))
+        rows = run.rowcount
+        conn.commit()
+
+        conn.close()
+        if rows == 1:
+            return True
+        else:
+           return None
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return False
+    finally:
+        if conn:
+            conn.close()
