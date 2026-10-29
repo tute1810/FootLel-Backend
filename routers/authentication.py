@@ -21,9 +21,20 @@ def user_login(user_credentials: user_credentials.UserCredentials):
     elif is_user_name_unused is True:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: nombre de usuario incorrecto")
 
-    db_user_password: str | None = user_management.get_user_password_with_user_name(user_name)
 
-    if db_user_password is None:
+    user_id: int | None = user_management.get_user_id_with_user_name(user_name)
+
+    if user_id == -1:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de login: usuario no encontrado V1")
+    elif user_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de login: error al buscar el id del usuario")
+
+
+    db_user_password: str | None = user_management.get_user_password_with_user_id(user_id)
+
+    if db_user_password == "":
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: usuario no encontrado V2")
+    elif db_user_password is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: error al buscar la contrasenia")
 
     user_password: str = user_credentials.user_password
@@ -31,10 +42,6 @@ def user_login(user_credentials: user_credentials.UserCredentials):
     if user_password != db_user_password:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error de login: contrasenia incorrecta")
 
-    user_id: int | None = user_management.get_user_id_with_user_name(user_name)
-
-    if user_id is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de login: error al buscar el id del usuario")
 
     access_token: str = jwt.get_access_token(user_id)
 
