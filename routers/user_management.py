@@ -149,9 +149,10 @@ def reply_user_friend_request(user_request_reply: user_request_reply.UserRequest
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de amistad: error al eliminar la solicitud de amistad")
     
     if user_request_reply.reply is True:
-        added_friend_response = user_management.add_user_friend(user_id, friend_id)
+        added_friend_response1 = user_management.add_user_friend(user_id, friend_id)
+        added_friend_response2 = user_management.add_user_friend(friend_id, user_id)
 
-        if added_friend_response is False or added_friend_response is None:
+        if added_friend_response1 is False or added_friend_response1 is None or added_friend_response2 is False or added_friend_response2 is None:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de amistad: error al agragar el amigo del usuario")
 
     return { "result": "success" }
