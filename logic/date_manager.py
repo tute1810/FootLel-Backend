@@ -14,3 +14,5 @@ def update_daily_challenge_date():
     if db_current_date != current_date:
         user_stats.reset_daily_challenge_state_to_all_users()
         user_stats.set_current_date(current_date)
+
+    return current_date, db_current_date, db_current_date != current_date

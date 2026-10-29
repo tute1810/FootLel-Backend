@@ -25,7 +25,7 @@ def test():
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     if start_game_options.is_daily_challenge is True:
-        date_manager.update_daily_challenge_date()
+        a, b, c = date_manager.update_daily_challenge_date()
         
         user_daily_challenge_state: bool | None = user_stats.get_user_daily_challenge_state_with_id(user_id)
 
@@ -46,7 +46,7 @@ def start_game(start_game_options: start_game_options.StartGameOptions, user_id:
     if len(row_headers) == 0 or len(column_headers) == 0:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de inicio de juego: se produjo un error al crear el tablero")
     
-    return { "result": "success", "row_headers": row_headers, "column_headers": column_headers, "local_player_turn": True }
+    return { "result": "success", "row_headers": row_headers, "column_headers": column_headers, "local_player_turn": True, str(a): str(b), "": str(c) }
 
 @router.post("/game/player-guess")
 def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
