@@ -18,7 +18,7 @@ games_in_progress: dict[int, game_manager.GameManager] = {}
 def test():
     test = game.get_league_teams("premier", "", "")
 
-    return { test }
+    return { str(test) }
 
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
