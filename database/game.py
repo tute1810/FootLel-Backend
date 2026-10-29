@@ -46,10 +46,7 @@ def get_all_players_from_a_team_with_nationality(team: str, league: str, nationa
         run.execute(f"""SELECT player_name FROM players WHERE {column} = %s AND nationality = (%s)""", (team, nationality))
         players = run.fetchall()
 
-        if players == [] or all(value is None for value in players[0]):
-            return []
-        else:
-            return players
+        return players
     except Exception as e:
         print(e, flush=True)
         return None

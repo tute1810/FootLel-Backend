@@ -120,12 +120,12 @@ class GameManager():
                 # store the corresponding players of that selected team and those 3 nationalities on the "players" var #
                 player = game.get_all_players_from_a_team_with_nationality(teams[i], random_league, nationalities[j])
 
-                if player is None or player == []:
+                if player is None:
                     print("ERROR CREATING GAME BOARD: Could not fetch player from db: " + str(player), flush=True)
                     return False
                 print(" player from db: " + str(player), flush=True)
 
-                players.append(player)
+                players.append(player[0])
 
         # once we picked all of the board, store it on the global vars #
         self.teams_row = teams
@@ -133,7 +133,7 @@ class GameManager():
         for i in range(0, len(players), 1):
             row: int = i // 3
             column: int = i % 3
-            self.player_names_matrix[row][column] = players[i][0]
+            self.player_names_matrix[row][column] = players[i]
             print(players[i], flush=True)
             self.player_slots_matrix[row][column] = 0
         return True
