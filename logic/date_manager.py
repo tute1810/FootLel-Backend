@@ -10,7 +10,7 @@ def update_daily_challenge_date():
     current_date: str = datetime.datetime.now().strftime("%Y-%m-%d")
     db_current_date: str = user_stats.get_current_date()
 
-    if db_current_date != current_date:
+    if db_current_date == current_date:
         daily_challenge_reset_return: bool | None = user_stats.reset_daily_challenge_state_to_all_users()
 
         if daily_challenge_reset_return is False or daily_challenge_reset_return is None:
