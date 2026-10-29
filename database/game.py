@@ -11,8 +11,8 @@ DB_URL: str = os.environ.get("DATABASE_URL")
 
 
 # FUNCTIONS #
-def get_league_teams(league: str, used_team1: str, used_team2: str) -> list[tuple] | None:
-    """Returns a list of tuples of the league teams"""
+def get_all_teams_from_a_league(league: str, used_team1: str, used_team2: str) -> list[tuple] | None:
+    """returns a list of tuples of all of the teams present in the {league} provided excluding {used_team1} and {used_team2}"""
     conn = None
     try:
         conn = db.connect(DB_URL)
@@ -27,42 +27,30 @@ def get_league_teams(league: str, used_team1: str, used_team2: str) -> list[tupl
         else:
             return teams
     except Exception as e:
-        if conn:
-            conn.rollback()
         print(e, flush=True)
         return None
     finally:
         if conn:
             conn.close()
 
-def get_player(team: str, league: str, nationality: str)-> tuple[list] | None:
-    """Returns a list of tuples of the players from the team and nationality selected"""
+def get_all_players_from_a_team_with_nationality(team: str, league: str, nationality: str) -> list[tuple] | None:
+    """returns a list of tuples of all of the players present in the {team} with the provided {nationality}"""
     conn = None
-
     try:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
-        columns = {
-            "premier": "premier",
-            "bundesliga": "bundesliga",
-            "serie_a":"serie_a",
-            "la_liga":"la_liga"
-            }
+        columns = {"premier": "premier", "bundesliga": "bundesliga", "serie_a": "serie_a", "la_liga": "la_liga"}
         column = columns[league]
 
-        run.execute(f"""SELECT player_name FROM players WHERE {column} = %s AND nationality = (%s) """,  (team,nationality))
+        run.execute(f"""SELECT player_name FROM players WHERE {column} = %s AND nationality = (%s)""", (team, nationality))
+        players = run.fetchall()
 
-        player = run.fetchall()
-        conn.commit()
-
-        if player == [] or all(value is None for value in player[0]):
+        if players == [] or all(value is None for value in players[0]):
             return []
         else:
-            return player[0]
+            return players[0]
     except Exception as e:
-        if conn:
-            conn.rollback()
         print(e, flush=True)
         return None
     finally:

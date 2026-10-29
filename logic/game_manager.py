@@ -86,8 +86,8 @@ class GameManager():
             random_league: str = self.leagues_name[randint(0, len(self.leagues_name) - 1)]
 
             # get all of the teams of the previous selected league #
-            all_teams = game.get_league_teams(random_league, teams[0], teams[1])
-            if all_teams is None:
+            all_teams = game.get_all_teams_from_a_league(random_league, teams[0], teams[1])
+            if all_teams is None or all_teams == []:
                 print("ERROR CREATING GAME BOARD: Could not fetch teams from db", flush=True)
                 return False
 
@@ -118,7 +118,7 @@ class GameManager():
             for j in range(0, 3, 1):
 
                 # store the corresponding players of that selected team and those 3 nationalities on the "players" var #
-                player = game.get_player(teams[i], random_league, nationalities[j])
+                player = game.get_all_players_from_a_team_with_nationality(teams[i], random_league, nationalities[j])
 
                 if player is None:
                     print("ERROR CREATING GAME BOARD: Could not fetch player from db", flush=True)
