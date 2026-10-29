@@ -186,7 +186,7 @@ def get_players_id_from_mp()-> list[()] | None:
         conn.commit()
 
         if players_id is None:
-            return []
+            return None
         
       
         return players_id

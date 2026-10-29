@@ -159,10 +159,15 @@ def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
 
 @router.post("/game/start-multiplayer-game")
 def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    if user_friend.friend_user_id == -1:
+    friend_id: int = user_friend.friend_id
+    
+    if friend_id == -1:
         pass
     else:
-        game_id: int | None = multiplayer_game.create_game_mp([user_id, user_friend.friend_user_id])
+        game_id: int | None = multiplayer_game.create_game_mp([user_id, friend_id])
+
+        multiplayer_game.set_player_multiplayer_state_with_id(user_id, True)
+        multiplayer_game.set_player_multiplayer_state_with_id(friend_id, True)
 
         if game_id is None:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: error al crear el juego multijugador")
@@ -176,12 +181,14 @@ def join_multiplayer_game(user_id: int = Depends(jwt.check_access_token_and_get_
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: error al obtener los jugadores del juego multijugador")
 
         game_id: int = -1
-        for i in range(0,len(game_boards),1):
-            for j in range(0,len(game_boards[i][0]),1):
+        for i in range(0, len(game_boards), 1):
+            for j in range(0, len(game_boards[i][0]), 1):
                 if game_boards[i][0][j] == user_id:
                     game_id = game_boards[i][1]
                     break
-        return { "result": "success", "game_id": game_id }
+        
+    return { "result": "success", "game_id": game_id }
+
 @router.post("/game/multiplayer-guess")
 def multiplayer_guess(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     pass
