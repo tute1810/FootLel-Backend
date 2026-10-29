@@ -123,7 +123,7 @@ class GameManager():
                 if player is None:
                     print("ERROR CREATING GAME BOARD: Could not fetch player from db: " + str(player), flush=True)
                     return False
-                print(" player from db: " + str(player), flush=True)
+                #print(" player from db: " + str(player), flush=True)
 
                 players.append(player[0])
 
@@ -134,7 +134,7 @@ class GameManager():
             row: int = i // 3
             column: int = i % 3
             self.player_names_matrix[row][column] = players[i][0]
-            print(players[i], flush=True)
+            print(players[i][0], flush=True)
             self.player_slots_matrix[row][column] = 0
         return True
 
