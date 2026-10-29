@@ -5,7 +5,7 @@ import os
 
 
 # VARIABLES #
-DB_URL: str = "postgresql://footlel_db_f0iu_user:HApPoL4jEAIJsvxd6F7IwXW7NjzUeBoa@dpg-db8kuetg1s2s73ak7q30-a.oregon-postgres.render.com/Footlet"
+DB_URL: str = os.environ.get("DATABASE_URL")
 
 
 
@@ -119,3 +119,57 @@ def turn_ended_mp(board:list[int], first_player_turn:bool, game_ended:bool, firs
     finally:
         if conn:
             conn.close()
+
+def set_player_multiplayer_state_with_id(player_id:int, multiplayer_state:bool)->bool|None:
+    """Modifies the {playing_multiplayer_game} returns true if succesfull"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("UPDATE users SET playing_multiplayer_game = %s WHERE pk_user_id = %s ", (multiplayer_state, player_id))
+        rows = run.rowcount
+        conn.commit()
+
+        
+        if rows == 1:
+            return True
+        else:
+            return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+def get_user_multiplayer_state(user_id: str)-> bool | None:
+    """Get the {playing_multiplayer_game}"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+        
+        run.execute(
+        """SELECT playing_multiplayer_game FROM users WHERE pk_user_id = %s""", (user_id,)
+        )
+        multiplayer_state = run.fetchone()
+        conn.commit()
+
+        if multiplayer_state is None:
+            return []
+        
+      
+        return multiplayer_state[0]
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+        
