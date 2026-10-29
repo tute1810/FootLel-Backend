@@ -74,7 +74,7 @@ def get_user_friend_requests(user_id: int = Depends(jwt.check_access_token_and_g
 
 @router.get("/user/get-user-match-requests")
 def get_user_match_requests(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    match_request_ids: list | None = user_management.get_user_friend_match_request(user_id)
+    match_request_ids: list | None = user_management.get_user_match_request(user_id)
 
     if match_request_ids == []:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de obtencion de amigos: usuario sin solicitudes de amistad :(")

@@ -468,7 +468,7 @@ def delete_one_user_friend_request(user_id:int, friend_id:int):
         if conn:
             conn.close()
 
-def get_user_friend_match_request(user_id:int):
+def get_user_match_request(user_id:int):
     """get user friends match requests, returns a list ids"""
     conn = None
     try:
@@ -491,7 +491,7 @@ def get_user_friend_match_request(user_id:int):
             conn.close()
 
 
-def add_user_friend_match_request(user_id:int, friend_id:int):
+def add_user_match_request(user_id:int, friend_id:int):
     """add user friend match request"""
     conn = None
     try:
@@ -516,7 +516,7 @@ def add_user_friend_match_request(user_id:int, friend_id:int):
         if conn:
             conn.close()
 
-def delete_one_user_friend_match_request(user_id:int, friend_id:int):
+def delete_one_user_match_request(user_id:int, friend_id:int):
     """Deletes one match request from the user with the ids"""
     conn = None
     try:
