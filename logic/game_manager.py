@@ -133,7 +133,8 @@ class GameManager():
         for i in range(0, len(players), 1):
             row: int = i // 3
             column: int = i % 3
-            self.player_names_matrix[row][column] = players[i][0]
+            self.player_names_matrix[row][column] = players[i]
+            print(players[i], flush=True)
             self.player_slots_matrix[row][column] = 0
         return True
 
