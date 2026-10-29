@@ -121,7 +121,7 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
     if user_management.get_user_name(friend_id) is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de amistad: usuario de la solicitud no encontrado")
 
-    added_friend_request_response: bool | None = user_management.add_user_friend_request(user_id, friend_id)
+    added_friend_request_response: bool | None = user_management.add_user_friend_request(friend_id, user_id)
 
     if added_friend_request_response is None or added_friend_request_response is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de amistad: error al enviar la solicitud de amistad")
@@ -135,7 +135,7 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
     if user_management.get_user_name(friend_id) is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de partida: usuario de la solicitud no encontrado")
 
-    added_match_request_response: bool | None = user_management.add_user_match_request(user_id, friend_id)
+    added_match_request_response: bool | None = user_management.add_user_match_request(friend_id, user_id)
 
     if added_match_request_response is None or added_match_request_response is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de partida: error al enviar la solicitud de partida")
