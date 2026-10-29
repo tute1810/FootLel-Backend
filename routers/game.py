@@ -167,7 +167,10 @@ def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = D
         if game_id is None:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: error al crear el juego multijugador")
 
+@router.post("/game/join-multiplayer-game")
+def join_multiplayer_game(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    if multiplayer_game.get_user_multiplayer_state(user_id) is True:
+        pass
 @router.post("/game/multiplayer-guess")
 def multiplayer_guess(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     pass
-
