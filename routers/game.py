@@ -25,6 +25,8 @@ def test():
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     if start_game_options.is_daily_challenge is True:
+        date_manager.update_daily_challenge_date()
+        
         user_daily_challenge_state: bool | None = user_stats.get_user_daily_challenge_state_with_id(user_id)
 
         if user_daily_challenge_state is None:
@@ -75,7 +77,6 @@ def player_guesses(player_guess: player_guess.PlayerGuess, user_id: int = Depend
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
             stats_manager.set_matches_stats(game_owner_id, is_daily_challenge, local_player_won)
-            date_manager.update_daily_challenge_date()
             if is_daily_challenge is True:
                 user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
     if game_ended is True:
@@ -112,7 +113,6 @@ def player2_guesses(player2_guess: player_guess.PlayerGuess, user_id: int = Depe
         stats_manager.set_guesses_stats(game_owner_id, correct_answer)
         if game_ended is True and is_last_round is True:
             stats_manager.set_matches_stats(game_owner_id, is_daily_challenge, local_player_won)
-            date_manager.update_daily_challenge_date()
             if is_daily_challenge is True:
                 user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
     if game_ended is True:
@@ -148,7 +148,6 @@ def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     if game_ended is True:
         if is_owner_guest is False and is_last_round is True:
             stats_manager.set_matches_stats(game_owner_id, is_daily_challenge, local_player_won)
-            date_manager.update_daily_challenge_date()
             if is_daily_challenge is True:
                 user_stats.set_user_daily_challenge_with_user_id(game_owner_id, True)
         del games_in_progress[game_owner_id]
