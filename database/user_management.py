@@ -336,7 +336,7 @@ def get_user_friends(user_id:int):
         if friends[0] is None:
             return None
         else:
-            return friends[0]
+            return friends
     except Exception as e:
         if conn:
             conn.rollback()
@@ -410,7 +410,7 @@ def get_user_friend_request(user_id:int):
         if friends[0] is None:
             return None
         else:
-            return friends[0]
+            return friends
     except Exception as e:
         print(e, flush=True)
         return None
@@ -482,7 +482,7 @@ def get_user_match_request(user_id:int):
         if friends[0] is None:
             return None
         else:
-            return friends[0]
+            return friends
     except Exception as e:
         print(e, flush=True)
         return None
