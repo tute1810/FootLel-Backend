@@ -49,7 +49,7 @@ def get_all_players_from_a_team_with_nationality(team: str, league: str, nationa
         if players == [] or all(value is None for value in players[0]):
             return []
         else:
-            return players[0]
+            return players
     except Exception as e:
         print(e, flush=True)
         return None
