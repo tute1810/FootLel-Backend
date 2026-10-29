@@ -12,6 +12,7 @@ router = APIRouter()
 
 # VARIABLES #
 games_in_progress: dict[int, game_manager.GameManager] = {}
+multiplayer_games_in_progress: dict[int, game_manager.GameManager] = {}
 
 # ENDPOINT FUNCTIONS #
 @router.post("/test/test")
@@ -174,20 +175,35 @@ def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = D
 
 @router.post("/game/join-multiplayer-game")
 def join_multiplayer_game(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    match_found: bool = False
+    game_id: int = -1
     if multiplayer_game.get_user_multiplayer_state(user_id) is True:
+        match_found = True
         game_boards: list[tuple] = multiplayer_game.get_players_id_from_mp()
 
         if game_boards is None:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: error al obtener los jugadores del juego multijugador")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al unirse juego multijugador: error al obtener los jugadores del juego multijugador")
 
-        game_id: int = -1
+        is_first_player: bool = False
+        multiplayer_game_in_progress: game_manager
         for i in range(0, len(game_boards), 1):
             for j in range(0, len(game_boards[i][0]), 1):
                 if game_boards[i][0][j] == user_id:
                     game_id = game_boards[i][1]
+                    if j == 0:
+                        is_first_player = True
                     break
+
+        if is_first_player is True:
+            multiplayer_games_in_progress[game_id] = game_manager.GameManager(False, False)
+        multiplayer_game_in_progress = multiplayer_games_in_progress.get(game_id)
+        # get the board #
+
+        if multiplayer_game_in_progress is None:
+            match_found = False
+            #raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al unirse juego multijugador: error al obtener los la partida del juego multijugador")
         
-    return { "result": "success", "game_id": game_id }
+    return { "result": "success", "match_found": match_found, "game_id": game_id }
 
 @router.post("/game/multiplayer-guess")
 def multiplayer_guess(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
