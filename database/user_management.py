@@ -118,7 +118,7 @@ def get_user_id_with_user_name(user_name: str):
         conn.commit()
 
         if user_id is None:
-            return -1
+            return None
         
         return user_id[0]
     except Exception as e:

@@ -110,10 +110,11 @@ def get_user_friends(user_id: int = Depends(jwt.check_access_token_and_get_user_
 
 @router.post("/user/send-user-friend-request")
 def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_id: int = user_friend.friend_id
+    friend_name: int = user_friend.friend_name
+    friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
-    if user_management.get_user_name(friend_id) is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de amistad: usuario de la solicitud no encontrado")
+    if friend_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud: usuario de la solicitud no encontrado")
 
     added_friend_request_response: bool | None = user_management.add_user_friend_request(friend_id, user_id)
 
@@ -124,10 +125,11 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
 
 @router.post("/user/send-user-match-request")
 def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_id: int = user_friend.friend_id
+    friend_name: int = user_friend.friend_id
+    friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
-    if user_management.get_user_name(friend_id) is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de partida: usuario de la solicitud no encontrado")
+    if friend_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud: usuario de la solicitud no encontrado")
 
     added_match_request_response: bool | None = user_management.add_user_match_request(friend_id, user_id)
 
@@ -138,10 +140,11 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
 
 @router.post("/user/reply-user-friend-request")
 def reply_user_friend_request(user_request_reply: user_request_reply.UserRequestReply, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_id: int = user_request_reply.user_id_request
+    friend_name: int = user_request_reply.user_id_request
+    friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
-    if user_management.get_user_name(friend_id) is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de amistad: usuario de la solicitud no encontrado")
+    if friend_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud: usuario de la solicitud no encontrado")
 
     deleted_friend_request_response: bool | None = user_management.delete_one_user_friend_request(user_id, friend_id)
 
@@ -159,10 +162,11 @@ def reply_user_friend_request(user_request_reply: user_request_reply.UserRequest
 
 @router.post("/user/reply-user-match-request")
 def reply_user_match_request(user_request_reply: user_request_reply.UserRequestReply, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_id: int = user_request_reply.user_id_request
+    friend_name: int = user_request_reply.user_id_request
+    friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
-    if user_management.get_user_name(friend_id) is None:
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de partida: usuario de la solicitud no encontrado")
+    if friend_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud: usuario de la solicitud no encontrado")
 
     deleted_match_request_response: bool | None = user_management.delete_one_user_match_request(user_id, friend_id)
 

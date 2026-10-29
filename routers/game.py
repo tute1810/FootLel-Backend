@@ -160,11 +160,16 @@ def ai_guesses(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
 
 @router.post("/game/start-multiplayer-game")
 def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_id: int = user_friend.friend_id
+    friend_name: int = user_friend.friend_name
     
-    if friend_id == -1:
+    if friend_name == "":
         pass
     else:
+        friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
+        
+        if friend_id is None:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: usuario de la solicitud no encontrado")
+
         game_id: int | None = multiplayer_game.create_game_mp([user_id, friend_id])
 
         multiplayer_game.set_player_multiplayer_state_with_id(user_id, True)
