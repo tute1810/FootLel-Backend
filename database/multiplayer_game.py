@@ -122,24 +122,21 @@ def get_game_results(game_id:int)->list[()]|None:
 
         run.execute("SELECT game_ended, first_player_won FROM games WHERE game_id = (%s)", (game_id,))
         actual_board = run.fetchall()
-        conn.commit()
 
         if actual_board[0] is None:
             return None
         if actual_board[0][0] is None:
-            return []
+            return None
         else:
-            return actual_board
+            return actual_board[0]
     except Exception as e:
-        if conn:
-            conn.rollback()
         print(e, flush=True)
         return None
     finally:
         if conn:
             conn.close()
 
-def turn_ended_mp(board:list[int], first_player_turn:bool, game_ended:bool, first_player_won:bool, game_id:int)->bool|None:
+def turn_ended_mp(board:list[list[int]], first_player_turn:bool, game_ended:bool, first_player_won:bool, game_id:int)->bool|None:
     """Modifies the {board}, {first_player_turn}, {game_ended}, {first_player_won} returns true if succesfull"""
     conn = None
     try:

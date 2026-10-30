@@ -125,7 +125,7 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
 
 @router.post("/user/send-user-match-request")
 def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_name: int = user_friend.friend_id
+    friend_name: int = user_friend.friend_name
     friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
     if friend_id is None:
@@ -140,7 +140,7 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
 
 @router.post("/user/reply-user-friend-request")
 def reply_user_friend_request(user_request_reply: user_request_reply.UserRequestReply, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_name: int = user_request_reply.user_id_request
+    friend_name: str = user_request_reply.friend_name
     friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
     if friend_id is None:
@@ -162,7 +162,7 @@ def reply_user_friend_request(user_request_reply: user_request_reply.UserRequest
 
 @router.post("/user/reply-user-match-request")
 def reply_user_match_request(user_request_reply: user_request_reply.UserRequestReply, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    friend_name: int = user_request_reply.user_id_request
+    friend_name: int = user_request_reply.friend_name
     friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
     if friend_id is None:

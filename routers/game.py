@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 
 # IMPORT INTERNAL LIBRARIES #
 from logic import game_manager, stats_manager, date_manager
-from objects import player_guess, start_game_options, user_friend, game_id
+from objects import player_guess, start_game_options, user_friend, game_id, multiplayer_guess
 from database import user_management, user_stats, game, multiplayer_game
 from security import jwt
 
@@ -240,5 +240,28 @@ def multiplayer_sync(game_id: game_id.GameId, user_id: int = Depends(jwt.check_a
     return { "result": "success", "my_turn": my_turn }
 
 @router.post("/game/multiplayer-guess")
-def multiplayer_guess(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    pass
+def multiplayer_guesses(multiplayer_guess: multiplayer_guess.MultiplayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    game_id: int = multiplayer_guess.game_id
+
+    game_manager_in_progress: game_manager.GameManager | None = multiplayer_games_in_progress.get(game_id)
+
+    if game_manager_in_progress is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al adivinar juego multijugador: juego no encontrado")
+
+    game_results: tuple | None = multiplayer_game.get_game_results(game_id)
+    if game_results is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al adivinar juego multijugador: error obtenindo los datos del juego")
+
+    if game_results[0] == True:
+        return { "result": "success", "correct_answer": correct_answer }
+
+    am_i_first_player: bool = multiplayer_first_player_id[game_id] == user_id
+    updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; first_player_won: bool
+    if am_i_first_player is True:
+        updated_board, correct_answer, game_ended, first_player_won, _, _ = game_manager_in_progress.player_guessed(multiplayer_guess.player_guess)
+    else:
+        updated_board, correct_answer, game_ended, first_player_won, _, _ = game_manager_in_progress.player2_guessed(multiplayer_guess.player_guess)
+
+    multiplayer_game.turn_ended_mp(updated_board, not am_i_first_player, game_ended, first_player_won, game_id)
+
+    return { "result": "success", "correct_answer": correct_answer }

@@ -3,5 +3,5 @@ from pydantic import BaseModel
 
 # CREATE THE OBJECT #
 class UserRequestReply(BaseModel):
-    user_id_request: int
+    friend_name: str
     reply: bool
