@@ -118,13 +118,13 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
 
     added_friend_request_response: bool | None = user_management.add_user_friend_request(friend_id, user_id)
 
-    if added_friend_request_response is None or added_friend_request_response is False:
+    if added_friend_request_response is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de amistad: error al enviar la solicitud de amistad")
 
     return { "result": "success" }
 
 @router.post("/user/send-user-match-request")
-def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+def send_user_match_request(user_friend: user_friend.UserFriend, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     friend_name: int = user_friend.friend_name
     friend_id: int | None = user_management.get_user_id_with_user_name(friend_name)
     
@@ -133,7 +133,7 @@ def send_user_friend_request(user_friend: user_friend.UserFriend, user_id: int =
 
     added_match_request_response: bool | None = user_management.add_user_match_request(friend_id, user_id)
 
-    if added_match_request_response is None or added_match_request_response is False:
+    if added_match_request_response is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de solicitud de partida: error al enviar la solicitud de partida")
 
     return { "result": "success" }
