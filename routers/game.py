@@ -222,13 +222,15 @@ def join_multiplayer_game(user_id: int = Depends(jwt.check_access_token_and_get_
 
 @router.post("/game/multiplayer-sync")
 def multiplayer_sync(game_id: game_id.GameId, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
-    game_manager_in_progress: game_manager.GameManager | None = multiplayer_games_in_progress.get(game_id)
+    _game_id: int = game_id.game_id
+    
+    game_manager_in_progress: game_manager.GameManager | None = multiplayer_games_in_progress.get(_game_id)
 
     if game_manager_in_progress is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al actualizar juego multijugador: juego no encontrado")
 
-    am_i_first_player: bool = multiplayer_first_player_id[game_id] == user_id
-    first_player_turn: bool | None = multiplayer_game.get_player_turn(game_id)
+    am_i_first_player: bool = multiplayer_first_player_id[_game_id] == user_id
+    first_player_turn: bool | None = multiplayer_game.get_player_turn(_game_id)
 
     if first_player_turn is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al actualizar juego multijugador: error al tomar valores del juego")
