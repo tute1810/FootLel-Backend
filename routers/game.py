@@ -186,7 +186,6 @@ def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = D
 
         for i in range(0, len(game_ids_to_delete), 1):
             multiplayer_game.delete_game_mp(game_ids_to_delete[i])
-            print("deleted game " + str(game_ids_to_delete[i]), flush=True)
 
 
 
@@ -286,34 +285,12 @@ def multiplayer_guesses(multiplayer_guess: multiplayer_guess.MultiplayerGuess, u
     am_i_first_player: bool = multiplayer_first_player_id[game_id] == user_id
 
     if game_results[0] == True:
+        print(am_i_first_player == game_results[1], game_results[1], flush=True)
         i_won: bool = am_i_first_player == game_results[1]
 
         multiplayer_game.set_player_turn(not am_i_first_player, game_id)
 
-
-
-        # SET PLAYERS GAME STATE TO FALSE #
-        game_boards: list[tuple] = multiplayer_game.get_players_id_from_mp()
-
-        if game_boards is None:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error del fin del juego multijugador: error al obtener los jugadores del juego multijugador")
-
-        player_ids_that_ended: list[int] = []
-        must_break: bool = False
-        for i in range(0, len(game_boards), 1):
-            for j in range(0, len(game_boards[i][0]), 1):
-                if game_boards[i][0][j] == user_id:
-                    player_ids_that_ended = game_boards[i][0]
-                    must_break = True
-                    break
-            if must_break is True:
-                break
-
-        if player_ids_that_ended != []:
-            multiplayer_game.set_player_multiplayer_state_with_id(player_ids_that_ended[0], False)
-            multiplayer_game.set_player_multiplayer_state_with_id(player_ids_that_ended[1], False)
-
-
+        multiplayer_game.set_player_multiplayer_state_with_id(user_id, False)
 
         return { "result": "success", "game_ended": True, "i_won": i_won }
 

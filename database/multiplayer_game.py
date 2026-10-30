@@ -282,3 +282,25 @@ def get_players_id_from_mp()-> list[()] | None:
     finally:
         if conn:
             conn.close()
+
+def get_player_ids_with_game_id_mp(game_id:int)->list[()]|None:
+    """Gets the game results using {game_id}"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("SELECT players_id FROM games WHERE game_id = (%s)", (game_id,))
+        actual_board = run.fetchone()
+
+        if actual_board is None or actual_board[0] is None:
+            return None
+        else:
+            print(actual_board, flush=True)
+            return actual_board
+    except Exception as e:
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
