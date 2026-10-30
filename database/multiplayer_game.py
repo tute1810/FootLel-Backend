@@ -100,7 +100,9 @@ def get_player_turn(game_id:int)->bool|None:
         run.execute("SELECT first_player_turn FROM games WHERE game_id = (%s)", (game_id,))
         actual_board = run.fetchone()
 
-        return actual_board
+        if actual_board is None or actual_board[0] is None:
+            return None
+        return actual_board[0]
     except Exception as e:
         print(e, flush=True)
         return None
@@ -143,8 +145,6 @@ def get_game_results(game_id:int)->list[()]|None:
         run.execute("SELECT game_ended, first_player_won FROM games WHERE game_id = (%s)", (game_id,))
         actual_board = run.fetchall()
 
-        if actual_board[0] is None:
-            return None
         if actual_board[0][0] is None:
             return None
         else:
@@ -243,8 +243,8 @@ def get_user_multiplayer_state(user_id: str)-> bool | None:
         )
         multiplayer_state = run.fetchone()
         conn.commit()
-
-        if multiplayer_state is None:
+        
+        if multiplayer_state is None or multiplayer_state[0] is None:
             return []
         
       
