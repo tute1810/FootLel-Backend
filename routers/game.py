@@ -325,4 +325,4 @@ def multiplayer_guesses(multiplayer_guess: multiplayer_guess.MultiplayerGuess, u
 
     multiplayer_game.turn_ended_mp(updated_board, not am_i_first_player, game_ended, first_player_won, game_id)
 
-    return { "result": "success", "correct_answer": correct_answer }
+    return { "result": "success", "correct_answer": correct_answer, "updated_board": updated_board }
