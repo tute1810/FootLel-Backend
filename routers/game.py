@@ -237,7 +237,7 @@ def multiplayer_sync(game_id: game_id.GameId, user_id: int = Depends(jwt.check_a
 
     my_turn: bool = am_i_first_player == first_player_turn
 
-    return { "result": "success", "my_turn": my_turn }
+    return { "result": "success", "my_turn": my_turn, am_i_first_player: first_player_turn }
 
 @router.post("/game/multiplayer-guess")
 def multiplayer_guess(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
