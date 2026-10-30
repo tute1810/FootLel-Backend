@@ -83,7 +83,7 @@ def get_board(game_id:int)->list[int]|None:
         if actual_board[0] is None:
             return None
         if actual_board[0][0] is None:
-            return []
+            return None
         else:
             return actual_board
     except Exception as e:

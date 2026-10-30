@@ -240,6 +240,14 @@ def multiplayer_sync(game_id: game_id.GameId, user_id: int = Depends(jwt.check_a
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al actualizar juego multijugador: error al tomar valores del juego")
 
     my_turn: bool = am_i_first_player == first_player_turn[0]
+    
+    if my_turn is True:
+        updated_board: list[list[int]] | None = multiplayer_game.get_board()
+
+        if updated_board is None:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al actualizar juego multijugador: error al tomar la tabla del juego")
+
+        return { "result": "success", "my_turn": my_turn, "updated_board": updated_board }
 
     return { "result": "success", "my_turn": my_turn }
 
