@@ -184,6 +184,7 @@ def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = D
         if multiplayer_games_in_progress.get(game_ids_to_delete[i]) is not None:
             del multiplayer_games_in_progress[game_ids_to_delete[i]]
             print("deleted: " + str(game_ids_to_delete[i]), flush=True)
+        print("games: " + multiplayer_game.get_players_id_from_mp(), flush=True)
 
     game_id: int | None = multiplayer_game.create_game_mp([user_id, friend_id])
     print("created: " + str(game_id), flush=True)
