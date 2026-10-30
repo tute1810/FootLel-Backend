@@ -4,7 +4,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 # IMPORT INTERNAL LIBRARIES #
 from logic import game_manager, stats_manager, date_manager
 from objects import player_guess, start_game_options, user_friend, game_id, multiplayer_guess
-from database import user_management, user_stats, game, multiplayer_game
+from database import user_management, user_stats, multiplayer_game
 from security import jwt
 
 # CREATE THE ROUTER #

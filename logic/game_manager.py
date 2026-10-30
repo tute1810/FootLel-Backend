@@ -7,7 +7,7 @@ from database import game
 # CLASS #
 class GameManager():
 
-    # VARIABLES #
+    # INITIALIZE VARIABLES TO MEMORY #
     def __init__(self, is_last_round: bool = False, is_daily_challenge: bool = False):
         self.is_playing: bool = False
         self.game_turn: int = 1
@@ -15,9 +15,9 @@ class GameManager():
         self.is_last_round: bool = is_last_round
         self.is_daily_challenge: bool = is_daily_challenge
 
-        self.leagues_name: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
-        self.nationalities_name: list[str] = ["argentina", "italy", "england", "spain", "france"]
-        self.winning_lines: list[list[int]] = [
+        self.LEAGUES_NAME: list[str] = ["premier", "bundesliga", "serie_a", "la_liga"]
+        self.NATIONALITIES_NAME: list[str] = ["argentina", "italy", "england", "spain", "france", "brazil"]
+        self.WINNING_LINES: list[list[int]] = [
             [0, 1, 2],
             [3, 4, 5],
             [6, 7, 8],
@@ -88,7 +88,7 @@ class GameManager():
         for i in range(0, 3, 1):
 
             # pick a random league and store its name, not its index #
-            random_league: str = self.leagues_name[randint(0, len(self.leagues_name) - 1)]
+            random_league: str = self.LEAGUES_NAME[randint(0, len(self.LEAGUES_NAME) - 1)]
 
             # get all of the teams of the previous selected league #
             all_teams = game.get_all_teams_from_a_league(random_league, teams[0], teams[1])
@@ -105,7 +105,7 @@ class GameManager():
             if nationalities[0] == "":
                 
                 # make a temporary copy of the nationalities name list so i can remove the ones that have been previously selected #
-                temp_nationalities_name: list[str] = self.nationalities_name.copy()
+                temp_nationalities_name: list[str] = self.NATIONALITIES_NAME.copy()
                 
                 # repeat 3 times #
                 for j in range(0, 3, 1):
@@ -127,7 +127,11 @@ class GameManager():
 
                 if player is None:
                     return False
+
+                # pick a random player from the whole player list #
                 selected_player = player[randint(0, len(player) - 1)][0]
+
+                # add it to the "players" list #
                 players.append(selected_player)
 
         # once we picked all of the board, store it on the global vars #
@@ -284,8 +288,8 @@ class GameManager():
             if self.player_slots_matrix[selected_player_slot_packaged[0] + direction[0]][selected_player_slot_packaged[1] + direction[1]] != 0:
                 continue
 
-            # 20% chance of not placing a slot there #
-            if randint(1, 5) == 4:
+            # 33% chance of not placing a slot there #
+            if randint(1, 3) == 3:
                 continue
 
             # put the ai slot and break from the for loop #
@@ -317,12 +321,12 @@ class GameManager():
 
     # function that checks the board for any winning lines #
     def check_winning_lines(self) -> tuple[bool, bool]:
-        for i in range(0, len(self.winning_lines), 1):
+        for i in range(0, len(self.WINNING_LINES), 1):
             line_is_from_the_player: bool = False
-            for j in range(0, len(self.winning_lines[i]), 1):
+            for j in range(0, len(self.WINNING_LINES[i]), 1):
 
                 # store the slot value #
-                slot: int = self.player_slots_matrix[self.winning_lines[i][j] // 3][self.winning_lines[i][j] % 3]
+                slot: int = self.player_slots_matrix[self.WINNING_LINES[i][j] // 3][self.WINNING_LINES[i][j] % 3]
                 if slot != 0:
                     if slot == 1:
 
