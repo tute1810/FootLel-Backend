@@ -3,8 +3,8 @@ from fastapi import APIRouter, HTTPException, status, Depends
 
 # IMPORT INTERNAL LIBRARIES #
 from logic import game_manager, stats_manager, date_manager
-from objects import player_guess, start_game_options,user_friend
-from database import user_management, user_stats, game,multiplayer_game
+from objects import player_guess, start_game_options, user_friend, game_id
+from database import user_management, user_stats, game, multiplayer_game
 from security import jwt
 
 # CREATE THE ROUTER #
@@ -13,6 +13,7 @@ router = APIRouter()
 # VARIABLES #
 games_in_progress: dict[int, game_manager.GameManager] = {}
 multiplayer_games_in_progress: dict[int, game_manager.GameManager] = {}
+multiplayer_first_player_id: dict[int, int] = {}
 
 # ENDPOINT FUNCTIONS #
 @router.post("/test/test")
@@ -203,9 +204,10 @@ def join_multiplayer_game(user_id: int = Depends(jwt.check_access_token_and_get_
                         is_first_player = True
                     break
 
-        multiplayer_game_in_progress: game_manager
+        multiplayer_game_in_progress: game_manager.GameManager
         if is_first_player is True:
             multiplayer_games_in_progress[game_id] = game_manager.GameManager(False, False)
+            multiplayer_first_player_id[game_id] = user_id
             multiplayer_game_in_progress = multiplayer_games_in_progress[game_id]
             multiplayer_board = multiplayer_game_in_progress.start_game_board()
         else:
@@ -217,6 +219,23 @@ def join_multiplayer_game(user_id: int = Depends(jwt.check_access_token_and_get_
                 multiplayer_board = multiplayer_game_in_progress.get_game_board(True)
         
     return { "result": "success", "match_started": match_started, "game_id": game_id, "board": multiplayer_board }
+
+@router.post("/game/multiplayer-sync")
+def multiplayer_sync(game_id: game_id.GameId, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
+    game_manager_in_progress: game_manager.GameManager | None = multiplayer_games_in_progress.get(game_id)
+
+    if game_manager_in_progress is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al actualizar juego multijugador: juego no encontrado")
+
+    am_i_first_player: bool = multiplayer_first_player_id[game_id] == user_id
+    first_player_turn: bool | None = multiplayer_game.get_player_turn(game_id)
+
+    if first_player_turn is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al actualizar juego multijugador: error al tomar valores del juego")
+
+    my_turn: bool = am_i_first_player == first_player_turn
+
+    return { "result": "success", "my_turn": my_turn }
 
 @router.post("/game/multiplayer-guess")
 def multiplayer_guess(player_guess: player_guess.PlayerGuess, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):

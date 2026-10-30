@@ -103,18 +103,10 @@ def get_player_turn(game_id:int)->bool|None:
         run = conn.cursor()
 
         run.execute("SELECT first_player_turn FROM games WHERE game_id = (%s)", (game_id,))
-        actual_board = run.fetchall()
-        conn.commit()
+        actual_board = run.fetchone()
 
-        if actual_board[0] is None:
-            return None
-        if actual_board[0][0] is None:
-            return []
-        else:
-            return actual_board
+        return actual_board
     except Exception as e:
-        if conn:
-            conn.rollback()
         print(e, flush=True)
         return None
     finally:
