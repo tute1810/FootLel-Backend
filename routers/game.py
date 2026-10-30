@@ -196,13 +196,17 @@ def join_multiplayer_game(user_id: int = Depends(jwt.check_access_token_and_get_
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al unirse juego multijugador: error al obtener los jugadores del juego multijugador")
 
         is_first_player: bool = False
+        must_break: bool = False
         for i in range(0, len(game_boards), 1):
             for j in range(0, len(game_boards[i][0]), 1):
                 if game_boards[i][0][j] == user_id:
                     game_id = game_boards[i][1]
                     if j == 0:
                         is_first_player = True
+                    must_break = True
                     break
+            if must_break is True:
+                break
 
         multiplayer_game_in_progress: game_manager.GameManager
         if is_first_player is True:
@@ -252,10 +256,16 @@ def multiplayer_guesses(multiplayer_guess: multiplayer_guess.MultiplayerGuess, u
     if game_results is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al adivinar juego multijugador: error obtenindo los datos del juego")
 
-    if game_results[0] == True:
-        return { "result": "success", "correct_answer": correct_answer }
-
     am_i_first_player: bool = multiplayer_first_player_id[game_id] == user_id
+
+    print(game_results, flush=True)
+    if game_results[0] == True:
+        i_won: bool = am_i_first_player == game_results[1]
+
+        multiplayer_game.set_player_turn(not am_i_first_player, game_id)
+
+        return { "result": "success", "game_ended": True, "i_won": i_won }
+
     updated_board: list[list[int]]; correct_answer: bool; game_ended: bool; first_player_won: bool
     if am_i_first_player is True:
         updated_board, correct_answer, game_ended, first_player_won, _, _ = game_manager_in_progress.player_guessed(multiplayer_guess.player_guess)

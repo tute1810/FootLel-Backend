@@ -113,6 +113,31 @@ def get_player_turn(game_id:int)->bool|None:
         if conn:
             conn.close()
 
+def set_player_turn(first_player_turn:bool, game_id:int)->bool|None:
+    """Modifies the {first_player_turn} returns true if succesfull"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("UPDATE games SET first_player_turn = %s WHERE game_id = %s ", (first_player_turn, game_id))
+        rows = run.rowcount
+        conn.commit()
+
+        
+        if rows == 1:
+            return True
+        else:
+            return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
 def get_game_results(game_id:int)->list[()]|None:
     """Gets the game results using {game_id}"""
     conn = None
