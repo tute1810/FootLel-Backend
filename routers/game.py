@@ -171,6 +171,26 @@ def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = D
         if friend_id is None:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: usuario de la solicitud no encontrado")
 
+
+
+        # DELETE OLD MULTIPLAYER BOARDS THAT THIS ID IS PRESENT ON #
+        game_boards: list[tuple] = multiplayer_game.get_players_id_from_mp()
+
+        if game_boards is None:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al unirse juego multijugador: error al obtener los jugadores del juego multijugador")
+
+        game_ids_to_delete: list[int] = []
+        for i in range(0, len(game_boards), 1):
+            for j in range(0, len(game_boards[i][0]), 1):
+                if game_boards[i][0][j] == user_id:
+                    game_ids_to_delete.append(game_boards[i][1])
+
+        for i in range(0, len(game_ids_to_delete), 1):
+            multiplayer_game.delete_game_mp(game_ids_to_delete[i])
+            print("deleted game " + str(game_ids_to_delete[i]), flush=True)
+
+
+
         game_id: int | None = multiplayer_game.create_game_mp([user_id, friend_id])
 
         multiplayer_game.set_player_multiplayer_state_with_id(user_id, True)
