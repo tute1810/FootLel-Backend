@@ -78,12 +78,12 @@ def get_board(game_id:int)->list[int]|None:
 
         run.execute("SELECT board FROM games WHERE game_id = (%s)", (game_id,))
         actual_board = run.fetchone()
-        conn.commit()
+        
+        if actual_board is None or actual_board[0] is None:
+            return None
 
-        return actual_board
+        return actual_board[0]
     except Exception as e:
-        if conn:
-            conn.rollback()
         print(e, flush=True)
         return None
     finally:
