@@ -16,13 +16,9 @@ multiplayer_games_in_progress: dict[int, game_manager.GameManager] = {}
 multiplayer_first_player_id: dict[int, int] = {}
 
 # ENDPOINT FUNCTIONS #
-@router.post("/test/test")
-def test():
-    test = game.get_all_teams_from_a_league("premier", "", "")
-
-    test2 = game.get_all_players_from_a_team_with_nationality("Liverpool", "premier", "france")
-
-    return { str(test), str(test2) }
+@router.post("/game/reset--all-multiplayer-states")
+def reset_all_multiplayer_states():
+    multiplayer_game.reset_all_players_multiplayer_state()
 
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):

@@ -206,6 +206,31 @@ def set_player_multiplayer_state_with_id(player_id:int, multiplayer_state:bool)-
         if conn:
             conn.close()
 
+def reset_all_players_multiplayer_state()->bool|None:
+    """resets all players {playing_multiplayer_game} state to false"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+
+        run.execute("UPDATE users SET playing_multiplayer_game = %s", (False,))
+        rows = run.rowcount
+        conn.commit()
+
+        
+        if rows == 1:
+            return True
+        else:
+            return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
 def get_user_multiplayer_state(user_id: str)-> bool | None:
     """Get the {playing_multiplayer_game}"""
     conn = None
