@@ -16,7 +16,7 @@ multiplayer_games_in_progress: dict[int, game_manager.GameManager] = {}
 multiplayer_first_player_id: dict[int, int] = {}
 
 # ENDPOINT FUNCTIONS #
-@router.post("/game/reset--all-multiplayer-states")
+@router.post("/game/reset-all-multiplayer-states")
 def reset_all_multiplayer_states():
     if multiplayer_game.reset_all_players_multiplayer_state() is None:
         return { "result": "error" }
@@ -166,6 +166,8 @@ def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = D
     
     if friend_id is None:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de inicio de juego multijugador: usuario de la solicitud no encontrado")
+    elif user_id == friend_id:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="error de inicio de juego multijugador: no puede jugar contra used mismo")
 
     # DELETE OLD MULTIPLAYER BOARDS THAT THIS ID IS PRESENT ON #
     game_boards: list[tuple] = multiplayer_game.get_players_id_from_mp()
@@ -183,10 +185,9 @@ def start_multiplayer_game(user_friend: user_friend.UserFriend, user_id: int = D
         multiplayer_game.delete_game_mp(game_ids_to_delete[i])
         if multiplayer_games_in_progress.get(game_ids_to_delete[i]) is not None:
             del multiplayer_games_in_progress[game_ids_to_delete[i]]
+            del multiplayer_first_player_id[game_ids_to_delete[i]]
 
     game_id: int | None = multiplayer_game.create_game_mp([user_id, friend_id])
-    print("created: " + str(game_id), flush=True)
-    print("games: " + str(multiplayer_games_in_progress), flush=True)
 
     multiplayer_game.set_player_multiplayer_state_with_id(user_id, True)
     multiplayer_game.set_player_multiplayer_state_with_id(friend_id, True)
@@ -282,7 +283,6 @@ def multiplayer_guesses(multiplayer_guess: multiplayer_guess.MultiplayerGuess, u
     am_i_first_player: bool = multiplayer_first_player_id[game_id] == user_id
 
     if game_results[0] == True:
-        print(am_i_first_player == game_results[1], game_results[1], flush=True)
         i_won: bool = am_i_first_player == game_results[1]
 
         multiplayer_game.set_player_turn(not am_i_first_player, game_id)

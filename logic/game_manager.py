@@ -126,13 +126,7 @@ class GameManager():
                 player = game.get_all_players_from_a_team_with_nationality(teams[i], random_league, nationalities[j])
 
                 if player is None:
-                    print(
-                        f"ERROR: No players found for team={teams[i]}, "
-                        f"league={random_league}, nationality={nationalities[j]}",
-                        flush=True
-                    )
                     return False
-                #print(" player from db: " + str(player), flush=True)
                 selected_player = player[randint(0, len(player) - 1)][0]
                 players.append(selected_player)
 
@@ -143,7 +137,6 @@ class GameManager():
             row: int = i // 3
             column: int = i % 3
             self.player_names_matrix[row][column] = players[i]
-            print(players[i], flush=True)
             self.player_slots_matrix[row][column] = 0
         return True
 
@@ -166,13 +159,6 @@ class GameManager():
             column: int = i % 3
 
             # if the i player_name_matrix is equal to the guess the user made #
-            print(
-            f"DB: {self.player_names_matrix[row][column]!r} "
-            f"({type(self.player_names_matrix[row][column]).__name__})"
-            f" | Guess: {player_guess!r} "
-            f"({type(player_guess).__name__})",
-            flush=True
-)
             if self.player_names_matrix[row][column] == player_guess:
 
                 # if the slot the player guess is on is already occupied, do nothing and return the matrix
