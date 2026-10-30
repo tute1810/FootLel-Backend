@@ -99,6 +99,8 @@ def get_player_turn(game_id:int)->bool|None:
 
         run.execute("SELECT first_player_turn FROM games WHERE game_id = (%s)", (game_id,))
         actual_board = run.fetchone()
+        if actual_board is None or actual_board[0] is None:
+            return None
         return actual_board
     except Exception as e:
         print(e, flush=True)
