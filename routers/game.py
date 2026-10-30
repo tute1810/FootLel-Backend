@@ -18,7 +18,10 @@ multiplayer_first_player_id: dict[int, int] = {}
 # ENDPOINT FUNCTIONS #
 @router.post("/game/reset--all-multiplayer-states")
 def reset_all_multiplayer_states():
-    multiplayer_game.reset_all_players_multiplayer_state()
+    if multiplayer_game.reset_all_players_multiplayer_state() is None:
+        return { "result": "error" }
+    else:
+        return { "result": "success" }
 
 @router.post("/game/start")
 def start_game(start_game_options: start_game_options.StartGameOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
