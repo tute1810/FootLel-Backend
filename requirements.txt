@@ -3,4 +3,4 @@ uvicorn
 pydantic
 psycopg2-binary
 PyJWT
-passlib[bcrypt]
+bcrypt

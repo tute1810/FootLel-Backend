@@ -239,11 +239,7 @@ def reset_daily_challenge_state_to_all_users() -> bool | None:
         run.execute("""UPDATE user_stats SET daily_challenge = (%s)""", (False,) )
         rows = run.rowcount
         conn.commit()
-
-        if rows >= 1:
-            return True
-        else:
-           return False
+        return True
     except Exception as e:
         if conn:
             conn.rollback()
