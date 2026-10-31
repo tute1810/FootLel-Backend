@@ -191,14 +191,14 @@ def set_current_date(current_date: str) -> bool | None:
         conn = db.connect(DB_URL)
         run = conn.cursor()
         
-        run.execute("""UPDATE backend_staff SET current_day = (%s)""", (current_date, ))
+        run.execute("""UPDATE backend_staff SET current_day = (%s)""", (current_date,))
         rows = run.rowcount
+
+        if rows == 0:
+            run.execute("""INSERT INTO backend_staff (current_day) VALUES (%s)""", (current_date,))
         conn.commit()
 
-        if rows == 1:
-            return True
-        else:
-            return False
+        return True
     except Exception as e:
         if conn:
             conn.rollback()
@@ -219,7 +219,7 @@ def get_current_date() -> str | None:
         current_date = run.fetchone()
 
         if current_date is None:
-            return None
+            return ""
         else:
             return current_date[0]
     except Exception as e:
@@ -237,8 +237,8 @@ def reset_daily_challenge_state_to_all_users() -> bool | None:
         run = conn.cursor()
         
         run.execute("""UPDATE user_stats SET daily_challenge = (%s)""", (False,) )
-        rows = run.rowcount
         conn.commit()
+        
         return True
     except Exception as e:
         if conn:
