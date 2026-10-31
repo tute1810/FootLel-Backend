@@ -5,7 +5,7 @@ from random import randint
 # IMPORT INTERNAL LIBRARIES #
 from objects import user_info, user_credentials
 from database import authentication, user_management
-from security import jwt
+from security import jwt, hash 
 
 # CREATE THE ROUTER #
 router = APIRouter()
@@ -19,7 +19,7 @@ def user_login(user_credentials: user_credentials.UserCredentials):
     if is_user_name_unused is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: error al buscar el nombre de usuario")
     elif is_user_name_unused is True:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="error de login: nombre de usuario incorrecto")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Error de login: credenciales incorrectas")
 
 
     user_id: int | None = user_management.get_user_id_with_user_name(user_name)
@@ -39,9 +39,8 @@ def user_login(user_credentials: user_credentials.UserCredentials):
 
     user_password: str = user_credentials.user_password
 
-    if user_password != db_user_password:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error de login: contrasenia incorrecta")
-
+    if not hash.verify_password(user_password, db_user_password):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="Error de login: credenciales incorrectas")
 
     access_token: str = jwt.get_access_token(user_id)
 
@@ -59,7 +58,7 @@ def user_register(user_info: user_info.UserInfo):
     if authentication.is_user_email_available(user_email) is False:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de registro: email en uso")
 
-    user_password: str = user_info.user_password
+    user_password: str = hash.get_password_hash(user_info.user_password)
 
     if authentication.user_register(user_name, user_email, user_password) is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,detail="error de registro: error al registrar el usuario")

@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 # IMPORT INTERNAL LIBRARIES #
 from objects import user_info, user_friend, user_request_reply
 from database import user_management, authentication, multiplayer_game
-from security import jwt
+from security import jwt,hash
 
 # CREATE THE ROUTER #
 router = APIRouter()
@@ -44,7 +44,7 @@ def edit_user_info(user_info: user_info.UserInfo, user_id: int = Depends(jwt.che
     if user_email_already_in_use is True:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error al editar perfil: email en uso")
 
-    user_password: str = user_info.user_password
+    user_password: str = hash.get_password_hash(user_info.user_password)
     
     if user_management.change_user_data(user_id, user_name, user_email, user_password) is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al editar perfil: error al editar los datos del usuario")
