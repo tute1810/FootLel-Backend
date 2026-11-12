@@ -169,6 +169,17 @@ def eliminate_user(user_id: int):
         run.execute("DELETE FROM friends WHERE pk_user_id = %s", (user_id,))
         run.execute("DELETE FROM user_configuration WHERE pk_user_id = %s", (user_id,))
         run.execute("DELETE FROM user_stats WHERE pk_user_id = %s", (user_id,))
+        run.execute("""
+            UPDATE friends
+            SET
+                friends_id = array_remove(friends_id, %s),
+                friend_request = array_remove(friend_request, %s),
+                match_request = array_remove(match_request, %s)
+            WHERE
+                %s = ANY(friends_id)
+                OR %s = ANY(friend_request)
+                OR %s = ANY(match_request);
+        """, (user_id, user_id, user_id, user_id, user_id, user_id))
         conn.commit()
 
 
