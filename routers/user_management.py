@@ -2,7 +2,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 
 # IMPORT INTERNAL LIBRARIES #
-from objects import user_info, user_friend, user_request_reply
+from objects import user_info, user_friend, user_request_reply,change_user_password
 from database import user_management, authentication, multiplayer_game
 from security import jwt,hash
 
@@ -51,7 +51,30 @@ def edit_user_info(user_info: user_info.UserInfo, user_id: int = Depends(jwt.che
     if user_management.change_user_data(user_id, user_name, user_email, user_password) is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al editar perfil: error al editar los datos del usuario")
     
-    return { "result": "success", str(user_password): str(user_info.user_password) }
+    return { "result": "success" }
+
+@router.patch("/user/change-user-password")
+def change_user_password_(user_info: change_user_password.ChangeUserPassword):
+    user_email: str = user_info.user_email
+    user_email_already_in_use: bool | None = not authentication.is_user_email_available(user_email)
+
+    if user_email_already_in_use is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de cambio de contraseña: error al verificar emails de usuario")
+    elif user_email_already_in_use is False:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de cambio de contraseña: email no encontrado")
+
+    user_id: int | None = user_management.get_user_id(user_email)
+    if user_id is None:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de cambio de contraseña: error al verificar ids del usuario")
+    elif user_id == -1:
+        raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error de cambio de contraseña: id no encontrado")
+    
+    user_password_hashed: str = hash.get_password_hash(user_info.user_password)
+
+    if user_management.change_user_data(user_id, "" ,"", user_password_hashed) is False:
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de cambio de contraseña: error al cambiar los datos del usuario")
+    
+    return { "result": "success" }
 
 @router.get("/user/get-user-friend-requests")
 def get_user_friend_requests(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
