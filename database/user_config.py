@@ -31,7 +31,7 @@ def set_animations_config_state(user_id: int, state: bool)-> bool | None:
     except Exception as e:
         if conn:
             conn.rollback()
-        print(e, flush = true)
+        print(e, flush = True)
         return None
     finally:
         if conn:
@@ -162,6 +162,63 @@ def get_animations_config_state(user_id: int)-> bool | None:
         if conn:
             conn.rollback
         print(e, flush = True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+def get_is_english_config_state(user_id:str)-> bool|None:
+    """get user_language status in form of a string using user_id"""
+    conn = None
+    try:
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+            
+        run.execute("SELECT user_language FROM user_configuration WHERE pk_user_id = (%s)", (user_id,) )
+        status = run.fetchone()
+        
+
+        if status is None:
+            
+            return None
+        
+        
+        return status[0]
+    except Exception as e:
+        if conn:
+            conn.rollback
+        print(e, flush = True)
+        return None
+    finally:
+        if conn:
+            conn.close()
+
+
+def set_is_english_config_state(user_id: int, state: bool)-> bool | None:
+    """set {user_language} to its correct value, returns true if succesfull"""
+    conn = None 
+    try:
+        
+        
+        conn = db.connect(DB_URL)
+        run = conn.cursor()
+        
+        not_state = not state
+        
+        
+        run.execute("""UPDATE user_configuration SET user_language = %s WHERE pk_user_id = %s AND user_language = %s""", (state, user_id, not_state) )
+        
+    
+        row = run.rowcount
+        conn.commit()
+        if row == 1:
+            return True
+        else:
+            return False
+    except Exception as e:
+        if conn:
+            conn.rollback()
+        print(e, flush=True)
         return None
     finally:
         if conn:
