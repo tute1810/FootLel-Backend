@@ -44,12 +44,14 @@ def edit_user_info(user_info: user_info.UserInfo, user_id: int = Depends(jwt.che
     if user_email_already_in_use is True:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="error al editar perfil: email en uso")
 
-    user_password: str = hash.get_password_hash(user_info.user_password)
+    user_password: str = ""
+    if user_info.user_password != "":
+        user_password: str = hash.get_password_hash(user_info.user_password)
     
     if user_management.change_user_data(user_id, user_name, user_email, user_password) is False:
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error al editar perfil: error al editar los datos del usuario")
     
-    return { "result": "success" }
+    return { "result": "success", str(user_password): str(user_info.user_password) }
 
 @router.get("/user/get-user-friend-requests")
 def get_user_friend_requests(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
