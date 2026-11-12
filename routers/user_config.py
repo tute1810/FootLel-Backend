@@ -13,18 +13,18 @@ router = APIRouter()
 @router.get("/config/get-user-config")
 def get_user_config(user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     config_results: list[bool | None] = []
-    config_results.extend([user_config.get_dark_mode_config_state(user_id), user_config.get_animations_config_state(user_id), user_config.get_compatibility_config_status(user_id)])
+    config_results.extend([user_config.get_dark_mode_config_state(user_id), user_config.get_animations_config_state(user_id), user_config.get_compatibility_config_status(user_id), user_config.get_is_english_config_state(user_id)])
 
     for i in range(0, len(config_results), 1):
         if config_results[i] is None:
             raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="error de obtencion de configuracion: error al obtener las opciones y preferencias del usuario")
 
-    return { "result": "success", "dark_mode": config_results[0], "animation_state": config_results[1], "compatibility_mode": config_results[2] }
+    return { "result": "success", "dark_mode": config_results[0], "animation_state": config_results[1], "compatibility_mode": config_results[2], "is_english": config_results[3] }
 
 @router.patch("/config/set-user-config")
 def set_user_config(user_options: user_options.UserOptions, user_id: int = Depends(jwt.check_access_token_and_get_user_id)):
     config_results: list[bool] = []
-    config_results.extend([user_config.set_dark_mode_config_state(user_id, user_options.dark_mode), user_config.set_animations_config_state(user_id, user_options.animation_state), user_config.set_compatibility_config_status(user_id, user_options.compatibility_mode)])
+    config_results.extend([user_config.set_dark_mode_config_state(user_id, user_options.dark_mode), user_config.set_animations_config_state(user_id, user_options.animation_state), user_config.set_compatibility_config_status(user_id, user_options.compatibility_mode), user_config.set_is_english_config_state(user_id, user_options.is_english)])
 
     for i in range(0, len(config_results), 1):
         if config_results[i] is False:

@@ -6,3 +6,4 @@ class UserOptions(BaseModel):
     dark_mode: bool
     animation_state: bool
     compatibility_mode: bool
+    is_english: bool
