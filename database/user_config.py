@@ -23,11 +23,7 @@ def set_animations_config_state(user_id: int, state: bool)-> bool | None:
 
         row = run.rowcount
         conn.commit()
-       
-        if row == 1:
-            return True
-        else:
-           return False
+        return True
     except Exception as e:
         if conn:
             conn.rollback()
@@ -50,10 +46,7 @@ def set_dark_mode_config_state(user_id: int, state: bool)-> bool | None:
         
         row = run.rowcount
         conn.commit()
-        if row == 1:
-            return True
-        else:
-            return False
+        return True
     except Exception as e:
         if conn:
             conn.rollback()
@@ -211,10 +204,7 @@ def set_is_english_config_state(user_id: int, state: bool)-> bool | None:
     
         row = run.rowcount
         conn.commit()
-        if row == 1:
-            return True
-        else:
-            return False
+        return True
     except Exception as e:
         if conn:
             conn.rollback()
