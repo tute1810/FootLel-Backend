@@ -73,10 +73,8 @@ def set_compatibility_config_status(user_id: int, state: bool)-> bool | None:
     
         row = run.rowcount
         conn.commit()
-        if row == 1:
-            return True
-        else:
-            return False
+        
+        return True
     except Exception as e:
         if conn:
             conn.rollback()
